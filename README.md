@@ -1,5 +1,3 @@
-Dưới đây là phiên bản **README.md** được viết lại dành cho dự án **E-commerce bán máy tính** bằng **Next.js**:
-
 ```markdown
 # 💻 E-commerce Website - Laptop Store
 
