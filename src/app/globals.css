@@ -45,3 +45,19 @@ body {
   color: var(--foreground);
   font-family: 'samsungsharpsans', Arial, Helvetica, sans-serif;
 }
+
+/* Text animation wipe */
+.text-wipe {
+  border-right: 2px solid;
+  width: 100px;
+  animation: typing 5s steps(18) infinite;
+  white-space: nowrap;
+  overflow: hidden;
+  background-color: #738fbd;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+}

@@ -1,4 +1,3 @@
-```markdown
 # 💻 E-commerce Website - Laptop Store
 
 Đây là dự án **E-commerce bán máy tính** được xây dựng bằng [Next.js](https://nextjs.org).  
@@ -21,6 +20,7 @@ Hệ thống hỗ trợ **quản lý sản phẩm, khách hàng, nhân viên và
 ## 📦 Tính năng chính
 
 ### 👨‍💻 Khách hàng
+
 - Đăng ký / Đăng nhập / Quên mật khẩu
 - Xem danh sách sản phẩm theo **danh mục / thương hiệu**
 - Tìm kiếm & lọc sản phẩm theo **giá, cấu hình, đánh giá**
@@ -30,11 +30,13 @@ Hệ thống hỗ trợ **quản lý sản phẩm, khách hàng, nhân viên và
 - Quản lý đơn hàng cá nhân
 
 ### 🛠️ Nhân viên
+
 - Quản lý sản phẩm (thêm, sửa, xóa, tồn kho)
 - Quản lý đơn hàng (xử lý, giao hàng)
 - Quản lý khách hàng
 
 ### 📊 Quản lý
+
 - Quản lý nhân viên
 - Thống kê doanh thu, sản phẩm bán chạy
 - Quản lý khuyến mãi / voucher
@@ -56,17 +58,18 @@ Hệ thống hỗ trợ **quản lý sản phẩm, khách hàng, nhân viên và
 ├── public/             # Static assets
 └── README.md
 
-````
+```
 
 ---
 
 ## ⚡ Cài đặt & chạy dự án
 
 ### 1️⃣ Clone repo
+
 ```bash
 git clone https://github.com/your-username/laptop-store.git
 cd laptop-store
-````
+```
 
 ### 2️⃣ Cài dependencies
 
@@ -104,14 +107,14 @@ Dự án có thể triển khai dễ dàng với [Vercel](https://vercel.com/):
 
 ## 📚 Tài liệu tham khảo
 
-* [Next.js Documentation](https://nextjs.org/docs)
-* [Next.js Learn](https://nextjs.org/learn)
-* [Tailwind CSS Docs](https://tailwindcss.com/docs)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Next.js Learn](https://nextjs.org/learn)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
 
 ---
 
 ## 👨‍💻 Tác giả
 
-* **Nhật Toàn** - [GitHub](https://github.com/your-username) | [LinkedIn](https://linkedin.com/in/your-profile)
+- **Nhật Toàn** - [GitHub](https://github.com/your-username) | [LinkedIn](https://linkedin.com/in/your-profile)
 
 ---
