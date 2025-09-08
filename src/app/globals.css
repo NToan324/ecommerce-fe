@@ -7,6 +7,8 @@
   --color-blue-primary: #c4d1e1;
   --color-blue-secondary: #738fbd;
   --color-blue-tertiary: #1f3c88;
+  --color-blue-light: #dce2ea;
+  --color-violet-primary: #46598a;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -49,6 +51,8 @@
   --color-blue-primary: var(--color-blue-primary);
   --color-blue-secondary: var(--color-blue-secondary);
   --color-blue-tertiary: var(--color-blue-tertiary);
+  --color-violet-primary: var(--color-violet-primary);
+  --color-blue-light: var(--color-blue-light);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

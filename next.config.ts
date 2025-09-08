@@ -3,11 +3,11 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   /* config options here */
   eslint: {
-    dirs: ['src']
+    dirs: ['src'],
   },
   images: {
-    domains: ['avatar.iran.liara.run']
-  }
+    domains: ['avatar.iran.liara.run'],
+  },
 }
 
 export default nextConfig
