@@ -4,7 +4,7 @@ import { formatPrice } from '@/utils/helpers'
 
 export default function CardProduct() {
   return (
-    <div className="bg-white hover:z-10 hover:shadow-2xl relative hover:bg-gradient-to-br overflow-hidden from-blue-primary to-white transition-all group hover:scale-125 duration-300 origin-top-left h-[360px] p-4 pb-0 w-full gap-4 rounded-2xl flex flex-col justify-between items-start max-w-[300px] border border-black/10">
+    <div className="bg-white hover:z-10 hover:shadow-2xl relative hover:bg-gradient-to-br overflow-hidden from-blue-primary to-white transition-all group hover:scale-125 duration-300 origin-top-left h-[360px] p-4 pb-0 w-full gap-4 rounded-2xl flex flex-col justify-between items-start md:max-w-[300px] border border-black/10">
       <div className="w-[20px] h-[140%] bg-blue-secondary absolute rotate-45 -top-[40px] left-[135px] blur-2xl -translate-y-[500px] group-hover:translate-y-[100px] duration-500"></div>
       <div className="relative flex flex-col justify-start items-start gap-2 ">
         <p className="text-[#D9D9D9] text-xs font-medium group-hover:text-white duration-200">Laptop</p>
