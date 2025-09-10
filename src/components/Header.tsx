@@ -22,10 +22,18 @@ export default function Header() {
           >
             <IoIosArrowForward className="rotate-180 text-white" />
           </div>
-          <Link href="/">Home</Link>
-          <Link href="/categories">Categories</Link>
-          <Link href="/about">About us</Link>
-          <Link href="/contact">Contact</Link>
+          <Link href="/" onClick={() => setOpen(false)}>
+            Home
+          </Link>
+          <Link href="/categories" onClick={() => setOpen(false)}>
+            Categories
+          </Link>
+          <Link href="/about" onClick={() => setOpen(false)}>
+            About us
+          </Link>
+          <Link href="/contact" onClick={() => setOpen(false)}>
+            Contact
+          </Link>
         </div>
         <div className="flex items-center justify-between gap-8 md:gap-10">
           <div className="relative">

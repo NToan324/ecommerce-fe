@@ -9,6 +9,8 @@
   --color-blue-tertiary: #1f3c88;
   --color-blue-light: #dce2ea;
   --color-violet-primary: #46598a;
+  --color-purple-primary: #e3e8ee;
+  --color-blue-gray: #f2f6fa;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -44,16 +46,20 @@
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Custom color */
   --color-blue-primary: var(--color-blue-primary);
   --color-blue-secondary: var(--color-blue-secondary);
   --color-blue-tertiary: var(--color-blue-tertiary);
   --color-violet-primary: var(--color-violet-primary);
   --color-blue-light: var(--color-blue-light);
+  --color-purple-primary: var(--color-purple-primary);
+  --color-blue-gray: var(--color-blue-gray);
+
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-accent: var(--sidebar-accent);
@@ -116,7 +122,7 @@ body {
   animation: typing 5s steps(18) infinite;
   white-space: nowrap;
   overflow: hidden;
-  background-color: #738fbd;
+  background-color: var(--color-blue-secondary);
 }
 
 @keyframes typing {
@@ -127,7 +133,7 @@ body {
 
 /* Text gradient */
 .text-gradient {
-  background: linear-gradient(90deg, #738fbd, #000000);
+  background: linear-gradient(90deg, var(--color-blue-secondary), #000000);
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }

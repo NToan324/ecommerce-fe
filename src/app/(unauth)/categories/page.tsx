@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { CgArrowsExchangeV } from 'react-icons/cg'
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2'
 import { IoClose } from 'react-icons/io5'
@@ -90,7 +91,6 @@ export default function page() {
       </div>
       <div className="flex gap-12">
         {/* Category List */}
-
         <div
           className={`${openFilter ? 'bottom-0' : '-bottom-[100%]'} bg-white duration-300 overflow-scroll md:p-0 z-50 shadow-2xl md:shadow-none w-full h-[600px] rounded-t-2xl md:rounded-none fixed md:relative left-0 flex-col justify-between items-start gap-4 md:max-w-[300px] flex md:h-fit`}
         >
@@ -168,9 +168,11 @@ export default function page() {
               <HiOutlineAdjustmentsHorizontal />
             </Button>
           </div>
-          <div className="grid w-full gap-8 content-between lg:grid-cols-3 md:grid-cols-2 grid-cols-1 ">
+          <div className="grid w-full gap-8 content-between lg:grid-cols-3 grid-cols-2 ">
             {Array.from({ length: 9 }).map((_, index) => (
-              <CardProduct key={index} />
+              <Link href={`/categories/1`} key={index} className="w-full">
+                <CardProduct key={index} />
+              </Link>
             ))}
           </div>
           <Pagination className="mt-4">
