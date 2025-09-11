@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { FaRegDotCircle, FaStar } from 'react-icons/fa'
-import { FiMinus } from 'react-icons/fi'
+import { FiMinus, FiShoppingCart } from 'react-icons/fi'
 import { GoPlus } from 'react-icons/go'
 import { LuDot, LuStar } from 'react-icons/lu'
 import { MdOutlineSdStorage } from 'react-icons/md'
@@ -17,8 +17,10 @@ export default function Page() {
     <div>
       {/* Image Category */}
       <div className="bg-purple-primary min-h-screen relative overflow-hidden">
-        <p className="text-[clamp(9.5rem,50vw,34rem)] absolute font-bold text-blue-light uppercase">Lenovo</p>
-        <div className="relative overflow-hidden w-full h-[400px] min-h-[250px] md:h-[650px] md:-left-[300px] md:top-0 top-[200px]">
+        <p className="text-[clamp(9.5rem,50vw,34rem)] absolute font-bold text-blue-light top-[30%] md:top-0 uppercase">
+          Lenovo
+        </p>
+        <div className="relative overflow-hidden w-full h-[400px] min-h-[250px] md:h-[650px] md:-left-[300px] md:top-0 top-[150px]">
           <Image
             src="/images/laptop.png"
             alt="Laptop"
@@ -33,31 +35,35 @@ export default function Page() {
             <h1 className="">Lenovo</h1>
           </div>
           <h2 className="font-medium text-[clamp(1.5rem,5vw,3.125rem)]">IdeaPad Slim 3 Notebook</h2>
-          <div className="flex justify-start items-center gap-4">
+          <div className="flex justify-start items-center gap-2 md:gap-4 md:relative absolute md:bottom-0 md:right-0 -bottom-[280px] right-[40px]">
             {Array.from({ length: 4 }).map((_, index) => {
               const isShowed = index === 0
 
               return isShowed ? (
-                <FaRegDotCircle key={index} className="inline-block size-5 text-black" />
+                <FaRegDotCircle key={index} className="inline-block size-4 md:size-5 text-black" />
               ) : (
-                <LuDot key={index} className="inline-block size-8 text-black/40" />
+                <LuDot key={index} className="inline-block size-6 md:size-8 text-black/40" />
               )
             })}
           </div>
-          <div className="flex justify-start items-center gap-6 w-full mt-4">
+          <div className="flex justify-start items-center gap-6 w-full mt-4 absolute md:relative md:bottom-0 md:right-0 -right-[180px] -bottom-[350px]">
             {/* Increase and Descrease */}
-            <div className="flex items-center rounded-4xl justify-between w-full h-14 max-w-[150px] border-2 border-blue-secondary">
+            <div className="flex items-center rounded-4xl justify-between w-full h-12 md:h-14 max-w-[105px] md:max-w-[150px] border-2 border-blue-secondary">
               <Button variant={'ghost'} className="hover:bg-transparent">
                 <FiMinus size={24} className="text-blue-secondary" strokeWidth={3} />
               </Button>
-              <span className="text-blue-tertiary text-xl">1</span>
+              <span className="text-blue-tertiary text-[clamp(0.875rem,2vw,1.25rem)]">1</span>
               <Button variant={'ghost'} className="hover:bg-transparent">
                 <GoPlus size={24} className="text-blue-secondary" strokeWidth={1} />
               </Button>
             </div>
             {/* Add to Cart  */}
-            <Button variant={'default'} className="bg-violet-primary rounded-4xl h-14 px-10 hover:bg-violet-primary/90">
-              Add to Cart
+            <Button
+              variant={'default'}
+              className="bg-violet-primary rounded-4xl md:w-full max-w-[150px] md:h-14 px-10 hover:bg-violet-primary/90 w-12 h-12"
+            >
+              <FiShoppingCart className="md:hidden block" />
+              <span className="md:block hidden">Add to Cart</span>
             </Button>
           </div>
         </div>
