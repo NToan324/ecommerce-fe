@@ -12,13 +12,13 @@ export default function CardProduct() {
           <p className="font-medium line-clamp-1 text-[clamp(0.2rem,2vw,1rem)]">IdeaPad Slim 3 Notebook</p>
           <p className="text-[clamp(0.2rem,2vw,1rem)] font-bold line-clamp-1">{formatPrice(15690000)}</p>
         </div>
-        <p className=" text-[clamp(0.31rem,2vw,0.75rem)] line-clamp-3 leading-5 group-hover:opacity-100 opacity-0 duration-200 ">
+        <p className=" text-[clamp(0.31rem,1vw,0.75rem)] line-clamp-3 opacity-100 leading-3 md:leading-5 md:group-hover:opacity-100 md:opacity-0 duration-200 ">
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga enim error quia ad autem. Qui nemo sit rem esse
           consequuntur aperiam cum, ad corrupti distinctio excepturi vel reprehenderit mollitia enim.
         </p>
       </div>
-      <div className="w-full h-full absolute md:top-[140px] left-0 group-hover:top-[90px] md:group-hover:top-[170px] duration-300 top-[60px]">
-        <div className="relative overflow-hidden w-full h-[190px] ">
+      <div className="w-full h-full absolute md:top-[140px] left-0 group-hover:top-[70px] md:group-hover:top-[170px] duration-300 top-[60px]">
+        <div className="relative top-[15px] overflow-hidden w-full h-[190px] md:top-0">
           <Image src="/images/laptop.png" alt="Laptop" fill objectFit="contain" className="md:scale-125 scale-75" />
         </div>
       </div>
