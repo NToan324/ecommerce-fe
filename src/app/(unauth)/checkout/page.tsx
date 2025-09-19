@@ -2,15 +2,11 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { FiMinus } from 'react-icons/fi'
-import { GoPlus } from 'react-icons/go'
-import { HiOutlineTrash } from 'react-icons/hi2'
 import { IoIosArrowDown } from 'react-icons/io'
 import { IoLocationOutline } from 'react-icons/io5'
 
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
-import { Input } from '@/components/ui/input'
 import { formatPrice } from '@/utils/helpers'
 
 export default function page() {
