@@ -13,7 +13,7 @@ export default function Header() {
   const router = useRouter()
   return (
     <header>
-      <div className="border-blue-primary/70 flex h-[80px] items-center justify-between gap-12 overflow-hidden border-b px-7 py-4 lg:px-[120px]">
+      <div className="border-blue-primary/70 flex h-[80px] bg-white items-center justify-between gap-12 overflow-hidden border-b px-7 py-4 lg:px-[120px]">
         <h1 className="text-2xl font-bold">COMPX</h1>
         <div
           className={`${open === true ? 'translate-x-0' : 'translate-x-[224px]'} fixed top-0 right-0 z-50 flex h-full w-2/3 max-w-[200px] flex-col gap-4 bg-white p-8 text-base font-bold shadow-2xl duration-300 md:relative md:w-full md:max-w-[600px] md:translate-x-0 md:flex-row md:items-center md:justify-between md:bg-transparent md:p-0 md:text-sm md:shadow-none`}

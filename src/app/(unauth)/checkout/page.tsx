@@ -13,7 +13,7 @@ export default function page() {
   const [openSummary, setOpenSummary] = useState(false)
 
   return (
-    <div className="relative flex flex-col items-start justify-start gap-10 overflow-hidden p-7 lg:px-[120px] lg:py-20">
+    <div className="relative flex flex-col items-start justify-start gap-10 overflow-hidden bg-white p-7 lg:px-[120px] lg:py-20">
       <h1 className="text-4xl font-bold bg-gradient-to-r bg-clip-text text-transparent from-violet-primary to-blue-light">
         Check out
       </h1>
@@ -31,22 +31,22 @@ export default function page() {
             </div>
           </div>
           <div className="flex flex-col justify-start items-center gap-4">
-            <div className="w-full flex justify-between items-center gap-4">
-              <div className="flex justify-start items-center gap-4">
+            <div className="w-full flex justify-between items-center gap-2 md:gap-4">
+              <div className="flex justify-start items-center gap-2 md:gap-4">
                 <IoLocationOutline size={24} className="text-black/40" />
-                <p className="text-lg font-medium line-clamp-1">
+                <p className="text-[clamp(0.75rem,2vw,1.125rem)] font-medium line-clamp-1">
                   19 Nguyen Huu Tho, Tan Hung Ward, District 7, Ho Chi Minh City
                 </p>
               </div>
               <Button
                 variant={'ghost'}
-                className="text-violet-primary/50 text-lg font-medium hover:bg-transparent duration-500 transition-colors"
+                className="text-violet-primary/50 text-[clamp(0.75rem,2vw,1.125rem)] font-medium hover:bg-transparent duration-500 transition-colors"
               >
                 Change Address
               </Button>
             </div>
           </div>
-          <div className="flex justify-between items-center w-full gap-6 md:overflow-hidden overflow-auto md:flex-wrap">
+          <div className="flex justify-between items-center w-full gap-6 md:overflow-hidden overflow-auto md:flex-wrap md:pb-0 pb-2">
             <div className="border border-blue-primary/90 rounded-2xl p-3 flex justify-center items-center gap-4 min-w-[180px] md:h-[80px]">
               <span className="font-bold text-lg">COD</span>
               <div className="relative w-[60px] h-[60px] overflow-hidden">

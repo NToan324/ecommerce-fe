@@ -72,7 +72,7 @@ export default function page() {
             </div>
             <div className="flex flex-col items-center justify-center gap-2">
               <p className="text-[clamp(1.5rem,5vw,3rem)]">5</p>
-              <span className="text-[clamp(0.75rem,3vw,1rem) ] text-black/40">categories</span>
+              <span className="text-[clamp(0.75rem,3vw,1rem)] text-black/40">categories</span>
             </div>
             <div className="flex flex-col items-center justify-center gap-2">
               <p className="text-[clamp(1.5rem,5vw,3rem)]">4.9</p>
