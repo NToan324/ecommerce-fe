@@ -35,7 +35,7 @@ export default function Footer() {
   ]
   return (
     <footer>
-      <div className="flex flex-col items-center justify-between gap-6">
+      <div className="flex flex-col items-center justify-between gap-6 bg-black/5">
         <div className="flex w-full flex-col items-center justify-between gap-10 px-[30px] py-0 lg:px-[120px] lg:py-10">
           <h1 className="w-full text-start text-2xl font-bold">COMPX</h1>
           <div className="flex w-full flex-col items-stretch justify-between gap-8 sm:flex-row">
@@ -80,7 +80,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="text-cente bg-white py-4 text-base text-black/35">&copy; 2025 Compx. All rights reserved</div>
+        <div className="text-cente py-4 text-base text-black/35">&copy; 2025 Compx. All rights reserved</div>
       </div>
     </footer>
   )

@@ -3,12 +3,14 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { FiShoppingCart } from 'react-icons/fi'
 import { HiOutlineMenuAlt4 } from 'react-icons/hi'
 import { IoIosArrowForward } from 'react-icons/io'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
+  const router = useRouter()
   return (
     <header>
       <div className="border-blue-primary/70 flex h-[80px] items-center justify-between gap-12 overflow-hidden border-b px-7 py-4 lg:px-[120px]">
@@ -36,7 +38,7 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex items-center justify-between gap-8 md:gap-10">
-          <div className="relative">
+          <div className="relative cursor-pointer" onClick={() => router.push('/cart')}>
             <FiShoppingCart strokeWidth={1.2} className="text-3xl md:text-[40px]" />
             <span className="absolute top-0 -right-1 flex h-[14px] w-[14px] items-center justify-center rounded-full bg-[#738FBD] text-center text-[8px] font-medium text-black md:h-[18px] md:w-[18px] md:text-xs">
               2
