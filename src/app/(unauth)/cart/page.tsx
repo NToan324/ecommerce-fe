@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { FiMinus } from 'react-icons/fi'
 import { GoPlus } from 'react-icons/go'
 import { HiOutlineTrash } from 'react-icons/hi2'
@@ -13,6 +14,7 @@ import { formatPrice } from '@/utils/helpers'
 
 export default function page() {
   const [openSummary, setOpenSummary] = useState(false)
+  const route = useRouter()
 
   return (
     <div className="relative flex flex-col items-start justify-start gap-10 overflow-hidden p-7 lg:px-[120px] lg:py-20">
@@ -92,7 +94,10 @@ export default function page() {
                   />
                 </div>
               </div>
-              <Button className="rounded-4xl bg-violet-primary w-full h-14 hover:bg-violet-primary/90">
+              <Button
+                className="rounded-4xl bg-violet-primary w-full h-14 hover:bg-violet-primary/90"
+                onClick={() => route.push('/checkout')}
+              >
                 Process to Checkout
               </Button>
             </div>
