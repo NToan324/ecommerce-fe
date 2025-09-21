@@ -10,6 +10,7 @@
   --color-blue-light: #dce2ea;
   --color-violet-primary: #46598a;
   --color-purple-primary: #e3e8ee;
+  --color-orange-primary: #de8080;
   --color-blue-gray: #f2f6fa;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -84,6 +85,8 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--color-blue-primary);
+  --color-orange-primary: var(--color-orange-primary);
+  --color-orange-foreground: var(--color-orange-primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);

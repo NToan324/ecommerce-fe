@@ -17,7 +17,7 @@ export default function page() {
   const route = useRouter()
 
   return (
-    <div className="relative flex flex-col items-start justify-start gap-10 overflow-hidden p-7 lg:px-[120px] lg:py-20">
+    <div className="relative flex flex-col items-start justify-start gap-10 overflow-hidden p-7 lg:px-[120px] lg:pb-20 lg:pt-10">
       <h1 className="text-4xl font-bold bg-gradient-to-r bg-clip-text text-transparent from-violet-primary to-blue-light">
         Your Cart
       </h1>
