@@ -20,7 +20,10 @@ export default function page() {
       <div className="flex justify-between items-start gap-16 w-full flex-col md:flex-row">
         {/* Personal Information */}
         <div className="flex flex-col justify-start items-center gap-12 w-full">
-          <div className="relative w-[450px] h-[450px]" onClick={() => route.push('/thank-you')}>
+          <div
+            className="relative w-[200px] h-[200px] md:w-[450px] md:h-[450px]"
+            onClick={() => route.push('/thank-you')}
+          >
             <Image src={'/images/qr-code.png'} alt="QR Code" fill objectFit="contain" />
           </div>
         </div>
@@ -81,9 +84,6 @@ export default function page() {
                   />
                 </div>
               </div>
-              <Button className="rounded-4xl bg-violet-primary w-full h-14 hover:bg-violet-primary/90 md:hidden">
-                Confirm My Order
-              </Button>
             </div>
           </div>
         </div>
