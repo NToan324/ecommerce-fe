@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Comment from '@user/(unauth)/products/[id]/components/comment'
 import { FaRegDotCircle, FaStar } from 'react-icons/fa'
 import { FiMinus, FiShoppingCart } from 'react-icons/fi'
 import { GoPlus } from 'react-icons/go'
@@ -10,7 +11,6 @@ import { RiRam2Line, RiSendPlaneLine } from 'react-icons/ri'
 import { RxSize } from 'react-icons/rx'
 
 import { Button } from '@/components/ui/button'
-import Comment from './components/comment'
 
 export default function Page() {
   return (

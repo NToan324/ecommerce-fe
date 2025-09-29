@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import OrderTable from '@user/(unauth)/(personal)/orders/components/orderTable'
 
 import { ORDER_STATUS } from '@/constant'
-import OrderTable from './components/orderTable'
 
 export default function page() {
   const scroller = useRef<HTMLSpanElement[] | null>([])

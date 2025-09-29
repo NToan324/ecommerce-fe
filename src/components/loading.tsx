@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Spinner } from './ui/shadcn-io/spinner'
+import { Spinner } from '@/components/ui/shadcn-io/spinner'
 
 interface LoadingProps {
   variant?: 'default' | 'circle' | 'pinwheel' | 'circle-filled' | 'ellipsis' | 'ring' | 'bars' | 'infinite'

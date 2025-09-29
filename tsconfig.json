@@ -22,7 +22,11 @@
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@layouts/*": ["./src/components/layout/*"],
-      "@types/*": ["./src/types/*"]
+      "@types/*": ["./src/types/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@public/*": ["./public/*"],
+      "@user/*": ["./src/app/(user)/*"],
+      "@admin/*": ["./src/app/(admin)/*"]
     }
   },
   "exclude": ["node_modules"],

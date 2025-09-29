@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
+import Address from '@user/(unauth)/(personal)/profile/components/address'
+import BasicInformation from '@user/(unauth)/(personal)/profile/components/basicInformation'
+import ChangePassword from '@user/(unauth)/(personal)/profile/components/changePassword'
 
 import { PROFILE_MENU } from '@/constant'
-import Address from './components/address'
-import BasicInformation from './components/basicInformation'
-import ChangePassword from './components/changePassword'
 
 export default function page() {
   const [profileMenu, setProfileMenu] = useState<PROFILE_MENU>(PROFILE_MENU.BASIC_INFO)

@@ -23,6 +23,12 @@ export default defineConfig([
   {
     rules: {
       'react/react-in-jsx-scope': 'off',
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['.*'],
+        },
+      ],
       'no-useless-escape': 'off',
       'react/prop-types': 'off',
       'react/no-unescaped-entities': 'off',

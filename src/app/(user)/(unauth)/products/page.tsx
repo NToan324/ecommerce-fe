@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import CardProduct from '@user/(unauth)/products/components/card'
 import { CgArrowsExchangeV } from 'react-icons/cg'
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2'
 import { IoClose } from 'react-icons/io5'
@@ -11,7 +12,6 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { formatPrice } from '@/utils/helpers'
-import CardProduct from './components/card'
 
 const categories = [
   {

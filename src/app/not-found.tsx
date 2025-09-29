@@ -1,8 +1,7 @@
 'use client'
 
+import Caveman from '@public/lotties/Caveman - 404 Page.json'
 import Lottie from 'lottie-react'
-
-import Caveman from '@/../public/lotties/Caveman - 404 Page.json'
 
 export default function NotFound() {
   return (

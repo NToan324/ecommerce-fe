@@ -1,8 +1,8 @@
 import React from 'react'
 
+import Footer from '@/components/Footer'
+import Header from '@/components/Header'
 import { CommonLayoutProps } from '@/types/common.type'
-import Footer from '../Footer'
-import Header from '../Header'
 
 export const MainLayout = ({ children }: CommonLayoutProps) => {
   return (

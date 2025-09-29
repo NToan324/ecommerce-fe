@@ -1,9 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
+import { DialogCreateAdress } from '@user/(unauth)/(personal)/profile/components/dialogCreateAddress'
 import { GoPencil } from 'react-icons/go'
-
-import { DialogCreateAdress } from './dialogCreateAddress'
 
 export default function Address() {
   const [open, setOpen] = useState(false)
