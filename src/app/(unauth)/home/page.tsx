@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { IoIosArrowForward } from 'react-icons/io'
 
 import { useGetAllToDos } from '@/hooks/useAuth'
@@ -22,6 +23,7 @@ const PLACEHOLDER_TEXT = [
 export default function page() {
   const [placeholder, setPlaceholder] = useState('')
   const { data, isSuccess } = useGetAllToDos()
+  const router = useRouter()
 
   useEffect(() => {
     if (isSuccess) {
@@ -63,16 +65,17 @@ export default function page() {
         <input
           type="text"
           placeholder={placeholder}
-          className="shadow-blue-primary focus-visible:ring-blue-primary absolute bottom-[15%] left-[50%] h-[80px] w-[340px] min-w-[340px] translate-x-[-50%] translate-y-[-50%] rounded-[50px] bg-white px-8 placeholder-[#C3C3C3] shadow-[0_1px_250px_rgba(0,0,0,1)] outline-none focus-visible:ring-1 sm:w-[600px] lg:w-[780px]"
+          className="shadow-blue-primary focus-visible:ring-blue-primary absolute md:bottom-[15%] bottom-[35%] left-[50%] h-[80px] w-[340px] min-w-[340px] translate-x-[-50%] translate-y-[-50%] rounded-[50px] bg-white px-8 placeholder-[#C3C3C3] shadow-[0_1px_250px_rgba(0,0,0,1)] outline-none focus-visible:ring-1 sm:w-[600px] lg:w-[780px]"
         />
       </div>
       <div className="relative flex flex-col items-center justify-center gap-10 overflow-hidden p-7 lg:justify-start lg:p-[120px]">
         <h2 className="text-gradient w-full text-start text-[clamp(1.875rem,5vw,3.75rem)] uppercase">about</h2>
         <div className="flex flex-col items-center justify-between gap-10 lg:flex-row">
           <p className="line-clamp-4 w-full text-justify text-base leading-7 font-medium lg:w-1/2">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-            scrambled it to make a type specimen book. It has survived not only five centuries.
+            Our computer store is a trusted destination for technology enthusiasts, offering authentic PCs, laptops, and
+            components. Since our first day, we have been committed to delivering quality products, competitive prices,
+            and dedicated service. Over the years, we have built lasting trust with customers who rely on us for both
+            work and life.
           </p>
           <div className="flex w-full items-center justify-between gap-10 lg:w-1/2 lg:justify-end lg:gap-20">
             <div className="flex flex-col items-center justify-center gap-2">
@@ -96,7 +99,7 @@ export default function page() {
       <div className="relative flex flex-col items-start justify-start gap-10 overflow-hidden p-7 lg:p-[120px]">
         <h2 className="text-gradient w-full text-start text-[clamp(1.875rem,5vw,3.75rem)] uppercase">our product</h2>
         <p className="line-clamp-3 w-full text-start text-base leading-7 font-medium lg:w-1/2">
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+          Our computer store is a trusted destination for technology enthusiasts, offering authentic PCs, laptops, and
           standard dummy text ever since the 1500s.
         </p>
         <div className="relative flex w-full items-center justify-between gap-6 overflow-x-auto pb-6 lg:h-full xl:overflow-hidden xl:pb-0">
@@ -117,8 +120,8 @@ export default function page() {
                 </div>
                 <p className="text-blue-tertiary absolute top-10 left-10 w-[100px] text-3xl font-bold">Best Sellers</p>
                 <p className="relative z-10 p-6 text-sm leading-7 text-black lg:p-8">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                  industry's standard dummy text.
+                  Discover our best-selling computers and accessories, chosen by hundreds of customers for their
+                  quality, performance, and great value.
                 </p>
               </div>
             </div>
@@ -128,8 +131,8 @@ export default function page() {
                 <div className="from-blue-primary inset bg-blue-primary absolute top-[50%] right-0 h-[100px] w-[200px] translate-x-[-50%] translate-y-[-50%] rounded-full blur-[80px]"></div>
                 <p className="text-blue-primary text-3xl font-bold">Computers</p>
                 <p className="line-clamp-2 text-sm leading-7 font-medium text-black">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                  industry's standard dummy text.
+                  Computers are essential tools in the modern world, powering everything from work and study to
+                  entertainment and creativity. They have become a cornerstone of technology and daily life.
                 </p>
               </div>
             </div>
@@ -150,8 +153,8 @@ export default function page() {
                 </div>
                 <p className="text-blue-tertiary absolute top-10 left-10 w-[100px] text-3xl font-bold">New Products</p>
                 <p className="relative z-10 line-clamp-2 p-8 text-sm leading-7 text-black">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                  industry's standard dummy text.
+                  Explore our latest arrivals featuring modern computers, accessories, and components designed to meet
+                  today’s technology needs.
                 </p>
               </div>
             </div>
@@ -161,8 +164,8 @@ export default function page() {
                 <div className="via-blue-primary/5 relative h-full overflow-hidden rounded-[14px] bg-conic from-white from-10% via-10% to-white p-8">
                   <p className="text-blue-primary text-3xl font-bold">Laptops</p>
                   <p className="mt-14 line-clamp-3 text-sm leading-7 font-medium text-black">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                    industry's standard dummy text.
+                    Laptop is simply a powerful tool of the modern era. It has become the standard device for work,
+                    study, and entertainment across the world.
                   </p>
                 </div>
               </div>
@@ -170,13 +173,16 @@ export default function page() {
                 <div className="via-blue-primary/5 relative h-full overflow-hidden rounded-[14px] bg-gradient-to-r from-white from-40% via-60% to-white p-8">
                   <p className="text-blue-primary text-3xl font-bold">Keyboards</p>
                   <p className="mt-14 line-clamp-3 text-sm leading-7 font-medium text-black">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                    industry's standard dummy text.
+                    Keyboards are essential input devices for computers, allowing users to interact with their systems
+                    efficiently. They come in various layouts and designs to suit different preferences and needs.
                   </p>
                 </div>
               </div>
               <div className="p-8">
-                <div className="bg-blue-primary/25 relative flex h-16 w-16 items-center justify-center rounded-full">
+                <div
+                  className="bg-blue-primary/25 relative flex h-16 w-16 items-center justify-center rounded-full cursor-pointer"
+                  onClick={() => router.push('/products')}
+                >
                   <div className="bg-blue-primary animation-duration-[1s] absolute inset-0 h-full w-full animate-ping rounded-full"></div>
                   <IoIosArrowForward className="text-blue-primary text-4xl" />
                 </div>

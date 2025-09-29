@@ -74,7 +74,7 @@ export default function page() {
 
   return (
     <main>
-      <div className="flex flex-col items-center justify-start h-screen gap-10 w-full px-7 py-4 lg:px-[120px] lg:pb-20 lg:pt-10">
+      <div className="flex flex-col items-center justify-start h-screen gap-10 w-full px-7 pb-4 lg:px-[120px] lg:pb-20 pt-12">
         <h1 className="text-3xl font-bold">Compx</h1>
         <div className="flex flex-col gap-3 justify-between items-center">
           <p className="text-2xl font-bold text-center">Get access, shop smarter today</p>
@@ -318,7 +318,7 @@ export default function page() {
                 />
               </div>
             </div>
-            <div className="px-[10px]">
+            <div className="px-[10px] mt-6">
               <Button
                 type="button"
                 className="w-full text-base font-medium text-white bg-violet-primary hover:bg-violet-primary/90 rounded-2xl h-12"

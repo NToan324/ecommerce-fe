@@ -27,8 +27,8 @@ export default function Header() {
           <Link href="/" onClick={() => setOpen(false)}>
             Home
           </Link>
-          <Link href="/categories" onClick={() => setOpen(false)}>
-            Categories
+          <Link href="/products" onClick={() => setOpen(false)}>
+            Product
           </Link>
           <Link href="/about" onClick={() => setOpen(false)}>
             About us
@@ -46,7 +46,7 @@ export default function Header() {
             <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
               Settings
             </Link>
-            <Link href="/intro" className="w-full" onClick={() => setOpen(false)}>
+            <Link href="/signin" className="w-full" onClick={() => setOpen(false)}>
               Sign in
             </Link>
           </div>

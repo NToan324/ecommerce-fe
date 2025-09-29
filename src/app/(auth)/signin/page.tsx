@@ -30,7 +30,7 @@ export default function page() {
 
   return (
     <main>
-      <div className="flex flex-col items-center justify-start h-screen gap-10 w-full px-7 py-4 lg:px-[120px] lg:pb-20 lg:pt-10">
+      <div className="flex flex-col items-center justify-start h-screen gap-10 w-full px-7 pb-4 lg:px-[120px] lg:pb-20 pt-12">
         <h1 className="text-3xl font-bold">Compx</h1>
         <div className="flex flex-col gap-3 justify-between items-center">
           <p className="text-2xl font-bold text-center">Log in to your account</p>
@@ -116,9 +116,9 @@ export default function page() {
               Sign In
             </Button>
             <div className="flex justify-center items-center gap-4">
-              <span className="inline-block w-[80px] h-px bg-blue-primary/90"></span>
-              <span className="text-black/50 text-sm">or continue with</span>
-              <span className="inline-block w-[80px] h-px bg-blue-primary/90"></span>
+              <span className="inline-block w-full max-w-[80px] h-px bg-blue-primary/90"></span>
+              <span className="text-black/50 text-sm text-center whitespace-nowrap">or continue with</span>
+              <span className="inline-block w-full max-w-[80px] h-px bg-blue-primary/90"></span>
             </div>
             <div className="flex justify-center items-center gap-5">
               <Button variant="outline" className="rounded-2xl h-14">

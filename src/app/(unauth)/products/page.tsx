@@ -162,7 +162,7 @@ export default function page() {
           </div>
           <div className="grid w-full gap-8 content-between lg:grid-cols-3 grid-cols-2">
             {Array.from({ length: 9 }).map((_, index) => (
-              <Link href={`/categories/1`} key={index} className="w-full">
+              <Link href={`/products/1`} key={index} className="w-full">
                 <CardProduct key={index} />
               </Link>
             ))}
