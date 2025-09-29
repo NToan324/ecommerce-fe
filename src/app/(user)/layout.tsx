@@ -1,28 +1,22 @@
 import type { Metadata } from 'next'
 
-import './globals.css'
+import '@/app/globals.css'
 
-import Footer from '@/components/Footer'
-import Header from '@/components/Header'
+import { MainLayout } from '@/components/layout'
 import { Provider } from '@/providers/provider'
+import { CommonLayoutProps } from '@/types/common.type'
 
 export const metadata: Metadata = {
   title: 'COMPX',
   description: 'Your one-stop solution for tech essentials',
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: CommonLayoutProps) {
   return (
     <html lang="en">
       <body className={`antialiased`}>
         <Provider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          <MainLayout>{children}</MainLayout>
         </Provider>
       </body>
     </html>
