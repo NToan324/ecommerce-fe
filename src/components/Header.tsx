@@ -46,8 +46,8 @@ export default function Header() {
             <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
               Settings
             </Link>
-            <Link href="/logout" className="w-full" onClick={() => setOpen(false)}>
-              Logout
+            <Link href="/intro" className="w-full" onClick={() => setOpen(false)}>
+              Sign in
             </Link>
           </div>
         </div>
@@ -78,8 +78,8 @@ export default function Header() {
               <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
                 <p className="w-full text-sm font-semibold text-black/70 hover:underline">Settings</p>
               </Link>
-              <Link href="/logout" className="w-full" onClick={() => setOpen(false)}>
-                <p className="w-full text-sm font-semibold text-black/70 hover:underline">Logout</p>
+              <Link href="/signin" className="w-full" onClick={() => setOpen(false)}>
+                <p className="w-full text-sm font-semibold text-black/70 hover:underline">Sign in</p>
               </Link>
             </div>
           </div>

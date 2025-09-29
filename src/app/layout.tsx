@@ -4,6 +4,7 @@ import './globals.css'
 
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
+import { Provider } from '@/providers/provider'
 
 export const metadata: Metadata = {
   title: 'COMPX',
@@ -18,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <Provider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </Provider>
       </body>
     </html>
   )

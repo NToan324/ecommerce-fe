@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { IoIosArrowForward } from 'react-icons/io'
 
+import { useGetAllToDos } from '@/hooks/useAuth'
+
 const PLACEHOLDER_TEXT = [
   "Asus ROG Strix G16 (2024, i9-13980HX, RTX 4080, 16GB RAM, 1TB SSD, 16'' QHD+ 240Hz)",
   "Asus Zenbook 14 OLED (UX3402, i7-1360P, 16GB RAM, 512GB SSD, 14'' 2.8K OLED Touch)",
@@ -19,6 +21,13 @@ const PLACEHOLDER_TEXT = [
 
 export default function page() {
   const [placeholder, setPlaceholder] = useState('')
+  const { data, isSuccess } = useGetAllToDos()
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data)
+    }
+  }, [isSuccess])
 
   useEffect(() => {
     let id = 0

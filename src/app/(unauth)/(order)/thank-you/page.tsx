@@ -41,7 +41,7 @@ export default function page() {
             <p className="text-[clamp(0.75rem,2vw,1.125rem)]">Date</p>
             <span className="text-[clamp(0.75rem,2vw,1.125rem)] font-bold">Sep 10, 2025</span>
           </div>
-          <div className="p-[2px] bg-gradient-to-br to-blue-primary via-blue-primary/90 w-full rounded-2xl ">
+          <div className="p-[2px] md:shadow-2xl md:bg-gradient-to-br shadow-blue-primary/50 from-blue-gray to-blue-primary via-blue-primary w-full rounded-2xl max-w-[650px]">
             <div className="flex flex-col gap-4 justify-start items-start p-6 md:p-4 bg-white rounded-[14px] w-full">
               <p className="text-[clamp(0.75rem,2vw,1.125rem)] font-bold">Personal Information</p>
               <div className="flex flex-col gap-3">

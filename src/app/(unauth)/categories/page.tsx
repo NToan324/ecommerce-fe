@@ -6,16 +6,8 @@ import { CgArrowsExchangeV } from 'react-icons/cg'
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2'
 import { IoClose } from 'react-icons/io5'
 
+import PaginationCustom from '@/components/paginationCustom'
 import { Button } from '@/components/ui/button'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { formatPrice } from '@/utils/helpers'
@@ -175,22 +167,7 @@ export default function page() {
               </Link>
             ))}
           </div>
-          <Pagination className="mt-4">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <PaginationCustom />
         </div>
       </div>
     </div>

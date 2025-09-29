@@ -12,6 +12,16 @@
   --color-purple-primary: #e3e8ee;
   --color-orange-primary: #de8080;
   --color-blue-gray: #f2f6fa;
+  --color-pending: #fbe5ea;
+  --color-pending-foreground: #a33939;
+  --color-in-transit: #edf5fe;
+  --color-in-transit-foreground: #536eb5;
+  --color-confirmed: #fff7db;
+  --color-confirmed-foreground: #b9982b;
+  --color-complete: #f0f7f5;
+  --color-complete-foreground: #3c8d6d;
+  --color-green-primary: #3a7d44;
+
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -55,6 +65,16 @@
   --color-blue-light: var(--color-blue-light);
   --color-purple-primary: var(--color-purple-primary);
   --color-blue-gray: var(--color-blue-gray);
+
+  --color-pending: var(--color-pending);
+  --color-pending-foreground: var(--color-pending-foreground);
+  --color-in-transit: var(--color-in-transit);
+  --color-in-transit-foreground: var(--color-in-transit-foreground);
+  --color-confirmed: var(--color-confirmed);
+  --color-confirmed-foreground: var(--color-confirmed-foreground);
+  --color-complete: var(--color-complete);
+  --color-complete-foreground: var(--color-complete-foreground);
+  --color-green-primary: var(--color-green-primary);
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-background: var(--background);
@@ -175,6 +195,9 @@ body {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@utility no-scrollbar {
+  @apply [scrollbar-width:none] [::-webkit-scrollbar]:hidden;
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;

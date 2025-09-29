@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['avatar.iran.liara.run'],
   },
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  },
 }
 
 export default nextConfig
