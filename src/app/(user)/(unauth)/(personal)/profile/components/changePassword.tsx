@@ -36,7 +36,7 @@ export default function ChangePassword() {
                   <div className="relative w-full max-w-[420px]">
                     <FloatingInput
                       type={showOldPassword ? 'text' : 'password'}
-                      id="floating-customize"
+                      id="oldPassword"
                       className="h-12 rounded-[20px]"
                       value={field.value}
                       onChange={field.onChange}
@@ -54,7 +54,7 @@ export default function ChangePassword() {
                         onClick={() => setShowOldPassword(true)}
                       />
                     )}
-                    <FloatingLabel htmlFor="floating-customize">Old password</FloatingLabel>
+                    <FloatingLabel htmlFor="oldPassword">Old password</FloatingLabel>
                   </div>
                 </FormControl>
                 {form.formState.errors.oldPassword && (
@@ -72,7 +72,7 @@ export default function ChangePassword() {
                   <div className="relative w-full max-w-[420px]">
                     <FloatingInput
                       type={showNewPassword ? 'text' : 'password'}
-                      id="floating-customize"
+                      id="newPassword"
                       className="h-12 rounded-[20px]"
                       value={field.value}
                       onChange={field.onChange}
@@ -90,7 +90,7 @@ export default function ChangePassword() {
                         onClick={() => setShowNewPassword(true)}
                       />
                     )}
-                    <FloatingLabel htmlFor="floating-customize">New password</FloatingLabel>
+                    <FloatingLabel htmlFor="newPassword">New password</FloatingLabel>
                   </div>
                 </FormControl>
                 {form.formState.errors.newPassword && (
@@ -108,7 +108,7 @@ export default function ChangePassword() {
                   <div className="relative w-full max-w-[420px]">
                     <FloatingInput
                       type={showConfirmNewPassword ? 'text' : 'password'}
-                      id="floating-customize"
+                      id="confirmNewPassword"
                       className="h-12 rounded-[20px]"
                       value={field.value}
                       onChange={field.onChange}
@@ -126,7 +126,7 @@ export default function ChangePassword() {
                         onClick={() => setShowConfirmNewPassword(true)}
                       />
                     )}
-                    <FloatingLabel htmlFor="floating-customize">Confirm new password</FloatingLabel>
+                    <FloatingLabel htmlFor="confirmNewPassword">Confirm new password</FloatingLabel>
                   </div>
                 </FormControl>
                 {form.formState.errors.confirmNewPassword && (

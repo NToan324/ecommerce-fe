@@ -18,9 +18,11 @@
   --color-in-transit-foreground: #536eb5;
   --color-confirmed: #fff7db;
   --color-confirmed-foreground: #b9982b;
-  --color-complete: #f0f7f5;
+  --color-complete: #e6fff2;
   --color-complete-foreground: #3c8d6d;
-  --color-green-primary: #3a7d44;
+  --color-green-primary: #3d938c;
+  --color-blue-sky: #ecf4ff;
+  --color-blue-night: #233667;
 
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -75,6 +77,8 @@
   --color-complete: var(--color-complete);
   --color-complete-foreground: var(--color-complete-foreground);
   --color-green-primary: var(--color-green-primary);
+  --color-blue-sky: var(--color-blue-sky);
+  --color-blue-night: var(--color-blue-night);
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-background: var(--background);
@@ -159,6 +163,19 @@ body {
   background: linear-gradient(90deg, var(--color-blue-secondary), #000000);
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Border dashed custom */
+.border-dashed-custom {
+  width: 200px;
+  height: 200px;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23C4D1E1' stroke-width='3' stroke-dasharray='6%2c 14' stroke-dashoffset='66' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 16px;
+}
+
+/* Custom rechart height */
+.recharts-responsive-container {
+  max-height: 140px !important;
 }
 
 .dark {

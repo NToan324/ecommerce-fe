@@ -24,12 +24,12 @@ export default function page() {
         <div className="flex flex-col justify-start items-center gap-12 w-full">
           <div className="flex justify-between items-center gap-6 w-full md:flex-row flex-col">
             <div className="relative w-full md:w-1/2">
-              <FloatingInput id="floating-customize" className="h-12 rounded-[20px]" />
-              <FloatingLabel htmlFor="floating-customize">Name</FloatingLabel>
+              <FloatingInput id="name" className="h-12 rounded-[20px]" />
+              <FloatingLabel htmlFor="name">Name</FloatingLabel>
             </div>
             <div className="relative w-full md:w-1/2">
-              <FloatingInput type="email" id="floating-customize" className="h-12 rounded-[20px]" />
-              <FloatingLabel htmlFor="floating-customize">Email</FloatingLabel>
+              <FloatingInput type="email" id="email" className="h-12 rounded-[20px]" />
+              <FloatingLabel htmlFor="email">Email</FloatingLabel>
             </div>
           </div>
           <div className="flex flex-col justify-start items-center gap-4">

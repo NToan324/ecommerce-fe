@@ -74,7 +74,7 @@ export default function page() {
 
   return (
     <div className={`${openFilter ? 'pointer-events-auto' : ''} lg:px-[120px] p-7`}>
-      <div className={`${openFilter ? '' : 'hidden'} w-full h-full z-40 bg-black/20 inset-0 fixed md:hidden`}></div>
+      <div className={`${openFilter ? '' : 'hidden'} w-full h-full z-100 bg-black/20 inset-0 fixed md:hidden`}></div>
       <div className="relative bg-white">
         <h1 className="text-[clamp(4.5rem,13vw,12rem)] text-[#F5F5F5B2] font-bold uppercase">Laptop</h1>
         <p className="absolute top-[45%] left-0 text-[clamp(1.25rem,3vw,2.25rem)] text-4xl font-bold bg-gradient-to-r from-blue-light via-violet-primary to-blue-tertiary bg-clip-text text-transparent">
@@ -84,7 +84,7 @@ export default function page() {
       <div className="flex gap-12">
         {/* Category List */}
         <div
-          className={`${openFilter ? 'bottom-0' : '-bottom-[100%]'} bg-white duration-300 overflow-scroll md:p-0 z-50 shadow-2xl md:shadow-none w-full h-[600px] rounded-t-2xl md:rounded-none fixed md:relative left-0 flex-col justify-between items-start gap-4 md:max-w-[300px] flex md:h-fit`}
+          className={`${openFilter ? 'bottom-0' : '-bottom-[100%]'} bg-white duration-300 overflow-scroll md:p-0 z-200 shadow-2xl md:shadow-none w-full h-[600px] rounded-t-2xl md:rounded-none fixed md:relative left-0 flex-col justify-between items-start gap-4 md:max-w-[300px] flex md:h-fit`}
         >
           {/* Close Button filter */}
           <div className=" w-full md:hidden sticky top-0 bg-white flex justify-end p-2">
@@ -143,7 +143,7 @@ export default function page() {
           </div>
         </div>
         {/* Category Item */}
-        <div className="flex flex-col justify-start items-start gap-4  w-full ">
+        <div className="flex flex-col justify-start items-start gap-4 w-full ">
           <div className="w-full flex justify-end gap-2">
             <Select>
               <SelectTrigger className="w-[180px] ">

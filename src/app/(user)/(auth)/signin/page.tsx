@@ -55,12 +55,12 @@ export default function page() {
                   <FormControl>
                     <div className="relative w-full">
                       <FloatingInput
-                        id="floating-customize"
+                        id="email"
                         className="h-12 rounded-[20px]"
                         value={field.value}
                         onChange={field.onChange}
                       />
-                      <FloatingLabel htmlFor="floating-customize">Email</FloatingLabel>
+                      <FloatingLabel htmlFor="email">Email</FloatingLabel>
                     </div>
                   </FormControl>
                   {form.formState.errors.email && (
@@ -78,7 +78,7 @@ export default function page() {
                     <div className="relative w-full">
                       <FloatingInput
                         type={showPassword ? 'text' : 'password'}
-                        id="floating-customize"
+                        id="password"
                         className="h-12 rounded-[20px]"
                         value={field.value}
                         onChange={field.onChange}
@@ -96,7 +96,7 @@ export default function page() {
                           onClick={() => setShowPassword(true)}
                         />
                       )}
-                      <FloatingLabel htmlFor="floating-customize">Password</FloatingLabel>
+                      <FloatingLabel htmlFor="password">Password</FloatingLabel>
                     </div>
                   </FormControl>
                   {form.formState.errors.password && (

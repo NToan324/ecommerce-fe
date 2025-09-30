@@ -107,11 +107,11 @@ export default function page() {
                         <div className="relative w-full">
                           <FloatingInput
                             {...field}
-                            id="floating-customize"
+                            id="fullName"
                             className="h-12 rounded-[20px] w-full"
                             value={field.value}
                           />
-                          <FloatingLabel htmlFor="floating-customize">Full name</FloatingLabel>
+                          <FloatingLabel htmlFor="fullName">Full name</FloatingLabel>
                         </div>
                       </FormControl>
                       {form.formState.errors.fullName && (
@@ -129,11 +129,11 @@ export default function page() {
                         <div className="relative w-full">
                           <FloatingInput
                             {...field}
-                            id="floating-customize"
+                            id="email"
                             className="h-12 rounded-[20px] w-full"
                             value={field.value}
                           />
-                          <FloatingLabel htmlFor="floating-customize">Email</FloatingLabel>
+                          <FloatingLabel htmlFor="email">Email</FloatingLabel>
                         </div>
                       </FormControl>
                       {form.formState.errors.email && (
@@ -258,11 +258,11 @@ export default function page() {
                         <div className="relative w-full">
                           <FloatingInput
                             {...field}
-                            id="floating-customize"
+                            id="fullName"
                             className="h-12 rounded-[20px] w-full"
                             value={field.value}
                           />
-                          <FloatingLabel htmlFor="floating-customize">Full name</FloatingLabel>
+                          <FloatingLabel htmlFor="fullName">Full name</FloatingLabel>
                         </div>
                       </FormControl>
                       {form.formState.errors.fullName && (
@@ -280,11 +280,11 @@ export default function page() {
                         <div className="relative w-full">
                           <FloatingInput
                             {...field}
-                            id="floating-customize"
+                            id="email"
                             className="h-12 rounded-[20px] w-full"
                             value={field.value}
                           />
-                          <FloatingLabel htmlFor="floating-customize">Email</FloatingLabel>
+                          <FloatingLabel htmlFor="email">Email</FloatingLabel>
                         </div>
                       </FormControl>
                       {form.formState.errors.email && (
@@ -302,12 +302,12 @@ export default function page() {
                         <div className="relative w-full">
                           <FloatingInput
                             {...field}
-                            id="floating-customize"
+                            id="address"
                             className="h-12 rounded-[20px] w-full"
                             onChange={field.onChange}
                             value={field.value}
                           />
-                          <FloatingLabel htmlFor="floating-customize">Address</FloatingLabel>
+                          <FloatingLabel htmlFor="address">Address</FloatingLabel>
                         </div>
                       </FormControl>
                       {form.formState.errors.address && (

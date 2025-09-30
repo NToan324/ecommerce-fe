@@ -91,11 +91,11 @@ export function DialogCreateAdress({ open, onOpenChange, defaultValues }: Dialog
                       <div className="relative w-full">
                         <FloatingInput
                           {...field}
-                          id="floating-customize"
+                          id="fullName"
                           className="h-12 rounded-[20px] w-full"
                           value={field.value}
                         />
-                        <FloatingLabel htmlFor="floating-customize">Full name</FloatingLabel>
+                        <FloatingLabel htmlFor="fullName">Full name</FloatingLabel>
                       </div>
                     </FormControl>
                     {form.formState.errors.fullName && (
@@ -212,11 +212,11 @@ export function DialogCreateAdress({ open, onOpenChange, defaultValues }: Dialog
                       <div className="relative w-full">
                         <FloatingInput
                           {...field}
-                          id="floating-customize"
+                          id="address"
                           className="h-12 rounded-[20px] w-full"
                           value={field.value}
                         />
-                        <FloatingLabel htmlFor="floating-customize">Address</FloatingLabel>
+                        <FloatingLabel htmlFor="address">Address</FloatingLabel>
                       </div>
                     </FormControl>
                     {form.formState.errors.address && (

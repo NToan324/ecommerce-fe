@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -10,10 +10,30 @@ import { IoIosArrowForward } from 'react-icons/io'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
+  const header = useRef<HTMLDivElement>(null)
   const router = useRouter()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (header.current) {
+        if (window.scrollY > 80) {
+          header.current.classList.add('lg:backdrop-blur-2xl')
+        } else {
+          header.current.classList.remove('lg:backdrop-blur-2xl')
+        }
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
   return (
-    <header>
-      <div className="border-blue-primary/70 flex h-[80px] bg-white items-center justify-between gap-12 border-b px-7 py-4 lg:px-[120px]">
+    <header className="sticky top-0 z-300">
+      <div
+        ref={header}
+        className="border-blue-primary/70 flex h-[80px] backdrop-blur-2xl bg-white/30 items-center justify-between gap-12 border-b px-7 py-4 lg:px-[120px]"
+      >
         <h1 className="text-2xl font-bold">COMPX</h1>
         <div
           className={`${open === true ? 'translate-x-0' : 'translate-x-[224px]'} fixed top-0 right-0 z-50 flex h-full w-2/3 max-w-[200px] flex-col gap-4 bg-white p-8 text-base font-bold shadow-2xl duration-300 md:relative md:w-full md:max-w-[600px] md:translate-x-0 md:flex-row md:items-center md:justify-between md:bg-transparent md:p-0 md:text-sm md:shadow-none`}
@@ -68,7 +88,7 @@ export default function Header() {
                 className="object-cover"
               />
             </div>
-            <div className="md:flex hidden opacity-100 scale-0 group-hover:scale-100 origin-top-right group-hover:opacity-100 transition-all duration-300 absolute z-[9999] -left-[165px] -bottom-[170px] w-[200px] rounded-2xl shadow-2xl shadow-blue-primary bg-gradient-to-bl from-blue-primary to-white via-blue-primary flex-col justify-start items-start gap-4 p-4">
+            <div className="md:flex hidden opacity-100 scale-0 group-hover:scale-100 origin-top-right group-hover:opacity-100 transition-all duration-300 absolute z-[50] -left-[165px] -bottom-[170px] w-[200px] rounded-2xl shadow-2xl shadow-blue-primary bg-gradient-to-bl from-blue-primary to-white via-blue-primary flex-col justify-start items-start gap-4 p-4">
               <Link href="/profile" className="w-full" onClick={() => setOpen(false)}>
                 <p className="w-full text-sm font-semibold text-black/70 hover:underline">Profile</p>
               </Link>
