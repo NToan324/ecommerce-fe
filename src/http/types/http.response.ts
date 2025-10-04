@@ -5,10 +5,11 @@ export interface IHttpResponseDto<T> {
 }
 
 export interface IHttpErrorResponseDto {
-  success: number
-  message: string
-  errorCode: string
-  timestamp: string
+  success: boolean
+  error: {
+    message: string
+    statusCode: number
+  }
 }
 
 export interface DeleteByIdDTO {
@@ -16,11 +17,9 @@ export interface DeleteByIdDTO {
 }
 
 export interface ApiResponse<T> {
-  success: boolean
   message: string
+  status: number
   data: T
-  pagination?: Pagination
-  timestamp: string
 }
 
 export interface SearchParams {

@@ -88,7 +88,7 @@ export default function page() {
                       }`}
                     >
                       <div className="">
-                        <h3 className="text-4xl font-bold">{product.product}</h3>
+                        <h3 className="text-2xl font-bold">{product.product}</h3>
                       </div>
                       <UpdateProduct data={product} />
                     </div>

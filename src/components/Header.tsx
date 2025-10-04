@@ -7,11 +7,22 @@ import { useRouter } from 'next/navigation'
 import { FiShoppingCart } from 'react-icons/fi'
 import { HiOutlineMenuAlt4 } from 'react-icons/hi'
 import { IoIosArrowForward } from 'react-icons/io'
+import { toast } from 'react-toastify'
+
+import { useAuthStore } from '@/stores/auth.store'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
   const header = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const user = useAuthStore((state) => state.user)
+  const logout = useAuthStore((state) => state.logout)
+
+  const handleLogout = () => {
+    logout?.()
+    router.push('/')
+    toast.success('Logout successful!')
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,7 +47,7 @@ export default function Header() {
       >
         <h1 className="text-2xl font-bold">COMPX</h1>
         <div
-          className={`${open === true ? 'translate-x-0' : 'translate-x-[224px]'} fixed top-0 right-0 z-50 flex h-full w-2/3 max-w-[200px] flex-col gap-4 bg-white p-8 text-base font-bold shadow-2xl duration-300 md:relative md:w-full md:max-w-[600px] md:translate-x-0 md:flex-row md:items-center md:justify-between md:bg-transparent md:p-0 md:text-sm md:shadow-none`}
+          className={`${open === true ? 'translate-x-0' : 'translate-x-[224px]'} fixed top-0 right-0 z-50 flex h-full min-h-screen md:min-h-0 w-2/3 max-w-[200px] flex-col gap-4 bg-white p-8 text-base font-bold shadow-2xl duration-300 md:relative md:w-full md:max-w-[600px] md:translate-x-0 md:flex-row md:items-center md:justify-between md:bg-transparent md:p-0 md:text-sm md:shadow-none`}
         >
           <div
             className="bg-blue-secondary absolute -left-[24px] flex h-8 w-6 cursor-pointer items-center justify-center rounded-l-2xl md:hidden"
@@ -66,9 +77,21 @@ export default function Header() {
             <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
               Settings
             </Link>
-            <Link href="/signin" className="w-full" onClick={() => setOpen(false)}>
-              Sign in
-            </Link>
+            {!user ? (
+              <Link href={'/signin'} className="w-full" onClick={() => setOpen(false)}>
+                Sign in
+              </Link>
+            ) : (
+              <p
+                className="w-full"
+                onClick={() => {
+                  setOpen(false)
+                  handleLogout()
+                }}
+              >
+                Logout
+              </p>
+            )}
           </div>
         </div>
         <div className="flex items-center justify-between gap-8 md:gap-10">
@@ -98,9 +121,18 @@ export default function Header() {
               <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
                 <p className="w-full text-sm font-semibold text-black/70 hover:underline">Settings</p>
               </Link>
-              <Link href="/signin" className="w-full" onClick={() => setOpen(false)}>
-                <p className="w-full text-sm font-semibold text-black/70 hover:underline">Sign in</p>
-              </Link>
+              {!user ? (
+                <Link href="/signin" className="w-full" onClick={() => setOpen(false)}>
+                  <p className="w-full text-sm font-semibold text-black/70 hover:underline">Sign in</p>
+                </Link>
+              ) : (
+                <p
+                  className="w-full text-sm font-semibold text-black/70 hover:underline cursor-pointer"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </p>
+              )}
             </div>
           </div>
           <HiOutlineMenuAlt4 size={30} className="cursor-pointer md:hidden" onClick={() => setOpen(!open)} />

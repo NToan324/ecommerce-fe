@@ -52,7 +52,11 @@ export function Combobox<T extends OptionItem>({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger disabled={isDisabled} asChild className={`${isError ? 'border-red-500' : ''} !h-12 !w-full`}>
+      <PopoverTrigger
+        disabled={isDisabled}
+        asChild
+        className={`${isError ? 'border-red-500' : ''} ${isDisabled ? '!bg-disabled' : ''} !h-12 !w-full`}
+      >
         <Button
           variant="outline"
           role="combobox"

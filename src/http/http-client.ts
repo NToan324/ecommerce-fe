@@ -1,5 +1,6 @@
 // import { JwtPayload, jwtDecode } from 'jwt-decode'
 import type { AxiosError, AxiosResponse } from 'axios'
+import Cookies from 'js-cookie'
 
 import axiosBuilder from '@/http/axios-builder'
 import type { IHttpResponseDto } from '@/http/types/http.response'
@@ -9,13 +10,13 @@ import type { IHttpResponseDto } from '@/http/types/http.response'
 axiosBuilder
   .setBaseUrl(process.env.NEXT_PUBLIC_API_URL)
   .addInterceptor(async (config: any) => {
-    // const token = Cookies.get('accessToken') || ''
+    const token = Cookies.get('accessToken') || ''
     config.params = {
       ...config.params,
     }
-    // if (token && !config.skipAuth) {
-    //   config.headers.Authorization = `Bearer ${token}`
-    // }
+    if (token && !config.skipAuth) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
 
     return config
   })

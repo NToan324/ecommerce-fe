@@ -1,20 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { GoPencil } from 'react-icons/go'
 import { z } from 'zod'
 
 import { Combobox } from '@/components/comboBox'
+import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { useGetDistrict, useGetProvinceCity, useGetWard } from '@/hooks/useProfile'
+import useUser from '@/hooks/useUser'
 import profileSchema from '@/schemas/profile.schema'
 import { District, ProvinceCity, Ward } from '@/types/address.type'
+import { Profile } from '@/types/user.type'
 
-export default function BasicInformation() {
+interface BasicInformationProps {
+  data: Profile | null
+}
+
+export default function BasicInformation({ data }: BasicInformationProps) {
   const form = useForm<z.infer<typeof profileSchema.basicInfo>>({
     resolver: zodResolver(profileSchema.basicInfo),
     defaultValues: {
@@ -22,6 +29,7 @@ export default function BasicInformation() {
       email: '',
       provinceCity: '',
       district: '',
+      phone: '',
       ward: '',
       address: '',
     },
@@ -33,22 +41,52 @@ export default function BasicInformation() {
   const [selectedDistrict, setSelectedDistrict] = useState<string>('')
   const [selectedWard, setSelectedWard] = useState<string>('')
 
-  console.log(selectedWard)
-  const {
-    data: provinceCityData,
-    // isLoading: provinceLoading,
-    //  isSuccess: provinceSuccess
-  } = useGetProvinceCity()
-  const {
-    data: districtData,
-    // isLoading: districtLoading,
-    // isSuccess: districtSuccess,
-  } = useGetDistrict(selectedProvinceCity ? parseInt(selectedProvinceCity) : 0)
-  const {
-    data: wardData,
-    // isLoading: wardLoading,
-    // isSuccess: wardSuccess,
-  } = useGetWard(selectedDistrict ? parseInt(selectedDistrict) : 0)
+  const { mutate: updateProfile, isPending, isSuccess } = useUser.updateProfile()
+
+  const { data: provinceCityData } = useGetProvinceCity()
+  const { data: districtData } = useGetDistrict(selectedProvinceCity ? parseInt(selectedProvinceCity) : 0)
+  const { data: wardData } = useGetWard(selectedDistrict ? parseInt(selectedDistrict) : 0)
+
+  const handleSubmit = (data: z.infer<typeof profileSchema.basicInfo>) => {
+    const payload = {
+      fullName: data.fullName,
+      address: data.address ? [data.address] : [],
+      phone: data.phone || '',
+    }
+    updateProfile(payload)
+    if (isSuccess) {
+      setSelectedDistrict('')
+      setSelectedProvinceCity('')
+      setSelectedWard('')
+      form.reset()
+    }
+    if (editMode) {
+      setEditMode(!editMode)
+    }
+  }
+
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        fullName: data.fullName,
+        email: data.email,
+        address: data.address[0],
+        phone: data.phone || '',
+      })
+    }
+  }, [data, form])
+
+  useEffect(() => {
+    if (selectedProvinceCity || selectedDistrict || selectedWard) {
+      const provinceCity = provinceCityData?.find((item) => item.code.toString() === selectedProvinceCity)?.name || ''
+      const district = districtData?.districts.find((item) => item.code.toString() === selectedDistrict)?.name || ''
+      const ward = wardData?.wards.find((item) => item.code.toString() === selectedWard)?.name || ''
+      form.setValue(
+        'address',
+        ward ? `${ward}, ${district}, ${provinceCity}` : district ? `${district}, ${provinceCity}` : provinceCity
+      )
+    }
+  }, [selectedProvinceCity, selectedDistrict, selectedWard])
 
   return (
     <div className="space-y-10 w-full">
@@ -65,17 +103,18 @@ export default function BasicInformation() {
         )}
         <Button
           type="button"
+          disabled={isPending}
           className="w-full float-end max-w-[80px] text-white bg-violet-primary hover:bg-violet-primary/90 rounded-2xl"
           onClick={() => {
             if (editMode) {
-              console.log('Saved', form.getValues())
+              form.handleSubmit(handleSubmit)()
             } else {
               setEditMode(!editMode)
             }
           }}
         >
           {editMode ? (
-            'Save'
+            <>Save {isPending && <Loading />}</>
           ) : (
             <>
               <GoPencil />
@@ -112,7 +151,7 @@ export default function BasicInformation() {
           />
           <FormField
             control={form.control}
-            name="email"
+            name="phone"
             render={({ field }) => (
               <FormItem className="w-full max-w-[420px]">
                 <FormControl>
@@ -120,8 +159,31 @@ export default function BasicInformation() {
                     <FloatingInput
                       {...field}
                       disabled={!editMode}
-                      id="email"
+                      id="fullName"
                       className="h-12 rounded-[20px] w-full"
+                      value={field.value}
+                    />
+                    <FloatingLabel htmlFor="phone">Phone</FloatingLabel>
+                  </div>
+                </FormControl>
+                {form.formState.errors.phone && (
+                  <p className="text-red-500 text-sm mt-2">{form.formState.errors.phone.message}</p>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="w-full max-w-[420px]">
+                <FormControl>
+                  <div className="relative w-full">
+                    <FloatingInput
+                      {...field}
+                      disabled
+                      id="email"
+                      className="h-12 rounded-[20px] w-full bg-disabled"
                       value={field.value}
                     />
                     <FloatingLabel htmlFor="email">Email</FloatingLabel>
@@ -237,7 +299,7 @@ export default function BasicInformation() {
             control={form.control}
             name="address"
             render={({ field }) => (
-              <FormItem className="w-full max-w-[420px]">
+              <FormItem className="w-full col-span-2">
                 <FormControl>
                   <div className="relative w-full">
                     <FloatingInput

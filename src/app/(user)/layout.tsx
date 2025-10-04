@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { ToastContainer } from 'react-toastify'
 
 import '@/app/globals.css'
 
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: CommonLayoutProps) {
       <body className={`antialiased`}>
         <Provider>
           <MainLayout>{children}</MainLayout>
+          <ToastContainer autoClose={3000} />
         </Provider>
       </body>
     </html>

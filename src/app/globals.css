@@ -23,6 +23,15 @@
   --color-green-primary: #3d938c;
   --color-blue-sky: #ecf4ff;
   --color-blue-night: #233667;
+  --color-error: #feefef;
+  --color-error-foreground: #da1414;
+  --color-warning: #fef0c7;
+  --color-warning-foreground: #b54708;
+  --color-success: #d1fadf;
+  --color-success-foreground: #027a48;
+  --color-info: #eef2fa;
+  --color-info-foreground: #2e5aac;
+  --color-disabled: #f2f4f7;
 
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -79,6 +88,7 @@
   --color-green-primary: var(--color-green-primary);
   --color-blue-sky: var(--color-blue-sky);
   --color-blue-night: var(--color-blue-night);
+  --color-disabled: var(--color-disabled);
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-background: var(--background);
@@ -240,4 +250,24 @@ body {
 
 .animate-bounce-slow-50 {
   animation: bounce 5s infinite;
+}
+
+.Toastify__toast--success {
+  background: var(--color-success) !important; /* màu xanh lá */
+  color: var(--color-success-foreground) !important;
+}
+
+.Toastify__toast--error {
+  background: var(--color-error) !important; /* màu đỏ */
+  color: var(--color-error-foreground) !important;
+}
+
+.Toastify__toast--info {
+  background: var(--color-info) !important; /* màu xanh dương */
+  color: var(--color-info-foreground) !important;
+}
+
+.Toastify__toast--warning {
+  background: var(--color-warning) !important; /* màu vàng */
+  color: var(--color-warning-foreground) !important;
 }

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Textarea } from '@components/ui/textarea'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -10,6 +11,13 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(({ classNam
   return <Input placeholder=" " className={cn('peer', className)} ref={ref} {...props} />
 })
 FloatingInput.displayName = 'FloatingInput'
+
+const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(
+  ({ className, ...props }, ref) => {
+    return <Textarea cols={4} rows={4} placeholder="" className={cn('peer', className)} ref={ref} {...props} />
+  }
+)
+FloatingTextarea.displayName = 'FloatingTextarea'
 
 const FloatingLabel = React.forwardRef<React.ElementRef<typeof Label>, React.ComponentPropsWithoutRef<typeof Label>>(
   ({ className, ...props }, ref) => {
@@ -42,4 +50,4 @@ const FloatingLabelInput = React.forwardRef<
 })
 FloatingLabelInput.displayName = 'FloatingLabelInput'
 
-export { FloatingInput, FloatingLabel, FloatingLabelInput }
+export { FloatingInput, FloatingLabel, FloatingLabelInput, FloatingTextarea }

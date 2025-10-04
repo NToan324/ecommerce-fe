@@ -5,7 +5,8 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { IoIosArrowForward } from 'react-icons/io'
 
-import { useGetAllToDos } from '@/hooks/useAuth'
+import useUser from '@/hooks/useUser'
+import { useAuthStore } from '@/stores/auth.store'
 
 const PLACEHOLDER_TEXT = [
   "Asus ROG Strix G16 (2024, i9-13980HX, RTX 4080, 16GB RAM, 1TB SSD, 16'' QHD+ 240Hz)",
@@ -22,14 +23,14 @@ const PLACEHOLDER_TEXT = [
 
 export default function page() {
   const [placeholder, setPlaceholder] = useState('')
-  const { data, isSuccess } = useGetAllToDos()
   const router = useRouter()
-
+  const { data: user, isSuccess } = useUser.getProfile()
+  const setUser = useAuthStore((state) => state.setUser)
   useEffect(() => {
-    if (isSuccess) {
-      console.log(data)
+    if (isSuccess && user.data._id !== '') {
+      setUser(user.data)
     }
-  }, [isSuccess])
+  }, [isSuccess, user])
 
   useEffect(() => {
     let id = 0

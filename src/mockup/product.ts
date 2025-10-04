@@ -5,7 +5,7 @@ export const products: Product[] = [
     productId: 'P1001',
     category: 'Laptop',
     product: 'Dell XPS 13',
-    unitPrice: 1200,
+    unitPrice: 100000000,
     discount: 10,
     totalPrice: 1080,
     currentStock: 25,

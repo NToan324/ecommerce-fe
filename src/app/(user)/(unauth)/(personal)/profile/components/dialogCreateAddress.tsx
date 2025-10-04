@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { GoPlus } from 'react-icons/go'
 import z from 'zod'
 
 import { Combobox } from '@/components/comboBox'
+import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -19,22 +20,21 @@ import {
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { useGetDistrict, useGetProvinceCity, useGetWard } from '@/hooks/useProfile'
+import useUser from '@/hooks/useUser'
 import profileSchema from '@/schemas/profile.schema'
+import { useAuthStore } from '@/stores/auth.store'
 import { District, ProvinceCity, Ward } from '@/types/address.type'
-import { ProfileAddress } from '@/types/profile.type'
 
-interface DialogCreateAdressProps {
+interface DialogUpdateAdressProps {
   open: boolean
-  onOpenChange: (open: boolean) => void
-  defaultValues?: ProfileAddress
+  setOpen: (open: boolean) => void
+  defaultValues: number | null
 }
 
-export function DialogCreateAdress({ open, onOpenChange, defaultValues }: DialogCreateAdressProps) {
+export function DialogUpdateAdress({ open, setOpen, defaultValues }: DialogUpdateAdressProps) {
   const form = useForm<z.infer<typeof profileSchema.addressDetails>>({
     resolver: zodResolver(profileSchema.addressDetails),
     defaultValues: {
-      fullName: '',
-      phoneNumber: '',
       provinceCity: '',
       district: '',
       ward: '',
@@ -42,31 +42,60 @@ export function DialogCreateAdress({ open, onOpenChange, defaultValues }: Dialog
     },
   })
 
+  const user = useAuthStore((state) => state.user)
+
   const [selectedProvinceCity, setSelectedProvinceCity] = useState<string>('')
   const [selectedDistrict, setSelectedDistrict] = useState<string>('')
   const [selectedWard, setSelectedWard] = useState<string>('')
 
-  console.log(selectedWard, defaultValues)
-  const {
-    data: provinceCityData,
-    // isLoading: provinceLoading,
-    // isSuccess: provinceSuccess
-  } = useGetProvinceCity()
-  const {
-    data: districtData,
-    // isLoading: districtLoading,
-    // isSuccess: districtSuccess,
-  } = useGetDistrict(selectedProvinceCity ? parseInt(selectedProvinceCity) : 0)
-  const {
-    data: wardData,
-    // isLoading: wardLoading,
-    // isSuccess: wardSuccess,
-  } = useGetWard(selectedDistrict ? parseInt(selectedDistrict) : 0)
+  const { data: provinceCityData } = useGetProvinceCity()
+  const { data: districtData } = useGetDistrict(selectedProvinceCity ? parseInt(selectedProvinceCity) : 0)
+  const { data: wardData } = useGetWard(selectedDistrict ? parseInt(selectedDistrict) : 0)
+
+  const { mutate: updateAddress, isPending: isPendingUpdateAddress } = useUser.updateProfile({
+    onClose: () => setOpen(false),
+  })
+
+  useEffect(() => {
+    if (defaultValues !== null && user) {
+      const address = user.address[defaultValues] || ''
+      form.reset({
+        address: address,
+      })
+    }
+  }, [defaultValues, user])
+
+  useEffect(() => {
+    if (selectedProvinceCity || selectedDistrict || selectedWard) {
+      const provinceCity = provinceCityData?.find((item) => item.code.toString() === selectedProvinceCity)?.name || ''
+      const district = districtData?.districts.find((item) => item.code.toString() === selectedDistrict)?.name || ''
+      const ward = wardData?.wards.find((item) => item.code.toString() === selectedWard)?.name || ''
+      form.setValue(
+        'address',
+        ward ? `${ward}, ${district}, ${provinceCity}` : district ? `${district}, ${provinceCity}` : provinceCity
+      )
+    }
+  }, [selectedProvinceCity, selectedDistrict, selectedWard])
+
+  const handleSubmit = (data: z.infer<typeof profileSchema.addressDetails>) => {
+    if (defaultValues === null) {
+      const payload = user?.address ? [...user.address, data.address] : [data.address]
+      updateAddress({ address: payload })
+    } else {
+      const payload = user?.address.map((address, index) => {
+        if (index === defaultValues) {
+          return data.address
+        }
+        return address
+      })
+      updateAddress({ address: payload })
+    }
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <Form {...form}>
-        <form>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
           <DialogTrigger asChild>
             <Button
               type="button"
@@ -82,28 +111,6 @@ export function DialogCreateAdress({ open, onOpenChange, defaultValues }: Dialog
               <DialogDescription>Enter a new address for your profile, then hit Save.</DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-              <FormField
-                control={form.control}
-                name="fullName"
-                render={({ field }) => (
-                  <FormItem className="w-full md:max-w-[420px]">
-                    <FormControl>
-                      <div className="relative w-full">
-                        <FloatingInput
-                          {...field}
-                          id="fullName"
-                          className="h-12 rounded-[20px] w-full"
-                          value={field.value}
-                        />
-                        <FloatingLabel htmlFor="fullName">Full name</FloatingLabel>
-                      </div>
-                    </FormControl>
-                    {form.formState.errors.fullName && (
-                      <p className="text-red-500 text-sm mt-2">{form.formState.errors.fullName.message}</p>
-                    )}
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="provinceCity"
@@ -207,7 +214,7 @@ export function DialogCreateAdress({ open, onOpenChange, defaultValues }: Dialog
                 control={form.control}
                 name="address"
                 render={({ field }) => (
-                  <FormItem className="w-full col-span-1 md:col-span-2">
+                  <FormItem className="w-full col-span-1">
                     <FormControl>
                       <div className="relative w-full">
                         <FloatingInput
@@ -228,16 +235,23 @@ export function DialogCreateAdress({ open, onOpenChange, defaultValues }: Dialog
             </div>
             <DialogFooter className="flex flex-row justify-end items-center">
               <DialogClose asChild>
-                <Button variant="outline" className="rounded-2xl max-w-[100px]">
+                <Button
+                  variant="outline"
+                  type="button"
+                  className="rounded-2xl max-w-[100px]"
+                  onClick={() => setOpen(false)}
+                >
                   Cancel
                 </Button>
               </DialogClose>
               <Button
+                disabled={isPendingUpdateAddress}
                 type="submit"
                 className="w-full float-end max-w-[100px] bg-violet-primary hover:bg-violet-primary/90 text-white rounded-2xl"
+                onClick={form.handleSubmit(handleSubmit)}
               >
                 Save
-                {/* <Loading /> */}
+                {isPendingUpdateAddress && <Loading />}
               </Button>
             </DialogFooter>
           </DialogContent>

@@ -3,14 +3,19 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+
+import 'next/navigation'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { LuEye, LuEyeOff } from 'react-icons/lu'
 import z from 'zod'
 
+import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
+import useAuth from '@/hooks/useAuth'
 import { authSchema } from '@/schemas/auth.schema'
 
 export default function page() {
@@ -23,9 +28,10 @@ export default function page() {
   })
 
   const [showPassword, setShowPassword] = useState(false)
+  const { mutate: loginMutate, isPending: isPendingLogin } = useAuth.signin()
 
   const handleLogin = (data: z.infer<typeof authSchema.login>) => {
-    console.log(data)
+    loginMutate(data)
   }
 
   return (
@@ -109,11 +115,13 @@ export default function page() {
               Forgot your password?
             </a>
             <Button
+              disabled={isPendingLogin}
               type="submit"
               className="w-full text-base font-medium text-white bg-violet-primary hover:bg-violet-primary/90 rounded-2xl h-12"
               onClick={() => form.handleSubmit(handleLogin)}
             >
               Sign In
+              {isPendingLogin && <Loading />}
             </Button>
             <div className="flex justify-center items-center gap-4">
               <span className="inline-block w-full max-w-[80px] h-px bg-blue-primary/90"></span>

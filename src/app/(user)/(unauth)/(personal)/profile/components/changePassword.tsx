@@ -6,9 +6,11 @@ import { useForm } from 'react-hook-form'
 import { LuEye, LuEyeOff } from 'react-icons/lu'
 import z from 'zod'
 
+import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
+import useAuth from '@/hooks/useAuth'
 import profileSchema from '@/schemas/profile.schema'
 
 export default function ChangePassword() {
@@ -23,10 +25,21 @@ export default function ChangePassword() {
   const [showOldPassword, setShowOldPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
+  const { mutate: changePassword, isPending } = useAuth.changePassword()
+
+  const handleSubmit = (data: z.infer<typeof profileSchema.changePassword>) => {
+    const payload = {
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword,
+    }
+    changePassword(payload)
+    form.reset()
+  }
+
   return (
     <div>
       <Form {...form}>
-        <form action="" className="grid grid-cols-1 gap-6 w-full">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="grid grid-cols-1 gap-6 w-full">
           <FormField
             control={form.control}
             name="oldPassword"
@@ -136,11 +149,13 @@ export default function ChangePassword() {
             )}
           />
           <Button
+            disabled={isPending}
             type="submit"
             className="w-full text-base font-medium max-w-[420px] text-white bg-violet-primary hover:bg-violet-primary/90 rounded-2xl h-12"
             onClick={() => {}}
           >
             Change password
+            {isPending && <Loading />}
           </Button>
         </form>
       </Form>

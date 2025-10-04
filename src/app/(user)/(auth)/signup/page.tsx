@@ -4,12 +4,15 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { LuEye, LuEyeOff } from 'react-icons/lu'
 import z from 'zod'
 
 import { Combobox } from '@/components/comboBox'
+import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
+import useAuth from '@/hooks/useAuth'
 import { useGetDistrict, useGetProvinceCity, useGetWard } from '@/hooks/useProfile'
 import { authSchema } from '@/schemas/auth.schema'
 import { District, ProvinceCity, Ward } from '@/types/address.type'
@@ -24,6 +27,8 @@ export default function page() {
       district: '',
       ward: '',
       address: '',
+      password: '',
+      confirmPassword: '',
     },
   })
 
@@ -32,6 +37,11 @@ export default function page() {
   const [selectedWard, setSelectedWard] = useState<string>('')
 
   const [step, setStep] = useState(1)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [enableSignup, setEnableSignup] = useState(false)
+
+  const { mutate: signupMutate, isPending: isSignupPending } = useAuth.signup()
 
   const {
     data: provinceCityData,
@@ -50,15 +60,21 @@ export default function page() {
   } = useGetWard(selectedDistrict ? parseInt(selectedDistrict) : 0)
 
   const handleNextStep = () => {
-    if (step === 3) {
-      setStep(1)
+    setStep((prev) => prev + 1)
+    if (step === 2) {
+      setEnableSignup(true)
       return
     }
-    setStep((prev) => prev + 1)
   }
 
   const handleSignup = (data: z.infer<typeof authSchema.signup>) => {
-    console.log(data)
+    const payload = {
+      fullName: data.fullName,
+      email: data.email,
+      address: data.address,
+      password: data.password,
+    }
+    signupMutate(payload)
   }
 
   useEffect(() => {
@@ -69,12 +85,12 @@ export default function page() {
       ? districtData?.districts.find((item) => item.code === parseInt(selectedDistrict || '0'))?.name || ''
       : ''
     const ward = wardData ? wardData?.wards.find((item) => item.code === parseInt(selectedWard || '0'))?.name || '' : ''
-    form.setValue('address', `${provinceCity}${district ? ', ' + district : ''}${ward ? ', ' + ward : ''}`)
+    form.setValue('address', `${ward}${ward ? ', ' : ''}${district}${district ? ', ' : ''}${provinceCity}`)
   }, [form, provinceCityData, selectedProvinceCity, districtData, selectedDistrict, wardData, selectedWard])
 
   return (
     <main>
-      <div className="flex flex-col items-center justify-start h-screen gap-10 w-full px-7 pb-4 lg:px-[120px] lg:pb-20 pt-12">
+      <div className="flex flex-col items-center justify-start min-h-screen gap-10 w-full px-7 pb-4 lg:px-[120px] lg:pb-20 pt-12">
         <h1 className="text-3xl font-bold">Compx</h1>
         <div className="flex flex-col gap-3 justify-between items-center">
           <p className="text-2xl font-bold text-center">Get access, shop smarter today</p>
@@ -144,7 +160,7 @@ export default function page() {
                 />
               </div>
               <div
-                className={` flex justify-between gap-7 items-center min-w-[320px] md:min-w-[460px] px-[10px] py-2 flex-col`}
+                className={`${step < 2 ? 'hidden' : ''} flex justify-between gap-7 items-center min-w-[320px] md:min-w-[460px] px-[10px] py-2 flex-col`}
               >
                 <FormField
                   control={form.control}
@@ -247,7 +263,7 @@ export default function page() {
                 />
               </div>
               <div
-                className={` flex justify-between gap-7 items-center min-w-[320px] md:min-w-[460px] px-[10px] py-2 flex-col`}
+                className={`${step < 3 ? 'hidden' : ''} flex justify-between gap-7 items-center min-w-[320px] md:min-w-[460px] px-[10px] py-2 flex-col`}
               >
                 <FormField
                   control={form.control}
@@ -306,6 +322,7 @@ export default function page() {
                             className="h-12 rounded-[20px] w-full"
                             onChange={field.onChange}
                             value={field.value}
+                            onFocus={(e) => e.target.setSelectionRange(0, e.target.value.length)}
                           />
                           <FloatingLabel htmlFor="address">Address</FloatingLabel>
                         </div>
@@ -316,16 +333,101 @@ export default function page() {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <div className="relative w-full">
+                          <FloatingInput
+                            type={showPassword ? 'text' : 'password'}
+                            id="password"
+                            className="h-12 rounded-[20px]"
+                            value={field.value}
+                            onChange={field.onChange}
+                          />
+                          {showPassword ? (
+                            <LuEyeOff
+                              className="absolute top-[14px] right-3 cursor-pointer"
+                              size={20}
+                              onClick={() => setShowPassword(false)}
+                            />
+                          ) : (
+                            <LuEye
+                              className="absolute top-[14px] right-3 cursor-pointer"
+                              size={20}
+                              onClick={() => setShowPassword(true)}
+                            />
+                          )}
+                          <FloatingLabel htmlFor="password">Password</FloatingLabel>
+                        </div>
+                      </FormControl>
+                      {form.formState.errors.password && (
+                        <p className="text-red-500 text-sm mt-2">{form.formState.errors.password.message}</p>
+                      )}
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <div className="relative w-full">
+                          <FloatingInput
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            id="confirmPassword"
+                            className="h-12 rounded-[20px]"
+                            value={field.value}
+                            onChange={field.onChange}
+                          />
+                          {showConfirmPassword ? (
+                            <LuEyeOff
+                              className="absolute top-[14px] right-3 cursor-pointer"
+                              size={20}
+                              onClick={() => setShowConfirmPassword(false)}
+                            />
+                          ) : (
+                            <LuEye
+                              className="absolute top-[14px] right-3 cursor-pointer"
+                              size={20}
+                              onClick={() => setShowConfirmPassword(true)}
+                            />
+                          )}
+                          <FloatingLabel htmlFor="confirmPassword">Confirm Password</FloatingLabel>
+                        </div>
+                      </FormControl>
+                      {form.formState.errors.confirmPassword && (
+                        <p className="text-red-500 text-sm mt-2">{form.formState.errors.confirmPassword.message}</p>
+                      )}
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
             <div className="px-[10px] mt-6">
-              <Button
-                type="button"
-                className="w-full text-base font-medium text-white bg-violet-primary hover:bg-violet-primary/90 rounded-2xl h-12"
-                onClick={handleNextStep}
-              >
-                Next
-              </Button>
+              {enableSignup ? (
+                <Button
+                  disabled={isSignupPending}
+                  type="submit"
+                  className="w-full text-base font-medium text-white bg-violet-primary hover:bg-violet-primary/90 rounded-2xl h-12"
+                >
+                  Sign Up
+                  {isSignupPending && <Loading />}
+                </Button>
+              ) : null}
+
+              {step < 3 && (
+                <Button
+                  type="button"
+                  className="w-full text-base font-medium text-white bg-violet-primary hover:bg-violet-primary/90 rounded-2xl h-12"
+                  onClick={handleNextStep}
+                >
+                  Next
+                </Button>
+              )}
             </div>
           </form>
         </Form>
