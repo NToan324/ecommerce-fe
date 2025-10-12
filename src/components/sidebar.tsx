@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { CiDiscount1 } from 'react-icons/ci'
 import { FiPackage } from 'react-icons/fi'
+import { HiOutlineInbox } from 'react-icons/hi2'
 import { LuLayoutDashboard, LuUserRoundCog } from 'react-icons/lu'
 import { PiLaptop } from 'react-icons/pi'
+import { TbBrandAmigo } from 'react-icons/tb'
 
 export default function Sidebar() {
   const router = useRouter()
@@ -22,6 +24,16 @@ export default function Sidebar() {
       href: '/admin/products',
       icon: <PiLaptop size={35} />,
       title: 'Products',
+    },
+    {
+      href: '/admin/brands',
+      icon: <TbBrandAmigo size={35} strokeWidth={1.5} />,
+      title: 'Brands',
+    },
+    {
+      href: '/admin/categories',
+      icon: <HiOutlineInbox size={35} />,
+      title: 'Categories',
     },
     {
       href: '/admin/users',

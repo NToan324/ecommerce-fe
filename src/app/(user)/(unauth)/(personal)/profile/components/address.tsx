@@ -3,7 +3,10 @@
 import React, { useState } from 'react'
 import { DialogUpdateAdress } from '@user/(unauth)/(personal)/profile/components/dialogCreateAddress'
 import { GoPencil } from 'react-icons/go'
+import { HiOutlineTrash } from 'react-icons/hi2'
 
+import DialogDelete from '@/components/dialogDelete'
+import useUser from '@/hooks/useUser'
 import { Profile } from '@/types/user.type'
 
 interface AddressProps {
@@ -11,7 +14,19 @@ interface AddressProps {
 }
 export default function Address({ data }: AddressProps) {
   const [open, setOpen] = useState(false)
+  const [openDelete, setOpenDelete] = useState<string | null>(null)
   const [selectedAddress, setSelectedAddress] = useState<number | null>(null)
+  const { mutate: updateAddress, isPending: isPendingDeleteAddress } = useUser.updateProfile({
+    onClose: () => setOpenDelete(null),
+  })
+
+  const handleDeleteProduct = (address: string) => {
+    if (data && data.address) {
+      const payload = data.address.filter((item) => item !== address)
+      updateAddress({ address: payload })
+    }
+  }
+
   return (
     <div className="space-y-10 w-full">
       <div className="w-full flex justify-end items-center">
@@ -37,10 +52,21 @@ export default function Address({ data }: AddressProps) {
                     </div>
                     <p className="text-[clamp(0.75rem,2vw,1rem)] w-full leading-7">{address}</p>
                   </div>
-                  <GoPencil
-                    className="cursor-pointer text-blue-secondary md:size-6 size-5"
-                    onClick={() => setSelectedAddress(index)}
-                  />
+                  <div className=" flex gap-4">
+                    <GoPencil
+                      className="cursor-pointer text-blue-secondary md:size-6 size-5"
+                      onClick={() => setSelectedAddress(index)}
+                    />
+                    <HiOutlineTrash
+                      size={24}
+                      title={`Delete ${address}`}
+                      className="cursor-pointer text-blue-secondary md:size-6 size-5"
+                      strokeWidth={1.5}
+                      onClick={() => {
+                        setOpenDelete(address)
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             )
@@ -49,6 +75,14 @@ export default function Address({ data }: AddressProps) {
           <p className="text-[clamp(0.875rem,1vw,1rem)] text-black/50">No address found. Please add your address.</p>
         )}
       </div>
+      <DialogDelete
+        open={!!openDelete}
+        onOpenChange={() => setOpenDelete(null)}
+        name={openDelete || ''}
+        handleDelete={(id: string) => handleDeleteProduct(id)}
+        id={openDelete || ''}
+        isPending={isPendingDeleteAddress}
+      />
     </div>
   )
 }

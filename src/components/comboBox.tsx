@@ -10,8 +10,6 @@ type OptionItem = {
   id: string
   name: string
   status: boolean | string
-  fullName?: string
-  active?: boolean
 }
 
 interface ComboboxProps<T> {
@@ -23,6 +21,7 @@ interface ComboboxProps<T> {
   limitData?: number
   handleOnChange: (value: string) => void
   titleTrigger?: string
+  className?: string
 }
 
 export function Combobox<T extends OptionItem>({
@@ -34,6 +33,7 @@ export function Combobox<T extends OptionItem>({
   isDisabled = false,
   limitData = 10,
   titleTrigger = 'Chọn',
+  className,
 }: ComboboxProps<T>) {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
@@ -48,14 +48,17 @@ export function Combobox<T extends OptionItem>({
         ? `${selectedData[index]?.id}|${selectedData[index]?.name}`
         : ''
     )
-  }, [])
+  }, [selectedData, data, index])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         disabled={isDisabled}
         asChild
-        className={`${isError ? 'border-red-500' : ''} ${isDisabled ? '!bg-disabled' : ''} !h-12 !w-full`}
+        className={cn(
+          `${isError ? 'border-red-500' : ''} ${isDisabled ? '!bg-disabled' : ''} !h-12 !w-full`,
+          className
+        )}
       >
         <Button
           variant="outline"

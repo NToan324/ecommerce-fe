@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 
 import '@/app/globals.css'
 
+import { ToastContainer } from 'react-toastify'
+
 import { AdminLayout } from '@/components/layout'
 import { Provider } from '@/providers/provider'
 import { CommonLayoutProps } from '@/types/common.type'
@@ -16,6 +18,7 @@ export default function RootLayout({ children }: CommonLayoutProps) {
     <html lang="en">
       <body className={`antialiased`}>
         <Provider>
+          <ToastContainer autoClose={3000} />
           <AdminLayout>{children}</AdminLayout>
         </Provider>
       </body>

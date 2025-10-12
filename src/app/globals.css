@@ -89,6 +89,10 @@
   --color-blue-sky: var(--color-blue-sky);
   --color-blue-night: var(--color-blue-night);
   --color-disabled: var(--color-disabled);
+  --color-error: var(--color-error);
+  --color-error-foreground: var(--color-error-foreground);
+  --color-success: var(--color-success);
+  --color-success-foreground: var(--color-success-foreground);
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-background: var(--background);

@@ -43,7 +43,7 @@ export default function page() {
           i = 0
           if (id === PLACEHOLDER_TEXT.length - 1) id = 0
           else id++
-        }, 1000)
+        }, 800)
       }
     }, 60)
     return () => clearInterval(interval)

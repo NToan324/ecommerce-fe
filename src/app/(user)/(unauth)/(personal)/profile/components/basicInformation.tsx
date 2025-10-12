@@ -41,7 +41,7 @@ export default function BasicInformation({ data }: BasicInformationProps) {
   const [selectedDistrict, setSelectedDistrict] = useState<string>('')
   const [selectedWard, setSelectedWard] = useState<string>('')
 
-  const { mutate: updateProfile, isPending, isSuccess } = useUser.updateProfile()
+  const { mutate: updateProfile, isPending, isSuccess } = useUser.updateProfile({ onClose: () => {} })
 
   const { data: provinceCityData } = useGetProvinceCity()
   const { data: districtData } = useGetDistrict(selectedProvinceCity ? parseInt(selectedProvinceCity) : 0)
@@ -54,15 +54,6 @@ export default function BasicInformation({ data }: BasicInformationProps) {
       phone: data.phone || '',
     }
     updateProfile(payload)
-    if (isSuccess) {
-      setSelectedDistrict('')
-      setSelectedProvinceCity('')
-      setSelectedWard('')
-      form.reset()
-    }
-    if (editMode) {
-      setEditMode(!editMode)
-    }
   }
 
   useEffect(() => {
@@ -73,6 +64,15 @@ export default function BasicInformation({ data }: BasicInformationProps) {
         address: data.address[0],
         phone: data.phone || '',
       })
+    }
+    if (isSuccess) {
+      setSelectedDistrict('')
+      setSelectedProvinceCity('')
+      setSelectedWard('')
+      form.reset()
+    }
+    if (editMode) {
+      setEditMode(!editMode)
     }
   }, [data, form])
 
@@ -201,7 +201,7 @@ export default function BasicInformation({ data }: BasicInformationProps) {
             render={({ field }) => (
               <FormItem className="w-full max-w-[420px]">
                 <FormControl>
-                  <Combobox<ProvinceCity>
+                  <Combobox
                     data={
                       provinceCityData
                         ? provinceCityData.map((item: ProvinceCity) => {
@@ -212,7 +212,16 @@ export default function BasicInformation({ data }: BasicInformationProps) {
                           })
                         : []
                     }
-                    selectedData={[]}
+                    selectedData={
+                      form.getValues('provinceCity') && selectedProvinceCity
+                        ? (provinceCityData
+                            ?.filter((item: ProvinceCity) => item.code.toString() === selectedProvinceCity)
+                            .map((item: ProvinceCity) => ({
+                              ...item,
+                              id: item.code.toString(),
+                            })) ?? [])
+                        : []
+                    }
                     index={0}
                     handleOnChange={(value) => {
                       field.onChange(value)
@@ -244,7 +253,16 @@ export default function BasicInformation({ data }: BasicInformationProps) {
                           }))
                         : []
                     }
-                    selectedData={[]}
+                    selectedData={
+                      form.getValues('district') && selectedDistrict
+                        ? (districtData?.districts
+                            ?.filter((item: District) => item.code.toString() === selectedDistrict)
+                            .map((item: District) => ({
+                              ...item,
+                              id: item.code.toString(),
+                            })) ?? [])
+                        : []
+                    }
                     index={0}
                     handleOnChange={(value) => {
                       field.onChange(value)
@@ -278,7 +296,16 @@ export default function BasicInformation({ data }: BasicInformationProps) {
                           })
                         : []
                     }
-                    selectedData={[]}
+                    selectedData={
+                      form.getValues('ward') && selectedWard
+                        ? (wardData?.wards
+                            ?.filter((item: Ward) => item.code.toString() === selectedWard)
+                            .map((item: Ward) => ({
+                              ...item,
+                              id: item.code.toString(),
+                            })) ?? [])
+                        : []
+                    }
                     index={0}
                     handleOnChange={(value) => {
                       field.onChange(value)
@@ -320,6 +347,7 @@ export default function BasicInformation({ data }: BasicInformationProps) {
           />
         </form>
       </Form>
+      
     </div>
   )
 }

@@ -10,3 +10,8 @@ export enum PROFILE_MENU {
   ADDRESS = 'Address',
   CHANGE_PASSWORD = 'Change password',
 }
+
+export enum STATUS_FORM {
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+}

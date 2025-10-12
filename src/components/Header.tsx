@@ -42,19 +42,59 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-300">
       <div
+        className={`${open === true ? 'translate-x-0' : 'translate-x-[224px]'} md:hidden fixed top-0 right-0 z-50 flex h-full min-h-screen md:min-h-0 w-2/3 max-w-[200px] flex-col gap-4 bg-white p-8 text-base font-bold shadow-2xl duration-300 md:relative md:w-full md:max-w-[600px] md:translate-x-0 md:flex-row md:items-center md:justify-between md:bg-transparent md:p-0 md:text-sm md:shadow-none`}
+      >
+        <div
+          className="bg-blue-secondary absolute -left-[24px] flex h-8 w-6 cursor-pointer items-center justify-center rounded-l-2xl md:hidden"
+          onClick={() => setOpen(!open)}
+        >
+          <IoIosArrowForward className="rotate-180 text-white" />
+        </div>
+        <Link href="/" onClick={() => setOpen(false)}>
+          Home
+        </Link>
+        <Link href="/products" onClick={() => setOpen(false)}>
+          Product
+        </Link>
+        <Link href="/about" onClick={() => setOpen(false)}>
+          About us
+        </Link>
+        <Link href="/contact" onClick={() => setOpen(false)}>
+          Contact
+        </Link>
+        <div className="md:hidden flex flex-col gap-4 border-t border-blue-primary/70 pt-4 w-full">
+          <Link href="/profile" className="w-full" onClick={() => setOpen(false)}>
+            Profile
+          </Link>
+          <Link href="/orders" className="w-full" onClick={() => setOpen(false)}>
+            Orders
+          </Link>
+          <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
+            Settings
+          </Link>
+          {!user ? (
+            <Link href={'/signin'} className="w-full" onClick={() => setOpen(false)}>
+              Sign in
+            </Link>
+          ) : (
+            <p
+              className="w-full"
+              onClick={() => {
+                setOpen(false)
+                handleLogout()
+              }}
+            >
+              Logout
+            </p>
+          )}
+        </div>
+      </div>
+      <div
         ref={header}
         className="border-blue-primary/70 flex h-[80px] backdrop-blur-2xl bg-white/30 items-center justify-between gap-12 border-b px-7 py-4 lg:px-[120px]"
       >
         <h1 className="text-2xl font-bold">COMPX</h1>
-        <div
-          className={`${open === true ? 'translate-x-0' : 'translate-x-[224px]'} fixed top-0 right-0 z-50 flex h-full min-h-screen md:min-h-0 w-2/3 max-w-[200px] flex-col gap-4 bg-white p-8 text-base font-bold shadow-2xl duration-300 md:relative md:w-full md:max-w-[600px] md:translate-x-0 md:flex-row md:items-center md:justify-between md:bg-transparent md:p-0 md:text-sm md:shadow-none`}
-        >
-          <div
-            className="bg-blue-secondary absolute -left-[24px] flex h-8 w-6 cursor-pointer items-center justify-center rounded-l-2xl md:hidden"
-            onClick={() => setOpen(!open)}
-          >
-            <IoIosArrowForward className="rotate-180 text-white" />
-          </div>
+        <div className="justify-center items-center gap-8 md:gap-10 lg:gap-16 font-bold hidden md:flex">
           <Link href="/" onClick={() => setOpen(false)}>
             Home
           </Link>
@@ -67,33 +107,8 @@ export default function Header() {
           <Link href="/contact" onClick={() => setOpen(false)}>
             Contact
           </Link>
-          <div className="md:hidden flex flex-col gap-4 border-t border-blue-primary/70 pt-4 w-full">
-            <Link href="/profile" className="w-full" onClick={() => setOpen(false)}>
-              Profile
-            </Link>
-            <Link href="/orders" className="w-full" onClick={() => setOpen(false)}>
-              Orders
-            </Link>
-            <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
-              Settings
-            </Link>
-            {!user ? (
-              <Link href={'/signin'} className="w-full" onClick={() => setOpen(false)}>
-                Sign in
-              </Link>
-            ) : (
-              <p
-                className="w-full"
-                onClick={() => {
-                  setOpen(false)
-                  handleLogout()
-                }}
-              >
-                Logout
-              </p>
-            )}
-          </div>
         </div>
+
         <div className="flex items-center justify-between gap-8 md:gap-10">
           <div className="relative cursor-pointer" onClick={() => router.push('/cart')}>
             <FiShoppingCart strokeWidth={1.2} className="text-3xl md:text-[40px]" />

@@ -26,6 +26,13 @@ class ProfileSchema {
     address: z.string().optional(),
   })
 
+  changeAvatar = z.object({
+    avatar: z.object({
+      url: z.string().nonempty('Please upload an avatar image'),
+      public_id: z.string().optional(),
+    }),
+  })
+
   addressDetails = z.object({
     provinceCity: z.string().optional(),
     district: z.string().optional(),

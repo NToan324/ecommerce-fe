@@ -179,7 +179,16 @@ export default function page() {
                                 })
                               : []
                           }
-                          selectedData={[]}
+                          selectedData={
+                            form.getValues('provinceCity') && selectedProvinceCity
+                              ? (provinceCityData
+                                  ?.filter((item: ProvinceCity) => item.code.toString() === selectedProvinceCity)
+                                  .map((item: ProvinceCity) => ({
+                                    ...item,
+                                    id: item.code.toString(),
+                                  })) ?? [])
+                              : []
+                          }
                           index={0}
                           handleOnChange={(value) => {
                             field.onChange(value)
@@ -210,7 +219,16 @@ export default function page() {
                                 }))
                               : []
                           }
-                          selectedData={[]}
+                          selectedData={
+                            form.getValues('district') && selectedDistrict
+                              ? (districtData?.districts
+                                  ?.filter((item: District) => item.code.toString() === selectedDistrict)
+                                  .map((item: District) => ({
+                                    ...item,
+                                    id: item.code.toString(),
+                                  })) ?? [])
+                              : []
+                          }
                           index={0}
                           handleOnChange={(value) => {
                             field.onChange(value)
@@ -244,7 +262,16 @@ export default function page() {
                                 })
                               : []
                           }
-                          selectedData={[]}
+                          selectedData={
+                            form.getValues('ward') && selectedWard
+                              ? (wardData?.wards
+                                  ?.filter((item: Ward) => item.code.toString() === selectedWard)
+                                  .map((item: Ward) => ({
+                                    ...item,
+                                    id: item.code.toString(),
+                                  })) ?? [])
+                              : []
+                          }
                           index={0}
                           handleOnChange={(value) => {
                             field.onChange(value)

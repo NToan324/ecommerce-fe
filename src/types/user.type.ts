@@ -20,5 +20,5 @@ export interface UpdateProfile {
 
 export interface Avatar {
   url: string
-  public_id: string
+  public_id?: string
 }

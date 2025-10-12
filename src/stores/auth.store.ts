@@ -1,7 +1,6 @@
 import Cookies from 'js-cookie'
 import { create } from 'zustand'
 
-import { User } from '@/types/auth.type'
 import { Profile } from '@/types/user.type'
 
 export interface AuthState {

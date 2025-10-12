@@ -6,7 +6,16 @@ const nextConfig: NextConfig = {
     dirs: ['src'],
   },
   images: {
-    domains: ['avatar.iran.liara.run'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
   },
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,

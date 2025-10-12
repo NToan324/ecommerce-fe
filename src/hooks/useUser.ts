@@ -21,7 +21,7 @@ class UseUser {
     const queryClient = useQueryClient()
     return useMutation({
       mutationKey: ['updateProfile'],
-      mutationFn: (payload: UpdateProfile) => userService.updateProfile(payload),
+      mutationFn: (payload: Partial<UpdateProfile>) => userService.updateProfile(payload),
       onSuccess: (response) => {
         if (response.data) {
           toast.success('Profile updated successfully!')

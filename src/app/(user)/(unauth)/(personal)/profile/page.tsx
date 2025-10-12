@@ -6,10 +6,13 @@ import Address from '@user/(unauth)/(personal)/profile/components/address'
 import BasicInformation from '@user/(unauth)/(personal)/profile/components/basicInformation'
 import ChangePassword from '@user/(unauth)/(personal)/profile/components/changePassword'
 
+import { DialogUpdateAvatarProfile } from '@/app/(user)/(unauth)/(personal)/profile/components/dialogUpdateAvatarProfile'
 import { PROFILE_MENU } from '@/constant'
 import { useAuthStore } from '@/stores/auth.store'
+import { Image as ImageType } from '@/types/common.type'
 
 export default function page() {
+  const [open, setOpen] = useState(false)
   const [profileMenu, setProfileMenu] = useState<PROFILE_MENU>(PROFILE_MENU.BASIC_INFO)
   const user = useAuthStore((state) => state.user)
 
@@ -18,7 +21,15 @@ export default function page() {
       {/* Name */}
       <div className="flex justify-center items-center gap-12">
         <div className="relative md:w-[100px] md:h-[100px] w-[70px] h-[70px] rounded-full">
-          <Image src="https://avatar.iran.liara.run/public" alt="avatar" fill className="object-cover" />
+          <Image
+            src={user?.avatar.url || 'https://avatar.iran.liara.run/public'}
+            alt="avatar"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute bottom-0 right-0">
+            <DialogUpdateAvatarProfile open={open} setOpen={setOpen} data={user?.avatar || ({} as ImageType)} />
+          </div>
         </div>
         <div className="flex flex-col justify-start items-start gap-3">
           <h1 className="font-medium text-[clamp(1.125rem,2vw,1.5rem)]">{user?.fullName || 'Unknown User'}</h1>
@@ -42,7 +53,7 @@ export default function page() {
         </div>
         <div className="flex-2/3 w-full">
           {profileMenu === PROFILE_MENU.BASIC_INFO && <BasicInformation data={user} />}
-          {profileMenu === PROFILE_MENU.ADDRESS && <Address data={user}/>}
+          {profileMenu === PROFILE_MENU.ADDRESS && <Address data={user} />}
           {profileMenu === PROFILE_MENU.CHANGE_PASSWORD && <ChangePassword />}
         </div>
       </div>
