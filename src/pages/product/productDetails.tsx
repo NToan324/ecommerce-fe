@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { useQueryClient } from '@tanstack/react-query'
 import Comment from '@user/(unauth)/products/[id]/components/comment'
 import { CarouselProduct } from '@user/(unauth)/products/components/carouselProduct'
 import { FaRegDotCircle, FaStar } from 'react-icons/fa'
@@ -18,26 +17,16 @@ import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { CarouselApi } from '@/components/ui/carousel'
 import socketConfig from '@/config/socket'
-import useProduct from '@/hooks/useProduct'
-import { ProductVariantDetail } from '@/types/product.type'
+import { ProductVariantDetail, ReviewPagination } from '@/types/product.type'
 import { formatPrice } from '@/utils/helpers'
 
 interface ProductDetailsPageProps {
   product: ProductVariantDetail
+  reviews: ReviewPagination
 }
 
-export default function ProductDetailsPage({ product }: ProductDetailsPageProps) {
+export default function ProductDetailsPage({ product, reviews }: ProductDetailsPageProps) {
   const id = product && product.productVariant?._id
-  const queryClient = useQueryClient()
-  const {
-    data: reviews,
-    isSuccess: isSuccessReviews,
-    isPending: isPendingReviews,
-    isFetching: isFetchingReviews,
-  } = useProduct.getReviewsProductVariant(id as string, {
-    limit: 10,
-    page: 1,
-  })
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
@@ -77,7 +66,6 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
     const handleNewReview = () => {
       setIsSending(false)
       setComment('')
-      queryClient.invalidateQueries({ queryKey: ['getReviewsProductVariant', id] })
     }
     socketConfig.on('new_review', handleNewReview)
 
@@ -266,15 +254,15 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
           <div className="flex justify-between items-center gap-8 w-full">
             <div className=" flex-col justify-between items-start gap-2 hidden md:flex w-full">
               <h4 className="text-lg font-bold">Total reviews</h4>
-              <p className="text-3xl font-bold mt-2">{reviews?.data.review_count}</p>
+              <p className="text-3xl font-bold mt-2">{reviews && reviews.review_count}</p>
               <p className="font-medium text-sm text-blue-primary">Impressions up to now</p>
             </div>
             <div className="flex flex-col justify-between items-start gap-2 w-full border-0 md:border-l md:border-black md:pl-14">
               <h4 className="text-lg font-bold hidden md:block">Avarage ratings</h4>
               <div className="flex justify-start items-center gap-2 md:gap-4 md:flex-row flex-col">
-                <p className="text-3xl font-bold mt-2">{reviews?.data.average_rating.toFixed(1)}</p>
+                <p className="text-3xl font-bold mt-2">{reviews && reviews.average_rating.toFixed(1)}</p>
                 <span className="text-[8px] font-medium text-blue-secondary md:hidden">
-                  {reviews?.data.review_count} reviews
+                  {reviews && reviews.review_count} reviews
                 </span>
                 <div className="flex justify-start items-center">
                   {Array.from({ length: 5 }).map((_, index) => {
@@ -326,11 +314,9 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
           </div>
         </div>
         <div className="flex justify-between flex-col items-center gap-8 w-full ">
-          {isPendingReviews || isFetchingReviews ? (
-            <div className="">Đang tải...</div>
-          ) : isSuccessReviews && reviews && reviews.data.data.length > 0 ? (
+          {reviews && reviews.data.length > 0 ? (
             <>
-              {reviews.data.data.map((review) => (
+              {reviews.data.map((review) => (
                 <Comment key={review._id} data={review} />
               ))}
             </>
