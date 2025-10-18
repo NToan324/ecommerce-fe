@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
+import { toastError } from '@components/toastify'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDropzone } from 'react-dropzone'
 import { useFieldArray, useForm } from 'react-hook-form'
@@ -10,7 +11,6 @@ import { HiOutlineTrash } from 'react-icons/hi2'
 import { IoIosClose } from 'react-icons/io'
 import { MdOutlineCloudUpload } from 'react-icons/md'
 import { NumericFormat } from 'react-number-format'
-import { toast } from 'react-toastify'
 import z from 'zod'
 
 import Loading from '@/components/loading'
@@ -129,7 +129,7 @@ export function DialogCreateProductVariant({
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       if (!acceptedFiles || acceptedFiles.length === 0) {
-        toast.error('Please select an image file less than 2 MB in size')
+        toastError('Please select an image file less than 2 MB in size')
         return
       }
 
@@ -169,8 +169,8 @@ export function DialogCreateProductVariant({
   })
 
   const handleSubmit = async (data: z.infer<typeof productSchema.createProductVariant>) => {
-    if (!data.product_id) return toast.error('Product ID is required')
-    if (avatarPreview.length < 3) return toast.error('Please upload at least 3 product images')
+    if (!data.product_id) return toastError('Product ID is required')
+    if (avatarPreview.length < 3) return toastError('Please upload at least 3 product images')
 
     const attributes = Object.fromEntries((data.attributes || []).filter((a) => a.key).map((a) => [a.key, a.value]))
 
@@ -210,7 +210,7 @@ export function DialogCreateProductVariant({
         break
       case STATUS_FORM.UPDATE:
         if (!productVariant?._id) {
-          toast.error('Product variant ID is required')
+          toastError('Product variant ID is required')
           return
         }
         updateProductVariant({ id: productVariant._id, payload: rest })
@@ -357,12 +357,14 @@ export function DialogCreateProductVariant({
                       <FormControl>
                         <div className="relative w-full">
                           <FloatingInput
-                            {...field}
                             type="number"
                             id="quantity"
                             className="h-12 rounded-[20px] w-full"
                             value={field.value}
                             min={1}
+                            onChange={(e) => {
+                              field.onChange(Number(e.target.value))
+                            }}
                           />
                           <FloatingLabel htmlFor="quantity">Quantity</FloatingLabel>
                         </div>

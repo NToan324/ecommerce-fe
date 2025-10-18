@@ -3,13 +3,13 @@
 import { useCallback, useState } from 'react'
 import Image from 'next/image'
 import { DialogCreateProductVariant } from '@admin/admin/products/components/dialogCreateProductVariant'
+import { toastError } from '@components/toastify'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
 import { IoIosClose } from 'react-icons/io'
 import { MdOutlineCloudUpload } from 'react-icons/md'
 import { NumericFormat } from 'react-number-format'
-import { toast } from 'react-toastify'
 import z from 'zod'
 
 import { Combobox } from '@/components/comboBox'
@@ -72,7 +72,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
         })
         form.setValue('product_image.url', acceptFile[0].name)
       } else {
-        toast.error('Please select an image file less than 2 MB in size')
+        toastError('Please select an image file less than 2 MB in size')
       }
     },
     [form]
@@ -128,7 +128,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
   }
 
   const handleError = () => {
-    toast.error('Please fill in all required fields')
+    toastError('Please fill in all required fields')
   }
 
   return (

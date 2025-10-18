@@ -1,5 +1,5 @@
+import { toastError, toastSuccess } from '@components/toastify'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
 
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import productService from '@/services/product.service'
@@ -55,18 +55,18 @@ class UseProduct {
       mutationFn: (payload: CreateProduct) => productService.createProduct(payload),
       onSuccess: (response) => {
         if (response.data) {
-          toast.success('Product created successfully')
+          toastSuccess('Product created successfully')
           queryClient.invalidateQueries({ queryKey: ['products'] })
         } else {
-          toast.error(response.message || 'Failed to create product')
+          toastError(response.message || 'Failed to create product')
         }
         props.onClose()
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while creating product. Please try again.')
+          toastError('Error occurred while creating product. Please try again.')
         }
         props.onClose()
       },
@@ -79,17 +79,17 @@ class UseProduct {
       mutationFn: (payload: CreateVariantProduct) => productService.createVariantProduct(payload),
       onSuccess: (response) => {
         if (response.data) {
-          toast.success('Product variant created successfully')
+          toastSuccess('Product variant created successfully')
         } else {
-          toast.error(response.message || 'Failed to create product variant')
+          toastError(response.message || 'Failed to create product variant')
         }
         props.onClose
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while creating product variant. Please try again.')
+          toastError('Error occurred while creating product variant. Please try again.')
         }
         props.onClose
       },
@@ -104,17 +104,17 @@ class UseProduct {
         productService.updateProductById(data.id, data.payload),
       onSuccess: (response) => {
         if (response.data) {
-          toast.success('Update product successfully')
+          toastSuccess('Update product successfully')
           queryClient.invalidateQueries({ queryKey: ['products'] })
         } else {
-          toast.error(response.message || 'Failed to update product')
+          toastError(response.message || 'Failed to update product')
         }
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while creating product variant. Please try again.')
+          toastError('Error occurred while creating product variant. Please try again.')
         }
       },
     })
@@ -128,18 +128,18 @@ class UseProduct {
         productService.updateProductVariantById(data.id, data.payload),
       onSuccess: (response) => {
         if (response.data) {
-          toast.success('Update product successfully')
+          toastSuccess('Update product successfully')
           queryClient.invalidateQueries({ queryKey: ['getProductVariantsByProductId'] })
         } else {
-          toast.error(response.message || 'Failed to update product')
+          toastError(response.message || 'Failed to update product')
         }
         props.onClose()
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while creating product variant. Please try again.')
+          toastError('Error occurred while creating product variant. Please try again.')
         }
         props.onClose()
       },
@@ -161,18 +161,18 @@ class UseProduct {
       mutationFn: (productId: string) => productService.deleteProduct(productId),
       onSuccess: (response) => {
         if (response.data) {
-          toast.success('Product deleted successfully')
+          toastSuccess('Product deleted successfully')
           queryClient.invalidateQueries({ queryKey: ['products'] })
         } else {
-          toast.error(response.message || 'Failed to delete product')
+          toastError(response.message || 'Failed to delete product')
         }
         props.onClose()
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while deleting product. Please try again.')
+          toastError('Error occurred while deleting product. Please try again.')
         }
         props.onClose()
       },

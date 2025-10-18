@@ -1,7 +1,7 @@
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
 
+import { toastError, toastSuccess } from '@/components/toastify'
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import authService from '@/services/auth.service'
 import { useAuthStore } from '@/stores/auth.store'
@@ -20,18 +20,18 @@ class UseAuth {
           authStore.setAcessToken(response.data.accessToken)
           authStore.setRefreshToken(response.data.accessToken)
           authStore.storeAccessTokenCookie?.(response.data.accessToken)
-          toast.success('Signin successful!')
+          toastSuccess('Signin successful!')
           router.push('/')
           queryClient.invalidateQueries({ queryKey: ['profile'] })
         } else {
-          toast.error('Signin failed! Please try again.')
+          toastError('Signin failed! Please try again.')
         }
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred during signin. Please try again.')
+          toastError('Error occurred during signin. Please try again.')
         }
       },
     })
@@ -44,17 +44,17 @@ class UseAuth {
       mutationFn: (payload: Signup) => authService.signup(payload),
       onSuccess: (response) => {
         if (response.data) {
-          toast.success('Signup successful! Please log in.')
+          toastSuccess('Signup successful! Please log in.')
           router.push('/signin')
         } else {
-          toast.error('Signup failed! Please try again.')
+          toastError('Signup failed! Please try again.')
         }
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred during signup. Please try again.')
+          toastError('Error occurred during signup. Please try again.')
         }
       },
     })
@@ -66,16 +66,16 @@ class UseAuth {
       mutationFn: (payload: ChangePassword) => authService.changePassword(payload),
       onSuccess: (response) => {
         if (response.data !== null) {
-          toast.success('Change password successful!')
+          toastSuccess('Change password successful!')
         } else {
-          toast.error('Change password failed! Please try again.')
+          toastError('Change password failed! Please try again.')
         }
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred during changing password. Please try again.')
+          toastError('Error occurred during changing password. Please try again.')
         }
       },
     })

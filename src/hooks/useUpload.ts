@@ -1,5 +1,5 @@
+import { toastError, toastSuccess } from '@components/toastify'
 import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
 
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import uploadService from '@/services/upload.service'
@@ -11,9 +11,9 @@ class UseUpload {
       mutationFn: (file: FormData) => uploadService.uploadImage(file),
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while uploading image. Please try again.')
+          toastError('Error occurred while uploading image. Please try again.')
         }
       },
     })
@@ -25,9 +25,9 @@ class UseUpload {
       mutationFn: (files: File[]) => uploadService.uploadMultipleImages(files),
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while uploading image. Please try again.')
+          toastError('Error occurred while uploading image. Please try again.')
         }
       },
     })

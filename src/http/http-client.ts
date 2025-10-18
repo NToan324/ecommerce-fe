@@ -46,9 +46,9 @@ axiosBuilder
       //         secure: true,
       //       })
       //     }
-      //     toast.success('Phiên đăng nhập đã được gia hạn')
+      //     toastSuccess('Phiên đăng nhập đã được gia hạn')
       //   } catch (error) {
-      //     toast.error('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại')
+      //     toastError('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại')
       //     useAuthStore.getState().logout()
       //   } finally {
       //     isRefreshToken = false

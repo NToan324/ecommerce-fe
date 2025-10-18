@@ -1,5 +1,5 @@
+import { toastError, toastSuccess } from '@components/toastify'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
 
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import brandService from '@/services/brand.service'
@@ -31,16 +31,16 @@ class UseBrand {
       mutationFn: (payload: CreateBrand) => brandService.createBrand(payload),
       onSuccess: async (response) => {
         if (response.data) {
-          toast.success('Brand created successfully!')
+          toastSuccess('Brand created successfully!')
           queryClient.invalidateQueries({ queryKey: ['brands'] })
         }
         props.onClose()
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while creating brand. Please try again.')
+          toastError('Error occurred while creating brand. Please try again.')
         }
         props.onClose()
       },
@@ -53,7 +53,7 @@ class UseBrand {
       mutationKey: ['deleteBrand'],
       mutationFn: (brandId: string) => brandService.deleteBrand(brandId),
       onSuccess: async () => {
-        toast.success('Brand deleted successfully!')
+        toastSuccess('Brand deleted successfully!')
         setTimeout(() => {
           queryClient.invalidateQueries({ queryKey: ['brands'] })
         }, 800)
@@ -61,9 +61,9 @@ class UseBrand {
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while deleting brand. Please try again.')
+          toastError('Error occurred while deleting brand. Please try again.')
         }
         props.onClose()
       },
@@ -76,16 +76,16 @@ class UseBrand {
       mutationKey: ['updateBrand', brandId],
       mutationFn: (payload: Partial<CreateBrand>) => brandService.updateBrand(brandId, payload),
       onSuccess: () => {
-        toast.success('Brand updated successfully!')
+        toastSuccess('Brand updated successfully!')
         setTimeout(() => {
           queryClient.invalidateQueries({ queryKey: ['brands'] })
         }, 800)
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while updating brand. Please try again.')
+          toastError('Error occurred while updating brand. Please try again.')
         }
       },
     })

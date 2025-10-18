@@ -2,13 +2,13 @@
 
 import { useCallback, useState } from 'react'
 import Image from 'next/image'
+import { toastError } from '@components/toastify'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
 import { GoPlus } from 'react-icons/go'
 import { IoIosClose } from 'react-icons/io'
 import { MdOutlineCloudUpload } from 'react-icons/md'
-import { toast } from 'react-toastify'
 import z from 'zod'
 
 import Loading from '@/components/loading'
@@ -76,7 +76,7 @@ export function DialogCreateCategory({ open, setOpen }: DialogCreateCategoryProp
         })
         form.setValue('category_image.url', acceptFile[0].name)
       } else {
-        toast.error('Please select an image file less than 2 MB in size')
+        toastError('Please select an image file less than 2 MB in size')
       }
     },
     [form]
@@ -100,7 +100,7 @@ export function DialogCreateCategory({ open, setOpen }: DialogCreateCategoryProp
 
   const handleSubmit = async (data: z.infer<typeof categorySchema.createCategory>) => {
     if (!avatarPreview?.file) {
-      toast.error('Please upload a category image')
+      toastError('Please upload a category image')
       return
     }
     const formData = new FormData()

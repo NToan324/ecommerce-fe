@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { toastSuccess } from '@components/toastify'
 import { FiShoppingCart } from 'react-icons/fi'
 import { HiOutlineMenuAlt4 } from 'react-icons/hi'
 import { IoIosArrowForward } from 'react-icons/io'
-import { toast } from 'react-toastify'
 
 import { useAuthStore } from '@/stores/auth.store'
 
@@ -21,7 +21,7 @@ export default function Header() {
   const handleLogout = () => {
     logout?.()
     router.push('/')
-    toast.success('Logout successful!')
+    toastSuccess('Logout successful!')
   }
 
   useEffect(() => {

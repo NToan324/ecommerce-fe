@@ -1,5 +1,3 @@
-'use client'
-
 import Cookies from 'js-cookie'
 import { io, Socket } from 'socket.io-client'
 
@@ -19,7 +17,7 @@ class SocketConfig {
       transports: ['websocket'],
       withCredentials: true,
       auth: {
-        token,
+        authorization: token || '',
       },
     })
   }
@@ -29,21 +27,15 @@ class SocketConfig {
 
     if (this.socket && !this.socket.connected) {
       this.socket.connect()
-      this.socket.on('connect', () => {
-        console.log('✅ Socket connected:', this.socket?.id)
-      })
-      this.socket.on('disconnect', () => {
-        console.log('❌ Socket disconnected')
-      })
+      this.socket.on('connect', () => {})
+      this.socket.on('disconnect', () => {})
     } else {
-      console.log('Socket already connected or not initialized')
     }
   }
 
   disconnect() {
     if (this.socket?.connected) {
       this.socket.disconnect()
-      console.log('Socket disconnected')
     }
   }
 
@@ -53,9 +45,7 @@ class SocketConfig {
     const emitJoin = () => {
       if (this.socket?.connected) {
         this.socket.emit('join_room', { product_variant_id: roomId })
-        console.log(`Joined room: ${roomId}`)
       } else {
-        console.log('Socket still not connected after waiting — cannot join room')
       }
     }
 
@@ -80,9 +70,7 @@ class SocketConfig {
     const emitLeave = () => {
       if (this.socket?.connected) {
         this.socket.emit('leave_room', roomId)
-        console.log(`Left room: ${roomId}`)
       } else {
-        console.log('Socket still not connected after waiting — cannot leave room')
       }
     }
 
@@ -101,20 +89,21 @@ class SocketConfig {
 
   addReview(productId: string, content: string, rating?: number) {
     if (this.socket?.connected) {
-      console.log('Emitting add_review event')
-      this.socket.emit('add_review', { product_variant_id: productId, content, rating }, (value: Review) =>
-        console.log('Server acknowledgment:', value)
-      )
+      this.socket.emit('add_review', { product_variant_id: productId, content, rating })
     } else {
-      console.log('Socket not connected — cannot add review')
+      console.error('Socket not connected — cannot add review')
     }
   }
 
   on(event: string, callback: (data: Review) => void) {
     if (this.socket) {
       this.socket.on(event, callback)
-    } else {
-      console.log('Socket not initialized — cannot set event listener')
+    }
+  }
+
+  off(event: string, callback: (data: Review) => void) {
+    if (this.socket) {
+      this.socket.off(event, callback)
     }
   }
 }

@@ -1,5 +1,5 @@
+import { toastError, toastSuccess } from '@components/toastify'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
 
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import categoryService from '@/services/category.service'
@@ -31,20 +31,20 @@ class UseCategory {
       mutationFn: (payload: CreateCategory) => categoryService.createCategory(payload),
       onSuccess: async (response) => {
         if (response.data) {
-          toast.success('Category created successfully!')
+          toastSuccess('Category created successfully!')
           setTimeout(() => {
             queryClient.invalidateQueries({ queryKey: ['categories'] })
           }, 800)
         } else {
-          toast.error('Error occurred while creating category. Please try again.')
+          toastError('Error occurred while creating category. Please try again.')
         }
         props.onClose()
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while creating brand. Please try again.')
+          toastError('Error occurred while creating brand. Please try again.')
         }
         props.onClose()
       },
@@ -57,7 +57,7 @@ class UseCategory {
       mutationKey: ['deleteCategory'],
       mutationFn: (categoryId: string) => categoryService.deleteCategory(categoryId),
       onSuccess: async () => {
-        toast.success('Category deleted successfully!')
+        toastSuccess('Category deleted successfully!')
         setTimeout(() => {
           queryClient.invalidateQueries({ queryKey: ['categories'] })
         }, 800)
@@ -65,9 +65,9 @@ class UseCategory {
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while deleting category. Please try again.')
+          toastError('Error occurred while deleting category. Please try again.')
         }
         props.onClose()
       },
@@ -80,16 +80,16 @@ class UseCategory {
       mutationKey: ['updateCategory', categoryId],
       mutationFn: (payload: Partial<CreateCategory>) => categoryService.updateCategory(categoryId, payload),
       onSuccess: () => {
-        toast.success('Category updated successfully!')
+        toastSuccess('Category updated successfully!')
         setTimeout(() => {
           queryClient.invalidateQueries({ queryKey: ['categories'] })
         }, 800)
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred while updating category. Please try again.')
+          toastError('Error occurred while updating category. Please try again.')
         }
       },
     })

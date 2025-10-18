@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
+import { toastError } from '@components/toastify'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
 import { IoIosCamera, IoIosClose } from 'react-icons/io'
 import { MdOutlineCloudUpload } from 'react-icons/md'
-import { toast } from 'react-toastify'
 import z from 'zod'
 
 import Loading from '@/components/loading'
@@ -68,7 +68,7 @@ export function DialogUpdateAvatarProfile({ open, setOpen, data }: DialogCreateC
         })
         form.setValue('avatar.url', acceptFile[0].name)
       } else {
-        toast.error('Please select an image file less than 2 MB in size')
+        toastError('Please select an image file less than 2 MB in size')
       }
     },
     [form]
@@ -92,7 +92,7 @@ export function DialogUpdateAvatarProfile({ open, setOpen, data }: DialogCreateC
 
   const handleSubmit = async () => {
     if (!avatarPreview?.file) {
-      toast.error('Please upload an image from your device')
+      toastError('Please upload an image from your device')
       return
     }
     const formData = new FormData()

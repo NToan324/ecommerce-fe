@@ -22,7 +22,7 @@ export function CarouselProduct({ data, setApi }: CarouselProductProps) {
                 alt="Laptop"
                 fill
                 objectFit="contain"
-                className="absolute scale-90 md:scale-125 "
+                className="absolute scale-80 md:scale-100"
               />
             </div>
           </CarouselItem>

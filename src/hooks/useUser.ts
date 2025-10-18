@@ -1,5 +1,5 @@
+import { toastError, toastSuccess } from '@components/toastify'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
 
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import userService from '@/services/user.service'
@@ -24,20 +24,20 @@ class UseUser {
       mutationFn: (payload: Partial<UpdateProfile>) => userService.updateProfile(payload),
       onSuccess: (response) => {
         if (response.data) {
-          toast.success('Profile updated successfully!')
+          toastSuccess('Profile updated successfully!')
           queryClient.invalidateQueries({
             queryKey: ['profile'],
           })
         } else {
-          toast.error('Update profile failed. Please try again.')
+          toastError('Update profile failed. Please try again.')
         }
         props.onClose()
       },
       onError: (error: IHttpErrorResponseDto) => {
         if (error.error.message) {
-          toast.error(`${error.error.message}`)
+          toastError(`${error.error.message}`)
         } else {
-          toast.error('Error occurred during updating profile. Please try again.')
+          toastError('Error occurred during updating profile. Please try again.')
         }
         props.onClose()
       },

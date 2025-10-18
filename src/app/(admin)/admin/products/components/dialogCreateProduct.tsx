@@ -2,13 +2,13 @@
 
 import { useCallback, useState } from 'react'
 import Image from 'next/image'
+import { toastError } from '@components/toastify'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
 import { GoPlus } from 'react-icons/go'
 import { IoIosClose } from 'react-icons/io'
 import { MdOutlineCloudUpload } from 'react-icons/md'
-import { toast } from 'react-toastify'
 import z from 'zod'
 
 import { Combobox } from '@/components/comboBox'
@@ -78,7 +78,7 @@ export function DialogCreateProduct({ open, setOpen }: DialogCreateProductProps)
         })
         form.setValue('product_image.url', acceptFile[0].name)
       } else {
-        toast.error('Please select an image file less than 2 MB in size')
+        toastError('Please select an image file less than 2 MB in size')
       }
     },
     [form]
@@ -102,7 +102,7 @@ export function DialogCreateProduct({ open, setOpen }: DialogCreateProductProps)
 
   const handleSubmit = async (data: z.infer<typeof productSchema.createProduct>) => {
     if (!avatarPreview?.file) {
-      toast.error('Please upload a product image')
+      toastError('Please upload a product image')
       return
     }
     const formData = new FormData()

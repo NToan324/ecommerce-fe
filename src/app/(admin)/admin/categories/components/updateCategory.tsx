@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
+import { toastError } from '@components/toastify'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
 import { IoIosClose } from 'react-icons/io'
 import { MdOutlineCloudUpload } from 'react-icons/md'
-import { toast } from 'react-toastify'
 import { z } from 'zod'
 
 import Loading from '@/components/loading'
@@ -52,7 +52,7 @@ export default function UpdateCategory({ category }: UpdateCategoryProps) {
         })
         form.setValue('category_image.url', acceptFile[0].name)
       } else {
-        toast.error('Please select an image file less than 2 MB in size')
+        toastError('Please select an image file less than 2 MB in size')
       }
     },
     [form]
@@ -101,7 +101,7 @@ export default function UpdateCategory({ category }: UpdateCategoryProps) {
   }
 
   const handleError = () => {
-    toast.error('Please fix the errors in the form')
+    toastError('Please fix the errors in the form')
   }
 
   useEffect(() => {

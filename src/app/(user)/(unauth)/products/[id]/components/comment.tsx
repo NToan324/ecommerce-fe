@@ -8,11 +8,14 @@ import { formatDateWithSuffix } from '@/utils/helpers'
 
 interface CommentProps {
   data: Review
+  isSingle?: boolean
 }
 
-export default function Comment({ data }: CommentProps) {
+export default function Comment({ data, isSingle }: CommentProps) {
   return (
-    <div className="flex justify-between items-start w-full min-h-[100px] gap-5 pb-12 border-b border-black/10 bg-white">
+    <div
+      className={`${!isSingle ? 'border-b border-black/10' : ''} flex justify-between items-start w-full min-h-[100px] gap-5 pb-12 bg-white`}
+    >
       <div className="w-[60px] h-[60px] relative rounded-full overflow-hidden">
         <Image
           src={data.user_id ? data.user.avatar : 'https://avatar.iran.liara.run/public'}
@@ -23,15 +26,15 @@ export default function Comment({ data }: CommentProps) {
         />
       </div>
       <div className="flex flex-col justify-start items-center w-full gap-4">
-        <div className="flex justify-between items-center w-full">
+        <div className="flex justify-between md:items-center w-full md:flex-row items-start flex-col gap-2">
           <div className="flex justify-start items-center gap-2">
             <p className="text-base font-bold">{data.user_id ? data.user.name : 'Anonymous'}</p>
             <span className="text-xs font-medium text-black/50">{formatDateWithSuffix(data.createdAt)}</span>
           </div>
           <div className="flex justify-start items-center gap-2">
-            {data.user_id && (
+            {data.user_id && data.rating > 0 && (
               <>
-                <p className="text-base font-medium pt-1 md:block hidden">{data.rating.toFixed(1)}</p>
+                <p className="text-base font-medium pt-1 md:block hidden">{data.rating && data.rating.toFixed(1)}</p>
                 <div className="flex justify-start items-center">
                   {Array.from({ length: 5 }).map((_, index) => {
                     const isFilled = index < (data.user_id ? data.rating : 0)
