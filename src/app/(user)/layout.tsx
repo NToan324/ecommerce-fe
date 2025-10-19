@@ -18,7 +18,7 @@ export default function RootLayout({ children }: CommonLayoutProps) {
       <body className={`antialiased`}>
         <Provider>
           <MainLayout>{children}</MainLayout>
-          <ToastContainer autoClose={3000} />
+          <ToastContainer autoClose={2000} />
         </Provider>
       </body>
     </html>

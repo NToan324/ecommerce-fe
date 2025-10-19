@@ -5,14 +5,14 @@ import { toast } from 'react-toastify'
 export const toastSuccess = (message: string) => {
   return toast.success(
     <div>
-      <div className="relative overflow-hidden py-4 flex flex-col justify-center items-start pl-20 rounded-4xl pr-5 text-white">
+      <div className="relative overflow-hidden py-4 h-[100px] flex flex-col justify-center items-start pl-20 rounded-4xl pr-5 text-white">
         <span className="text-lg">Well done!</span>
         <p className="text-sm">{message}</p>
         <div className="absolute left-0 bottom-0">
           <Image src="/toastify/green_bubbles.svg" alt="Success" width={50} height={50} objectFit="contain" />
         </div>
       </div>
-      <div className="absolute flex justify-center items-center box-chat-success w-14 h-14  -top-7 left-5 rounded-full bg-success-toasttify-box">
+      <div className="absolute flex justify-center items-center box-chat-success w-14 h-14 -top-7 left-5 rounded-full bg-success-toasttify-box">
         <BsCheckLg color="white" size={26} className="z-10" strokeWidth={1} />
       </div>
     </div>
@@ -22,7 +22,7 @@ export const toastSuccess = (message: string) => {
 export const toastError = (message: string) => {
   return toast.error(
     <div>
-      <div className="relative overflow-hidden py-4 flex flex-col justify-center items-start pl-20 rounded-4xl pr-5 text-white">
+      <div className="relative overflow-hidden py-4 h-[100px] flex flex-col justify-center items-start pl-20 rounded-4xl pr-5 text-white">
         <span className="text-lg">Oh snap!</span>
         <p className="text-sm">{message}</p>
         <div className="absolute left-0 bottom-0">
@@ -38,7 +38,7 @@ export const toastError = (message: string) => {
 export const toastWarning = (message: string) => {
   return toast.warning(
     <div>
-      <div className="relative overflow-hidden py-4 flex flex-col justify-center items-start pl-20 rounded-4xl pr-5 text-black">
+      <div className="relative overflow-hidden py-4 h-[100px] flex flex-col justify-center items-start pl-20 rounded-4xl pr-5 text-black">
         <span className="text-lg">Warning!</span>
         <p className="text-sm">{message}</p>
         <div className="absolute left-0 bottom-0">
@@ -54,7 +54,7 @@ export const toastWarning = (message: string) => {
 export const toastInfo = (message: string) => {
   return toast.info(
     <div>
-      <div className="relative overflow-hidden py-4 flex flex-col justify-center items-start pl-20 rounded-4xl pr-5 text-black">
+      <div className="relative overflow-hidden py-4 h-[100px] flex flex-col justify-center items-start pl-20 rounded-4xl pr-5 text-black">
         <span className="text-lg">Info</span>
         <p className="text-sm">{message}</p>
         <div className="absolute left-0 bottom-0">

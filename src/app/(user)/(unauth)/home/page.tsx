@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import Cookies from 'js-cookie'
 import { IoIosArrowForward } from 'react-icons/io'
 
 import useUser from '@/hooks/useUser'
@@ -23,14 +24,16 @@ const PLACEHOLDER_TEXT = [
 
 export default function page() {
   const [placeholder, setPlaceholder] = useState('')
+  const accessToken = Cookies.get('accessToken')
+
   const router = useRouter()
-  const { data: user, isSuccess } = useUser.getProfile()
+  const { data: profile, isSuccess } = useUser.getProfile(!!accessToken)
   const setUser = useAuthStore((state) => state.setUser)
   useEffect(() => {
-    if (isSuccess && user.data._id !== '') {
-      setUser(user.data)
+    if (isSuccess && profile.data._id !== '') {
+      setUser(profile.data)
     }
-  }, [isSuccess, user])
+  }, [isSuccess, profile])
 
   useEffect(() => {
     let id = 0
@@ -51,7 +54,7 @@ export default function page() {
 
   return (
     <div className="">
-      <div className="relative h-screen overflow-hidden">
+      <div className="relative min-h-[calc(100vh-80px)] overflow-hidden">
         <h2 className="absolute top-[195px] left-[30px] z-10 w-full max-w-[300px] text-[clamp(2.5rem,8.8vw,8.5rem)] font-bold sm:top-[60px] sm:left-[108px] sm:max-w-[500px] md:max-w-[1000px]">
           Your Hub{' '}
           <span className="bg-gradient-to-tr from-white via-gray-300 to-black bg-clip-text text-transparent">For </span>
@@ -66,7 +69,7 @@ export default function page() {
         <input
           type="text"
           placeholder={placeholder}
-          className="shadow-blue-primary focus-visible:ring-blue-primary absolute md:bottom-[15%] bottom-[35%] left-[50%] h-[80px] w-[340px] min-w-[340px] translate-x-[-50%] translate-y-[-50%] rounded-[50px] bg-white px-8 placeholder-[#C3C3C3] shadow-[0_1px_250px_rgba(0,0,0,1)] outline-none focus-visible:ring-1 sm:w-[600px] lg:w-[780px]"
+          className="shadow-blue-primary focus-visible:ring-blue-primary absolute md:bottom-[8%] bottom-[15%] left-[50%] h-[80px] w-[340px] min-w-[340px] translate-x-[-50%] translate-y-[-50%] rounded-[50px] bg-white px-8 placeholder-[#C3C3C3] shadow-[0_1px_250px_rgba(0,0,0,1)] outline-none focus-visible:ring-1 sm:w-[600px] lg:w-[780px]"
         />
       </div>
       <div className="relative flex flex-col items-center justify-center gap-10 overflow-hidden p-7 lg:justify-start lg:p-[120px]">

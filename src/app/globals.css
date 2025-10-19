@@ -287,10 +287,25 @@ body {
   height: 24px !important;
 }
 
+@media (max-width: 480px) {
+  .Toastify__toast-container {
+    top: auto !important;
+    bottom: 20px !important;
+    gap: 32px !important;
+    right: 50% !important;
+    scale: 75%;
+  }
+}
+.Toastify__toast-container {
+  gap: 16px;
+  top: 100px;
+  padding: 0 !important;
+}
+
 .Toastify__toast {
   padding: 0 !important;
-  top: 70px;
   border-radius: 32px !important;
+  height: 100px !important;
 }
 .Toastify__toast--success {
   background: var(--color-success-toastify) !important;
@@ -310,8 +325,8 @@ body {
 
 .Toastify__progress-bar,
 .Toastify__progress-bar--bg {
-  width: calc(100% - 56px) !important;
-  margin: 0 24px !important;
+  width: calc(100% - 32px) !important;
+  margin: 0 12px !important;
   border-radius: 12px !important;
   background-color: white !important;
 }

@@ -90,7 +90,7 @@ export default function page() {
 
   return (
     <main>
-      <div className="flex flex-col items-center justify-start min-h-screen gap-10 w-full px-7 pb-4 lg:px-[120px] lg:pb-20 pt-12">
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] gap-10 w-full px-7 lg:px-[120px] lg:pb-20 p-12">
         <h1 className="text-3xl font-bold">Compx</h1>
         <div className="flex flex-col gap-3 justify-between items-center">
           <p className="text-2xl font-bold text-center">Get access, shop smarter today</p>

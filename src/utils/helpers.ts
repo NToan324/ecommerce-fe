@@ -1,4 +1,4 @@
-import { formatDistance } from 'date-fns'
+import { format, formatDistance } from 'date-fns'
 
 export const formatPrice = (price: number) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price).replace('₫', 'VND')
@@ -10,6 +10,10 @@ export const formatDate = (date: Date) => {
     month: '2-digit',
     day: '2-digit',
   }).format(date)
+}
+export const convertStringToDate = (dateString: string) => {
+  console.log('dateString', dateString)
+  return format(new Date(dateString), 'dd/MM/yyyy')
 }
 
 export const convertByteToMB = (bytes: number) => {

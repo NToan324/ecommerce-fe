@@ -7,8 +7,8 @@ import { ORDER_STATUS } from '@/constant'
 
 export default function page() {
   const scroller = useRef<HTMLSpanElement[] | null>([])
-  const [selectedStatus, setSelectedStatus] = useState<ORDER_STATUS>(ORDER_STATUS.DELIVERY)
-  const orderStatus = [ORDER_STATUS.PENDING, ORDER_STATUS.IN_TRANSIT, ORDER_STATUS.CANCELLED, ORDER_STATUS.DELIVERY]
+  const [selectedStatus, setSelectedStatus] = useState<ORDER_STATUS>(ORDER_STATUS.DELIVERED)
+  const orderStatus = [ORDER_STATUS.PENDING, ORDER_STATUS.SHIPPING, ORDER_STATUS.CANCELLED, ORDER_STATUS.DELIVERED]
 
   const handleStatus = (status: ORDER_STATUS, index: number) => {
     setSelectedStatus(status)

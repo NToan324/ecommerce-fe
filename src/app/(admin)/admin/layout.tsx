@@ -18,7 +18,7 @@ export default function RootLayout({ children }: CommonLayoutProps) {
     <html lang="en">
       <body className={`antialiased`}>
         <Provider>
-          <ToastContainer autoClose={3000} />
+          <ToastContainer autoClose={2000} />
           <AdminLayout>{children}</AdminLayout>
         </Provider>
       </body>

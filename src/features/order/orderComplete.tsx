@@ -6,11 +6,27 @@ import { useRouter } from 'next/navigation'
 import { IoIosArrowDown } from 'react-icons/io'
 
 import { Button } from '@/components/ui/button'
-import { formatPrice } from '@/utils/helpers'
+import { useOrderStore } from '@/stores/order.store'
+import { Order } from '@/types/order.type'
+import { convertStringToDate, formatPrice } from '@/utils/helpers'
 
-export default function page() {
+interface OrderCompletePageProps {
+  order: Order
+}
+
+export default function OrderCompletePage({ order }: OrderCompletePageProps) {
   const [openSummary, setOpenSummary] = useState(false)
+  const clearOrderStore = useOrderStore((state) => state.clearOrderComplete)
   const route = useRouter()
+
+  const subtotal = order.items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
+
+  const handleBack = () => {
+    route.push('/')
+    setTimeout(() => {
+      clearOrderStore()
+    }, 3000)
+  }
 
   return (
     <div className="relative flex flex-col items-start justify-start gap-10 overflow-hidden bg-white p-7 lg:px-[120px] lg:pb-20 lg:pt-10">
@@ -24,8 +40,8 @@ export default function page() {
           the email was routed there.
         </p>
         <Button
-          className="rounded-4xl max-w-[150px] px-1 py-4 bg-violet-primary w-full h-6 hover:bg-violet-primary/90"
-          onClick={() => route.push('/')}
+          onClick={() => handleBack()}
+          className="rounded-4xl max-w-[150px] px-1 py-4 bg-violet-primary w-full h-12 hover:bg-violet-primary/90"
         >
           Back to Home
         </Button>
@@ -35,20 +51,18 @@ export default function page() {
         <div className="flex flex-col justify-start items-center gap-4 w-full">
           <div className="flex justify-start items-center gap-4 w-full">
             <p className="text-[clamp(0.75rem,2vw,1.125rem)]">Order Id</p>
-            <span className="text-[clamp(0.75rem,2vw,1.125rem)] font-bold">thanhbinhcutie</span>
+            <span className="text-[clamp(0.75rem,2vw,1.125rem)] font-bold">{order.user_name}</span>
           </div>
           <div className="flex justify-start items-center gap-4 w-full">
             <p className="text-[clamp(0.75rem,2vw,1.125rem)]">Date</p>
-            <span className="text-[clamp(0.75rem,2vw,1.125rem)] font-bold">Sep 10, 2025</span>
+            <span className="text-[clamp(0.75rem,2vw,1.125rem)] font-bold">{convertStringToDate(order.createdAt)}</span>
           </div>
-          <div className="p-[2px] md:shadow-2xl md:bg-gradient-to-br shadow-blue-primary/50 from-blue-gray to-blue-primary via-blue-primary w-full rounded-2xl max-w-[650px]">
+          <div className="p-[2px] md:shadow-2xl md:bg-gradient-to-br shadow-blue-primary/50 from-blue-gray to-blue-primary via-blue-primary w-full rounded-2xl">
             <div className="flex flex-col gap-4 justify-start items-start p-6 md:p-4 bg-white rounded-[14px] w-full">
               <p className="text-[clamp(0.75rem,2vw,1.125rem)] font-bold">Personal Information</p>
               <div className="flex flex-col gap-3">
-                <p className="text-[clamp(0.75rem,2vw,1.125rem)]">Thanh Binh</p>
-                <p className="text-[clamp(0.75rem,2vw,1.125rem)] md:max-w-[200px] w-full">
-                  19 Nguyen Huu Tho Tan Hung Ward, Ho Chi Minh City
-                </p>
+                <p className="text-[clamp(0.75rem,2vw,1.125rem)]">{order.user_name}</p>
+                <p className="text-[clamp(0.75rem,2vw,1.125rem)] md:max-w-[200px] w-full">{order.address}</p>
               </div>
             </div>
           </div>
@@ -73,7 +87,8 @@ export default function page() {
                   <Image src={'/images/gift.png'} alt="Gift" fill className="object-contain" />
                 </div>
                 <p className="text-[clamp(0.75rem,2vw,1.125rem)]">
-                  You’ve got <span className="font-bold text-orange-foreground">100</span> points for your next order!
+                  You’ve got <span className="font-bold text-orange-foreground">{order.loyalty_points_earned}</span>{' '}
+                  points for your next order!
                 </p>
               </div>
             </div>
@@ -87,48 +102,66 @@ export default function page() {
               Order summary
             </h2>
             <div className="flex flex-col justify-start items-start gap-6 w-full">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <div
-                  className="flex justify-start items-center w-full gap-4 border-b border-blue-primary/90 pb-4"
-                  key={index}
-                >
-                  <div className="relative w-[100px] h-[100px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
-                    <Image src={'/images/laptop.png'} alt="Laptop" fill className="object-cover" />
+              {order.items.map((item, index) => {
+                // const attributes = Object.entries(item.attributes).map(([key, value]) => ({ key, value }))
+                // const configuration = attributes
+                //   .filter((attr) => attr.key.toLowerCase() !== 'color')
+                //   .slice(0, 3)
+                //   .map((attr) => `${attr.key} ${attr.value}`)
+                //   .join(', ')
+                // const color = attributes.find((attr) => attr.key.toLowerCase() === 'color')?.value || ''
+                return (
+                  <div
+                    className="flex justify-start items-center w-full gap-4 border-b border-blue-primary/90 pb-4"
+                    key={index}
+                  >
+                    <div className="relative min-w-[100px] w-[100px] h-[100px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
+                      <Image src={item.images.url} alt="Laptop" fill className="object-cover" />
+                    </div>
+                    <div className="flex flex-col justify-start items-start gap-2">
+                      <h3 className="font-bold text-[clamp(0.625rem,2vw,0.875rem)] line-clamp-2">
+                        {item.product_variant_name}
+                      </h3>
+                      <p className="font-medium text-[clamp(0.45rem,2vw,0.625rem)]">{}</p>
+                      <p className="font-medium text-[clamp(0.45rem,2vw,0.625rem)]">{}</p>
+                      <div className="flex w-full justify-between items-center gap-4">
+                        <p className="font-bold text-[clamp(0.625rem,2vw,0.875rem)]">{formatPrice(item.unit_price)}</p>
+                        <span className="text-xs">x{item.quantity}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex flex-col justify-start items-start gap-2">
-                    <h3 className="font-bold text-[clamp(0.625rem,2vw,0.875rem)]">Laptop Lenovo Idea Slim 5</h3>
-                    <p className="font-medium text-[clamp(0.45rem,2vw,0.625rem)]">16GB RAM, 512GB SSD</p>
-                    <p className="font-medium text-[clamp(0.45rem,2vw,0.625rem)]">Silver</p>
-                    <p className="font-bold text-[clamp(0.625rem,2vw,0.875rem)]">{formatPrice(15960000)}</p>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
             <div
               className={`${openSummary ? 'flex' : 'hidden md:flex'} flex-col gap-4 justify-between items-center w-full`}
             >
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Subtotal</p>
-                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">1.596.000 VND</span>
+                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Tax</p>
-                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">1.596.000 VND</span>
+                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
+                  {formatPrice(order.total_amount * 0.1)}
+                </span>
               </div>
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Shipping</p>
-                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">1.596.000 VND</span>
+                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(49000)}</span>
               </div>
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Discount</p>
-                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">1.596.000 VND</span>
+                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
+                  {formatPrice(order.discount_amount)}
+                </span>
               </div>
             </div>
             <div className="w-full flex flex-col gap-6">
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-bold text-xl">Total</p>
                 <div className="flex justify-between items-center gap-2">
-                  <span className="font-bold text-xl">1.596.000 VND</span>
+                  <span className="font-bold text-xl">{formatPrice(order.total_amount)}</span>
                   <IoIosArrowDown
                     size={16}
                     className={`${openSummary ? 'rotate-180' : ''} duration-300 transition-all text-black/40 md:hidden cursor-pointer`}

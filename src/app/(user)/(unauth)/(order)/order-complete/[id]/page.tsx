@@ -1,14 +1,15 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { notFound } from 'next/navigation'
 import ShoppingCardLoader from '@public/lotties/Shopping Cart Loader.json'
 import Lottie from 'lottie-react'
 
-import CartPage from '@/features/order/cart'
-import { useCartStore } from '@/stores/cart.store'
+import OrderCompletePage from '@/features/order/orderComplete'
+import { useOrderStore } from '@/stores/order.store'
 
 export default function page() {
-  const cart = useCartStore((state) => state.cart)
+  const orderCompleteStore = useOrderStore((state) => state.orderComplete)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -28,9 +29,13 @@ export default function page() {
     )
   }
 
+  if (orderCompleteStore === null) {
+    return notFound()
+  }
+
   return (
     <div>
-      <CartPage cart={cart} />
+      <OrderCompletePage order={orderCompleteStore} />
     </div>
   )
 }

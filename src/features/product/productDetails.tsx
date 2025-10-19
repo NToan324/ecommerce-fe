@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { toastError, toastSuccess } from '@components/toastify'
+import { toastError, toastSuccess, toastWarning } from '@components/toastify'
 import { useQueryClient } from '@tanstack/react-query'
 import Comment from '@user/(unauth)/products/[id]/components/comment'
 import { CarouselProduct } from '@user/(unauth)/products/components/carouselProduct'
@@ -19,6 +19,7 @@ import { attributeOptions } from '@/config'
 import socketConfig from '@/config/socket'
 import useProduct from '@/hooks/useProduct'
 import { useAuthStore } from '@/stores/auth.store'
+import { useCartStore } from '@/stores/cart.store'
 import { ProductVariantDetail } from '@/types/product.type'
 import { formatPrice } from '@/utils/helpers'
 
@@ -35,6 +36,9 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
   const [comment, setComment] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [ratings, setRatings] = useState(0)
+  const [quantity, setQuantity] = useState(1)
+  const setCart = useCartStore((state) => state.setCart)
+  const cart = useCartStore((state) => state.cart)
 
   const user = useAuthStore((state) => state.user)
 
@@ -42,15 +46,11 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
   const colorEntry = entriesAttributes.find(([key]) => key === 'Color')
   const otherEntries = entriesAttributes.filter(([key]) => key !== 'Color')
 
-  const {
-    data: reviews,
-    isSuccess: isSuccessReviews,
-    // isPending: isPendingReviews,
-    // isFetching: isFetchingReviews,
-  } = useProduct.getReviewsProductVariant(id as string, {
+  const { data: reviews, isSuccess: isSuccessReviews } = useProduct.getReviewsProductVariant(id as string, {
     limit: 10,
     page: 1,
   })
+
   useEffect(() => {
     if (!api) {
       return
@@ -97,8 +97,6 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
     }
   }, [id])
 
-  const handleAddToCart = () => {}
-
   const addReview = (content: string) => {
     if (content.trim() === '') {
       toastError('Comment cannot be empty')
@@ -118,10 +116,50 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
     }
   }
 
+  const handleAddToCart = () => {
+    const checkQuantityProductInCart = cart.find((item) => item._id === product.productVariant._id)
+    if (checkQuantityProductInCart) {
+      if (checkQuantityProductInCart.quantity + quantity > product.productVariant.quantity) {
+        toastError('Cannot add more than available quantity in cart')
+        return
+      }
+    }
+    setCart({
+      _id: product.productVariant._id,
+      product_id: product.productVariant.product_id,
+      variant_name: product.productVariant.variant_name,
+      attributes: product.productVariant.attributes,
+      original_price: product.productVariant.price,
+      price: product.productVariant.price,
+      discount: product.productVariant.discount,
+      images: product.productVariant.images,
+      available_quantity: product.productVariant.quantity,
+      quantity: quantity,
+    })
+    toastSuccess('You have added the product to the cart successfully!')
+  }
+
+  const handleIncrease = () => {
+    if (quantity < product.productVariant.quantity) {
+      setQuantity(quantity + 1)
+    }
+    if (quantity === product.productVariant.quantity) {
+      toastWarning('Reached maximum available quantity')
+    }
+  }
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1)
+    }
+    if (quantity === 1) {
+      toastWarning('Reached minimum available quantity')
+    }
+  }
+
   return (
     <div>
       {/* Image Category */}
-      <div className="bg-purple-primary min-h-screen relative overflow-hidden">
+      <div className="bg-purple-primary min-h-[calc(100vh-80px)] relative overflow-hidden">
         <p className="text-[clamp(9.5rem,50vw,34rem)] absolute font-bold text-blue-light top-[30%] md:top-0 uppercase">
           Lenovo
         </p>
@@ -130,7 +168,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
           setApi={setApi}
         />
 
-        <div className="absolute top-0 md:top-[25%] md:p-0 p-8 right-0 w-full flex flex-col justify-between items-start gap-7 max-w-[400px] md:max-w-[600px]">
+        <div className="absolute top-0 md:top-[10%] md:p-0 p-8 right-0 w-full flex flex-col justify-between items-start gap-7 max-w-[400px] md:max-w-[600px]">
           <div className="flex items-center gap-2">
             <span className="block w-[80px] h-px bg-black"></span>
             <h1 className="">{product && product.productVariant?.brand_name}</h1>
@@ -138,7 +176,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
           <h2 className="font-medium text-[clamp(1.5rem,5vw,3.125rem)] line-clamp-4">
             {product && product.productVariant?.variant_name}
           </h2>
-          <div className="flex justify-start items-center gap-2 md:gap-4 md:relative absolute md:bottom-0 md:right-0 -bottom-[280px] right-[40px]">
+          <div className="flex justify-start items-center gap-2 md:gap-4 md:relative absolute md:bottom-0 md:right-0 -bottom-[310px] right-[40px]">
             {Array.from({ length: count || 4 }).map((_, index) => {
               const isShowed = index === current - 1
               return isShowed ? (
@@ -156,14 +194,24 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
               )
             })}
           </div>
-          <div className="flex justify-start items-center gap-6 w-full mt-4 absolute md:relative md:bottom-0 md:right-0 -right-[180px] -bottom-[350px]">
+          <div className="flex justify-start items-center gap-6 w-full mt-4 absolute md:relative md:bottom-0 md:right-0 -right-[180px] -bottom-[380px]">
             {/* Increase and Descrease */}
             <div className="flex items-center rounded-4xl justify-between w-full h-12 md:h-14 max-w-[105px] md:max-w-[150px] border-2 border-blue-secondary">
-              <Button variant={'ghost'} className="hover:bg-transparent">
+              <Button
+                title={`Available ${product.productVariant.quantity}`}
+                variant={'ghost'}
+                className="hover:bg-transparent"
+                onClick={handleDecrease}
+              >
                 <FiMinus size={24} className="text-blue-secondary" strokeWidth={3} />
               </Button>
-              <span className="text-blue-tertiary text-[clamp(0.875rem,2vw,1.25rem)]">1</span>
-              <Button variant={'ghost'} className="hover:bg-transparent">
+              <span className="text-blue-tertiary text-[clamp(0.875rem,2vw,1.25rem)]">{quantity}</span>
+              <Button
+                title={`Available ${product.productVariant.quantity}`}
+                variant={'ghost'}
+                className="hover:bg-transparent"
+                onClick={handleIncrease}
+              >
                 <GoPlus size={24} className="text-blue-secondary" strokeWidth={1} />
               </Button>
             </div>

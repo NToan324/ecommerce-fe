@@ -34,6 +34,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logout: () => {
     Cookies.remove('accessToken')
+    Cookies.remove('refreshToken')
     set(() => ({
       user: null,
       acessToken: '',

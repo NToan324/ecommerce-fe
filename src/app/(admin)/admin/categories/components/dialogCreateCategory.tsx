@@ -126,7 +126,7 @@ export function DialogCreateCategory({ open, setOpen }: DialogCreateCategoryProp
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <DialogTrigger asChild>
-            <Button type="button" className="w-full bg-blue-tertiary hover:bg-blue-tertiary/90 rounded-2xl">
+            <Button type="button" className="w-full h-12 bg-blue-tertiary hover:bg-blue-tertiary/90 rounded-2xl">
               <GoPlus size={20} strokeWidth={1} />
               Add Category
             </Button>

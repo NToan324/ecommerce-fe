@@ -6,8 +6,8 @@ import ShoppingCardLoader from '@public/lotties/Shopping Cart Loader.json'
 // import { useQueryClient } from '@tanstack/react-query'
 import Lottie from 'lottie-react'
 
+import ProductDetailsPage from '@/features/product/productDetails'
 import useProduct from '@/hooks/useProduct'
-import ProductDetailsPage from '@/page/product/productDetails'
 
 export default function page() {
   // const queryClient = useQueryClient()
@@ -17,12 +17,6 @@ export default function page() {
     isSuccess: isSuccessProductVariant,
     isPending: isPendingProductVariant,
   } = useProduct.getProductVariantById(params?.id as string)
-
-  // const handleAddReview = () => {
-  //   queryClient.invalidateQueries({
-  //     queryKey: ['getReviewsProductVariant', params?.id, { limit: 10, page: 1 }],
-  //   })
-  // }
 
   if (isPendingProductVariant) {
     return (

@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { ScrollProgress, ScrollProgressProvider } from '@components/animate-ui/primitives/animate/index'
+import Cookies from 'js-cookie'
 
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
@@ -10,13 +11,14 @@ import { useAuthStore } from '@/stores/auth.store'
 import { CommonLayoutProps } from '@/types/common.type'
 
 export const MainLayout = ({ children }: CommonLayoutProps) => {
-  const { data: user, isSuccess } = useUser.getProfile()
+  const accessToken = Cookies.get('accessToken')
+  const { data: profile, isSuccess } = useUser.getProfile(!!accessToken)
   const setUser = useAuthStore((state) => state.setUser)
   useEffect(() => {
-    if (isSuccess && user.data._id !== '') {
-      setUser(user.data)
+    if (isSuccess && profile.data._id !== '') {
+      setUser(profile.data)
     }
-  }, [isSuccess, user])
+  }, [isSuccess, profile])
 
   return (
     <div>

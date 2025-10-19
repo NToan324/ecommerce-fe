@@ -5,7 +5,7 @@ import Lottie from 'lottie-react'
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-start h-screen gap-2 px-7 text-black lg:px-[120px] text-center pt-16 md:pt-4">
+    <div className="flex flex-col items-center justify-start min-h-[calc(100vh-80px)] gap-2 px-7 text-black lg:px-[120px] text-center py-16 md:pt-4">
       <div className="relative">
         <h1 className="text-[clamp(10rem,8vw,16rem)] min-[1000px]:text-[16rem] font-bold text-center relative z-20">
           404

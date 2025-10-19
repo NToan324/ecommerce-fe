@@ -5,10 +5,10 @@ import { notFound } from 'next/navigation'
 import ShoppingCardLoader from '@public/lotties/Shopping Cart Loader.json'
 import Lottie from 'lottie-react'
 
+import ProductPage from '@/features/product/product'
 import useBrand from '@/hooks/useBrand'
 import useCategory from '@/hooks/useCategory'
 import useProduct from '@/hooks/useProduct'
-import ProductPage from '@/page/product/product'
 
 export default function page() {
   const { data: brands, isSuccess: isSuccessBrands, isPending: isPendingBrands } = useBrand.getAllBrandsByUser()

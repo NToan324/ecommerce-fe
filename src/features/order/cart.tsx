@@ -1,0 +1,268 @@
+'use client'
+
+import { useState } from 'react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import EmptyShoppingCart from '@public/images/empty-shopping-cart.png'
+import { BsCart2 } from 'react-icons/bs'
+import { FiMinus } from 'react-icons/fi'
+import { GoPlus } from 'react-icons/go'
+import { HiOutlineTrash } from 'react-icons/hi2'
+import { IoIosArrowDown } from 'react-icons/io'
+
+import Loading from '@/components/loading'
+import { toastSuccess, toastWarning } from '@/components/toastify'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import useCoupon from '@/hooks/useCoupon'
+import { useCartStore } from '@/stores/cart.store'
+import { CartDetail } from '@/types/cart.type'
+import { formatPrice } from '@/utils/helpers'
+
+interface CartPageProps {
+  cart: CartDetail[]
+}
+
+export default function CartPage({ cart }: CartPageProps) {
+  const [openSummary, setOpenSummary] = useState(false)
+  const setCartState = useCartStore((state) => state.setCart)
+  const setCouponState = useCartStore((state) => state.setCoupon)
+  const deleteProductFromCart = useCartStore((state) => state.deleteProductFromCart)
+  const couponStore = useCartStore((state) => state.coupon)
+  const [coupon, setCoupon] = useState('')
+  const route = useRouter()
+  const {
+    mutate: getCouponByCode,
+    isPending: isPendingGetCouponByCode,
+    data: couponData,
+  } = useCoupon.getCouponByCode({
+    onClose: () => {
+      setCoupon('')
+    },
+  })
+
+  const subtotal = cart.reduce((sum, item) => sum + item.original_price * item.quantity, 0)
+  const discount = cart.reduce((sum, item) => sum + (item.original_price - item.price) * item.quantity, 0)
+  const shippingFee = 49000
+  const couponDiscount = couponData?.data?.discount_amount || couponStore?.discount_amount || 0
+  const total = subtotal - discount - shippingFee - couponDiscount
+
+  const handleIncrease = (quantity: number, product: CartDetail) => {
+    if (quantity < product.available_quantity) {
+      setCartState({ ...product, quantity: 1 })
+    }
+    if (quantity === product.available_quantity) {
+      toastWarning('Maximum quantity reached')
+    }
+  }
+  const handleDecrease = (quantity: number, product: CartDetail) => {
+    if (quantity > 1) {
+      setCartState({ ...product, quantity: -1 })
+    }
+    if (quantity === 1) {
+      toastWarning('Minimum quantity is 1')
+    }
+  }
+  const handleDelete = (productId: string) => {
+    deleteProductFromCart(productId)
+    toastSuccess(`Delete product from cart successfully`)
+  }
+
+  const handleGetCoupon = () => {
+    if (coupon === '') {
+      toastWarning('Please enter a coupon code')
+      return
+    }
+    getCouponByCode(coupon)
+  }
+
+  const handleCheckout = () => {
+    if (couponData?.data) {
+      setCouponState({
+        code: couponData.data.code,
+        discount_amount: couponData.data.discount_amount,
+      })
+    }
+    route.push('/checkout')
+  }
+
+  return (
+    <div className="relative min-h-[calc(100vh-80px)] flex flex-col items-start justify-start gap-10 overflow-hidden p-7 lg:px-[120px] lg:pb-20 lg:pt-10">
+      <h1 className="text-4xl font-bold bg-gradient-to-r bg-clip-text text-transparent from-violet-primary to-blue-light">
+        Your Cart
+      </h1>
+      {/* Product List */}
+      <div
+        className={`${cart.length > 0 ? 'justify-between' : 'justify-center'} flex items-start gap-16 w-full flex-col md:flex-row`}
+      >
+        {cart.length > 0 ? (
+          <>
+            <div className="flex flex-col justify-start items-start gap-12 w-full">
+              {cart.map((item, index) => {
+                const attributes = Object.entries(item.attributes).map(([key, value]) => ({ key, value }))
+                const configuration = attributes
+                  .filter((attr) => attr.key.toLowerCase() !== 'color')
+                  .slice(0, 3)
+                  .map((attr) => `${attr.key} ${attr.value}`)
+                  .join(', ')
+                const color = attributes.find((attr) => attr.key.toLowerCase() === 'color')?.value || ''
+                return (
+                  <div className="flex flex-col justify-start items-center gap-4 w-full max-w-[600px]" key={index}>
+                    <div className="flex justify-start items-center w-full gap-4 md:gap-16 border-b border-blue-primary/90 pb-4">
+                      <div className="relative min-w-[100px] w-[100px] h-[100px] lg:min-w-[160px] lg:w-[160px] lg:h-[160px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
+                        <Image src={item.images[0].url} alt="Laptop" fill className="object-cover" />
+                      </div>
+                      <div className="flex flex-col justify-start items-start gap-2">
+                        <h3 className="font-bold text-[clamp(1rem,2vw,1.5rem)] line-clamp-2">{item.variant_name}</h3>
+                        <p className="font-medium text-[clamp(0.75rem,2vw,1rem)] line-clamp-2">{configuration}</p>
+                        <p className="font-medium text-[clamp(0.75rem,2vw,1rem)]">{color}</p>
+                        <div className="flex items-center gap-4">
+                          <p className="font-bold text-[clamp(1rem,2vw,1.5rem)]">{formatPrice(item.price)}</p>
+                          {item.original_price !== item.price && (
+                            <p className="font-bold text-[clamp(0.75rem,2vw,1rem)] text-black/20 line-through">
+                              {formatPrice(item.original_price)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center gap-4 w-full">
+                      <div className="flex items-center justify-between gap-4">
+                        <Button
+                          variant={'ghost'}
+                          className="hover:bg-transparent border border-blue-primary/90 w-9 h-9"
+                          onClick={() => handleDecrease(item.quantity, item)}
+                        >
+                          <FiMinus size={24} className="text-black" strokeWidth={3} />
+                        </Button>
+                        <span className="text-black text-[clamp(0.875rem,2vw,1.25rem)]">{item.quantity}</span>
+                        <Button
+                          variant={'ghost'}
+                          className="hover:bg-transparent border border-blue-primary/90 w-9 h-9"
+                          onClick={() => handleIncrease(item.quantity, item)}
+                        >
+                          <GoPlus size={24} className="text-black" strokeWidth={1} />
+                        </Button>
+                      </div>
+                      <Button
+                        title={'Delete product ' + item.variant_name}
+                        variant={'ghost'}
+                        className="group hover:bg-transparent border border-blue-primary/90 w-9 h-9"
+                        onClick={() => handleDelete(item._id)}
+                      >
+                        <HiOutlineTrash
+                          size={24}
+                          className="text-black group-hover:scale-105 transition-all duration-200"
+                          strokeWidth={1}
+                        />
+                      </Button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Payment Summary */}
+            {cart.length > 0 && (
+              <div className="flex md:flex-col flex-col-reverse justify-start items-center gap-10 md:gap-4 w-full md:max-w-[400px]">
+                <div className="relative overflow-hidden flex flex-col gap-6 justify-between items-center p-0 md:p-9 bg-transparent md:bg-gradient-to-b from-white to-blue-secondary/20 rounded-none md:rounded-2xl w-full">
+                  <h2 className="md:block hidden font-bold text-[clamp(1.25rem,2vw,1.5rem)] text-blue-tertiary w-full text-start">
+                    Order summary
+                  </h2>
+                  <div
+                    className={`${openSummary ? 'flex' : 'hidden md:flex'} flex-col gap-4 justify-between items-center w-full`}
+                  >
+                    <div className="flex justify-between items-center gap-4 w-full">
+                      <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Subtotal</p>
+                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(subtotal)}</span>
+                    </div>
+                    <div className="flex justify-between items-center gap-4 w-full">
+                      <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Tax</p>
+                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(0)}</span>
+                    </div>
+                    <div className="flex justify-between items-center gap-4 w-full">
+                      <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Shipping</p>
+                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
+                        {formatPrice(shippingFee)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center gap-4 w-full">
+                      <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Discount</p>
+                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(discount)}</span>
+                    </div>
+                    <div className="flex justify-between items-center gap-4 w-full">
+                      <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
+                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
+                        {formatPrice(couponDiscount)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-full flex flex-col gap-6">
+                    <div className="flex justify-between items-center gap-4 w-full">
+                      <p className="font-bold text-xl">Total</p>
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="font-bold text-xl">{formatPrice(total)}</span>
+                        <IoIosArrowDown
+                          size={16}
+                          className={`${openSummary ? 'rotate-180' : ''} duration-300 transition-all text-black/40 md:hidden cursor-pointer`}
+                          onClick={() => setOpenSummary((prev) => !prev)}
+                          title="Detail Summary"
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      className="rounded-4xl bg-violet-primary w-full h-14 hover:bg-violet-primary/90"
+                      onClick={handleCheckout}
+                    >
+                      Process to Checkout
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-6 justify-between items-center p-6 md:p-9 bg-gradient-to-b from-white to-blue-secondary/20 rounded-2xl w-full">
+                  <h2 className="font-bold text-[clamp(1rem,2vw,1.25rem)] text-blue-tertiary w-full text-start">
+                    Have a coupon?
+                  </h2>
+                  <div className="rounded-2xl border border-blue-primary p-2 flex justify-between items-center gap-4 w-full">
+                    <Input
+                      type="text"
+                      placeholder="Coupon code"
+                      value={coupon}
+                      onChange={(e) => setCoupon(e.target.value)}
+                      className="border-none outline-none focus-visible:ring-0 shadow-none"
+                    />
+                    <Button
+                      disabled={isPendingGetCouponByCode}
+                      onClick={handleGetCoupon}
+                      variant={'ghost'}
+                      className="text-blue-secondary hover:bg-transparent duration-500 transition-colors"
+                    >
+                      {isPendingGetCouponByCode ? <Loading color="black" /> : 'Apply'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="flex justify-start w-full items-center flex-col">
+            <div className="w-full min-w-[300px] md:max-w-[600px] h-[300px] md:h-[450px] relative">
+              <Image
+                src={EmptyShoppingCart}
+                alt="empty-shopping-cart"
+                fill
+                objectFit="contain"
+                className="md:scale-100 scale-80"
+              />
+            </div>
+            <Button
+              className="rounded-4xl bg-violet-primary w-full max-w-[250px] h-14 hover:bg-violet-primary/90"
+              onClick={() => route.push('/products')}
+            >
+              Continue Shopping <BsCart2 />
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

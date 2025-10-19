@@ -1,8 +1,19 @@
 export enum ORDER_STATUS {
-  PENDING = 'Pending',
-  IN_TRANSIT = 'In Transit',
-  DELIVERY = 'Delivery',
-  CANCELLED = 'Cancelled',
+  PENDING = 'PENDING',
+  SHIPPING = 'SHIPPING',
+  DELIVERED = 'DELIVERED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum PAYMENT_METHOD {
+  CASH = 'CASH',
+  BANK_TRANSFER = 'BANK_TRANSFER',
+}
+
+export enum PAYMENT_STATUS {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  FAILED = 'FAILED',
 }
 
 export enum PROFILE_MENU {

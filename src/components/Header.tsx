@@ -10,18 +10,20 @@ import { HiOutlineMenuAlt4 } from 'react-icons/hi'
 import { IoIosArrowForward } from 'react-icons/io'
 
 import { useAuthStore } from '@/stores/auth.store'
+import { useCartStore } from '@/stores/cart.store'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
   const header = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const user = useAuthStore((state) => state.user)
+  const cartQuantity = useCartStore((state) => state.cartQuantity)
   const logout = useAuthStore((state) => state.logout)
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logout?.()
     router.push('/')
-    toastSuccess('Logout successful!')
+    toastSuccess('So sad to see you go! You have been logged out successfully.')
   }
 
   useEffect(() => {
@@ -41,6 +43,17 @@ export default function Header() {
   }, [])
   return (
     <header className="sticky top-0 z-300">
+      {Array.from({ length: 3 }).map((_, index) => {
+        const delay = index * 100
+        const opacity = index * 10 + 20
+        return (
+          <div
+            key={index}
+            onClick={() => setOpen(false)}
+            className={`${open ? `bg-black/${opacity} translate-x-0` : 'bg-transparent -translate-x-[100%]'} delay-${delay} fixed h-screen w-full block transition-all duration-300 md:hidden z-40`}
+          ></div>
+        )
+      })}
       <div
         className={`${open === true ? 'translate-x-0' : 'translate-x-[224px]'} md:hidden fixed top-0 right-0 z-50 flex h-full min-h-screen md:min-h-0 w-2/3 max-w-[200px] flex-col gap-4 bg-white p-8 text-base font-bold shadow-2xl duration-300 md:relative md:w-full md:max-w-[600px] md:translate-x-0 md:flex-row md:items-center md:justify-between md:bg-transparent md:p-0 md:text-sm md:shadow-none`}
       >
@@ -112,14 +125,14 @@ export default function Header() {
         <div className="flex items-center justify-between gap-8 md:gap-10">
           <div className="relative cursor-pointer" onClick={() => router.push('/cart')}>
             <FiShoppingCart strokeWidth={1.2} className="text-3xl md:text-[40px]" />
-            <span className="absolute top-0 -right-1 flex h-[14px] w-[14px] items-center justify-center rounded-full bg-[#738FBD] text-center text-[8px] font-medium text-black md:h-[18px] md:w-[18px] md:text-xs">
-              2
+            <span className="absolute top-0 -right-1 flex h-[14px] w-[14px] items-center justify-center rounded-full bg-[#738FBD] text-center text-[6px] font-medium text-white md:h-[18px] md:w-[18px] md:text-[10px]">
+              {cartQuantity}
             </span>
           </div>
           <div className="group relative">
             <div className="relative h-[36px] w-[36px] overflow-hidden rounded-full md:h-[45px] md:w-[45px] cursor-pointer">
               <Image
-                src="https://avatar.iran.liara.run/public"
+                src={user?.avatar.url ? user.avatar.url : 'https://avatar.iran.liara.run/public'}
                 alt="avatar"
                 width={45}
                 height={45}
@@ -136,7 +149,7 @@ export default function Header() {
               <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
                 <p className="w-full text-sm font-semibold text-black/70 hover:underline">Settings</p>
               </Link>
-              {!user ? (
+              {!user || user === null ? (
                 <Link href="/signin" className="w-full" onClick={() => setOpen(false)}>
                   <p className="w-full text-sm font-semibold text-black/70 hover:underline">Sign in</p>
                 </Link>
