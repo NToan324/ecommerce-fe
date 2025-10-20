@@ -13,6 +13,7 @@ import { IoIosArrowDown, IoIosClose } from 'react-icons/io'
 import Loading from '@/components/loading'
 import { toastInfo, toastSuccess, toastWarning } from '@/components/toastify'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import useCart from '@/hooks/useCart'
 import useCoupon from '@/hooks/useCoupon'
@@ -33,6 +34,7 @@ export default function CartPage({ cart }: CartPageProps) {
   const couponStore = useCartStore((state) => state.coupon)
   const user = useAuthStore((state) => state.user)
   const [couponCode, setCouponCode] = useState('')
+  const [usePoint, setUsePoint] = useState(true)
   const route = useRouter()
 
   const { mutateAsync: updateCartByUser } = useCart.updateCartByUser(false)
@@ -66,8 +68,12 @@ export default function CartPage({ cart }: CartPageProps) {
     return discountFromVoucher || couponStore?.discount_amount || 0
   }, [discountFromVoucher, couponStore])
 
+  const loyaltyPointDiscount = useMemo(() => {
+    return usePoint && user ? user?.loyalty_points * 1000 : 0
+  }, [usePoint, subtotal, user])
+
   const total = useMemo(() => {
-    return subtotal - discount + taxAmount + shippingFee - couponDiscount
+    return subtotal - discount + taxAmount + shippingFee - couponDiscount - loyaltyPointDiscount
   }, [subtotal, discount, shippingFee, couponDiscount])
 
   const handleIncrease = (quantity: number, product: CartDetail) => {
@@ -253,6 +259,14 @@ export default function CartPage({ cart }: CartPageProps) {
                         {formatPrice(couponDiscount)}
                       </span>
                     </div>
+                    {user && (
+                      <div className="flex justify-between items-center gap-4 w-full">
+                        <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Loyalty point</p>
+                        <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
+                          {formatPrice(loyaltyPointDiscount)}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="w-full flex flex-col gap-6">
                     <div className="flex justify-between items-center gap-4 w-full">
@@ -312,6 +326,31 @@ export default function CartPage({ cart }: CartPageProps) {
                     )}
                   </div>
                 </div>
+                {user && (
+                  <div className="w-full flex justify-start items-center gap-4">
+                    <Checkbox
+                      className="size-6"
+                      checked={usePoint}
+                      onCheckedChange={(value) => {
+                        if (value) {
+                          setUsePoint(true)
+                        } else {
+                          setUsePoint(false)
+                        }
+                      }}
+                    />
+
+                    <p className="text-sm">
+                      Use your <span className="font-bold text-orange-foreground">{user.loyalty_points}</span> loyalty
+                      points to get{' '}
+                      <span className="font-bold text-orange-foreground">
+                        {' '}
+                        {formatPrice(user.loyalty_points * 1000)}
+                      </span>{' '}
+                      discount
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </>

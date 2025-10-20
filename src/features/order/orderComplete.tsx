@@ -152,6 +152,10 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
                 <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between items-center gap-4 w-full">
+                <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Discount</p>
+                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(discountAmount)}</span>
+              </div>
+              <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Tax</p>
                 <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(vatAmount)}</span>
               </div>
@@ -160,13 +164,15 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
                 <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(49000)}</span>
               </div>
               <div className="flex justify-between items-center gap-4 w-full">
-                <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Discount</p>
-                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(discountAmount)}</span>
-              </div>
-              <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
                 <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
                   {formatPrice(order.discount_amount)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center gap-4 w-full">
+                <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Loyalty point</p>
+                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
+                  {formatPrice(order.loyalty_points_used * 1000)}
                 </span>
               </div>
             </div>

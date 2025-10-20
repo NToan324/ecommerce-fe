@@ -64,8 +64,12 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
 
   const couponDiscount = coupon?.discount_amount || 0
 
+  const loyaltyPointDiscount = useMemo(() => {
+    return user ? user?.loyalty_points * 1000 : 0
+  }, [subtotal, user])
+
   const total = useMemo(() => {
-    return subtotal - discount + taxAmount + shippingFee - couponDiscount
+    return subtotal - discount + taxAmount + shippingFee - couponDiscount - loyaltyPointDiscount
   }, [subtotal, discount, shippingFee, couponDiscount])
 
   const handleChangeAddress = (address: string) => {
@@ -330,6 +334,14 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
                       {formatPrice(couponDiscount)}
                     </span>
                   </div>
+                  {user && (
+                    <div className="flex justify-between items-center gap-4 w-full">
+                      <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Loyalty point</p>
+                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
+                        {formatPrice(loyaltyPointDiscount)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="w-full flex flex-col gap-6">
                   <div className="flex justify-between items-center gap-4 w-full">
