@@ -21,7 +21,7 @@ export default function Header() {
   const logout = useAuthStore((state) => state.logout)
 
   const handleLogout = async () => {
-    logout?.()
+    logout()
     router.push('/')
     toastSuccess('So sad to see you go! You have been logged out successfully.')
   }
@@ -44,8 +44,8 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-300">
       {Array.from({ length: 3 }).map((_, index) => {
-        const delay = index * 100
-        const opacity = index * 10 + 20
+        const delay = index * 50
+        const opacity = index * 10 + 30
         return (
           <div
             key={index}

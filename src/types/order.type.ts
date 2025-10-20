@@ -14,7 +14,7 @@ export interface OrderItemDetail {
   product_variant_name: string
   quantity: number
   unit_price: number
-  discount?: number
+  discount: number
   images: {
     url: string
   }

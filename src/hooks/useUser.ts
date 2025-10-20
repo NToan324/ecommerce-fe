@@ -10,11 +10,11 @@ interface UserProps {
 }
 
 class UseUser {
-  getProfile = (enabled: boolean) => {
+  getProfile = () => {
     return useQuery({
       queryKey: ['profile'],
       queryFn: () => userService.getProfile(),
-      enabled: enabled,
+      refetchOnMount: true,
     })
   }
 

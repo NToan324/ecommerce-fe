@@ -115,9 +115,9 @@ export function DialogUpdateAvatarProfile({ open, setOpen, data }: DialogCreateC
           <DialogTrigger asChild>
             <Button
               type="button"
-              className="group w-8 h-8 flex justify-center items-center rounded-full hover:bg-blue-tertiary/50 bg-blue-tertiary/60 backdrop-blur-lg"
+              className="group w-6 h-6 md:w-8 md:h-8 flex justify-center items-center rounded-full hover:bg-blue-tertiary/50 bg-blue-tertiary/60 backdrop-blur-lg"
             >
-              <IoIosCamera size={20} className="group-hover:scale-110 transition-transform duration-200" />
+              <IoIosCamera className="md:size-5 size-3 group-hover:scale-110 transition-transform duration-200" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[725px] max-h-[90vh] overflow-y-auto">

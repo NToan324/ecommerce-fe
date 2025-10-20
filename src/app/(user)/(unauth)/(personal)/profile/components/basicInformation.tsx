@@ -61,7 +61,7 @@ export default function BasicInformation({ data }: BasicInformationProps) {
       form.reset({
         fullName: data.fullName,
         email: data.email,
-        address: data.address[0],
+        address: data.address[0] || '',
         phone: data.phone || '',
       })
     }
@@ -326,7 +326,7 @@ export default function BasicInformation({ data }: BasicInformationProps) {
             control={form.control}
             name="address"
             render={({ field }) => (
-              <FormItem className="w-full col-span-2">
+              <FormItem className="w-full col-span-1 md:col-span-2">
                 <FormControl>
                   <div className="relative w-full">
                     <FloatingInput
@@ -347,7 +347,6 @@ export default function BasicInformation({ data }: BasicInformationProps) {
           />
         </form>
       </Form>
-      
     </div>
   )
 }

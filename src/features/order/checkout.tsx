@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -42,24 +42,58 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
   const [openSummary, setOpenSummary] = useState(false)
   const [openChangeAddress, setOpenChangeAddress] = useState(false)
   const user = useAuthStore((state) => state.user)
-  const setAddressStore = useCartStore((state) => state.setAddress)
-  const addressStore = useCartStore((state) => state.address)
+  const addressStore = useCartStore((state) => state.profileUser?.address || null)
+  const profileUser = useCartStore((state) => state.profileUser)
+  const setProfileUser = useCartStore((state) => state.setProfileUser)
   const { mutate: createOrder, isPending: isPendingCreateOrder } = useOrder.createOrder()
 
   const paymentMethod = form.watch('payment_method')
-  const subtotal = cart.reduce((sum, item) => sum + item.original_price * item.quantity, 0)
-  const discount = cart.reduce((sum, item) => sum + (item.original_price - item.price) * item.quantity, 0)
-  const shippingFee = 49000
-  const couponDiscount = coupon?.discount_amount || 0
-  const total = subtotal - discount - shippingFee - couponDiscount
+  const subtotal = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.original_price * item.quantity, 0)
+  }, [cart])
 
-  // const route = useRouter()
+  const discount = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.original_price * item.discount * item.quantity, 0)
+  }, [cart])
+
+  const taxAmount = useMemo(() => {
+    return (subtotal - discount) * 0.1
+  }, [subtotal, discount])
+
+  const shippingFee = 49000
+
+  const couponDiscount = coupon?.discount_amount || 0
+
+  const total = useMemo(() => {
+    return subtotal - discount + taxAmount + shippingFee - couponDiscount
+  }, [subtotal, discount, shippingFee, couponDiscount])
 
   const handleChangeAddress = (address: string) => {
     toastSuccess('Address updated successfully')
-    setAddressStore(address)
+    if (profileUser && profileUser.name && profileUser.email) {
+      setProfileUser({
+        ...profileUser,
+        address: address,
+        name: profileUser.name,
+        email: profileUser.email,
+      })
+    }
     form.setValue('address', address)
   }
+
+  useEffect(() => {
+    form.setValue('name', profileUser?.name || '')
+    form.setValue('email', profileUser?.email || '')
+    form.setValue('address', profileUser?.address || '')
+  }, [])
+
+  useEffect(() => {
+    setProfileUser({
+      name: form.watch('name'),
+      email: form.watch('email'),
+      address: form.watch('address'),
+    })
+  }, [form.watch('name'), form.watch('email'), form.watch('address')])
 
   useEffect(() => {
     if (addressStore) {
@@ -68,7 +102,7 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
   }, [addressStore])
 
   useEffect(() => {
-    if (user) {
+    if (user && profileUser === null) {
       form.setValue('name', user.fullName)
       form.setValue('email', user.email)
 
@@ -83,6 +117,7 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
         quantity: item.quantity,
         unit_price: item.price,
         discount: item.discount || 0,
+        attributes: item.attributes,
         images: {
           url: item.images[0]?.url || '',
         },
@@ -96,7 +131,6 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
   }, [user, cart, coupon])
 
   const handleSubmit = (data: z.infer<typeof orderSchema.createOrder>) => {
-    console.log('Submitting order with data:', data)
     if (data.items.length === 0) {
       toastError('Your cart is empty. Please add items to your cart before placing an order.')
       return
@@ -280,7 +314,7 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
                   </div>
                   <div className="flex justify-between items-center gap-4 w-full">
                     <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Tax</p>
-                    <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(0)}</span>
+                    <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(taxAmount)}</span>
                   </div>
                   <div className="flex justify-between items-center gap-4 w-full">
                     <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Shipping</p>

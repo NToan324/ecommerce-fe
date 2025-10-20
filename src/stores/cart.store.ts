@@ -4,6 +4,12 @@ import { persist } from 'zustand/middleware'
 import { CartDetail } from '@/types/cart.type'
 import { Coupon } from '@/types/coupon.type'
 
+interface ProfileUser {
+  email: string
+  name: string
+  address: string
+}
+
 interface useCartState {
   cart: CartDetail[]
   setCart: (cart: CartDetail) => void
@@ -11,9 +17,11 @@ interface useCartState {
   clearCart: () => void
   cartQuantity: number
   coupon: Partial<Coupon> | null
-  setCoupon: (coupon: Partial<Coupon>) => void
+  setCoupon: (coupon: Partial<Coupon> | null) => void
   address: string | null
   setAddress: (address: string | null) => void
+  profileUser: ProfileUser | null
+  setProfileUser: (profileUser: ProfileUser | null) => void
 }
 
 export const useCartStore = create<useCartState>()(
@@ -23,6 +31,7 @@ export const useCartStore = create<useCartState>()(
       cart: [],
       address: null,
       coupon: null,
+      profileUser: null,
       setCart: (cart) =>
         set((state) => {
           const existingItemIndex = state.cart.findIndex((item) => item._id === cart._id)
@@ -60,8 +69,9 @@ export const useCartStore = create<useCartState>()(
             cartQuantity: 0,
           }
         }),
-      setCoupon: (coupon: Partial<Coupon>) => set(() => ({ coupon })),
+      setCoupon: (coupon: Partial<Coupon> | null) => set(() => ({ coupon })),
       setAddress: (address: string | null) => set(() => ({ address })),
+      setProfileUser: (profileUser: ProfileUser | null) => set(() => ({ profileUser })),
     }),
     {
       name: 'cart-storage',

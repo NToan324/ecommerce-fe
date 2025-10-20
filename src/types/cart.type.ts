@@ -9,6 +9,29 @@ export interface CartDetail {
   price: number
   available_quantity: number
   quantity: number
-  discount?: number
+  discount: number
   images: Image[]
+}
+
+export interface CreateCart {
+  productVariantId: string
+  quantity: number
+}
+
+export interface Cart {
+  _id: string
+  user_id: string
+  items: CartItemDetail[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CartItemDetail {
+  product_variant_id: string
+  product_variant_name: string
+  quantity: number
+  unit_price: number
+  discount: number
+  images: Image
+  product_detail: CartDetail
 }

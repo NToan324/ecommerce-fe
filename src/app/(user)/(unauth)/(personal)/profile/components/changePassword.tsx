@@ -10,7 +10,7 @@ import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
-import useAuth from '@/hooks/useAuth'
+import { useAuth } from '@/hooks/useAuth'
 import profileSchema from '@/schemas/profile.schema'
 
 export default function ChangePassword() {
@@ -25,7 +25,7 @@ export default function ChangePassword() {
   const [showOldPassword, setShowOldPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
-  const { mutate: changePassword, isPending } = useAuth.changePassword()
+  const { mutate: changePassword, isPending } = useAuth().changePassword
 
   const handleSubmit = (data: z.infer<typeof profileSchema.changePassword>) => {
     const payload = {

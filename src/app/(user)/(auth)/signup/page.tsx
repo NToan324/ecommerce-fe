@@ -12,7 +12,7 @@ import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
-import useAuth from '@/hooks/useAuth'
+import { useAuth } from '@/hooks/useAuth'
 import { useGetDistrict, useGetProvinceCity, useGetWard } from '@/hooks/useProfile'
 import { authSchema } from '@/schemas/auth.schema'
 import { District, ProvinceCity, Ward } from '@/types/address.type'
@@ -41,7 +41,7 @@ export default function page() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [enableSignup, setEnableSignup] = useState(false)
 
-  const { mutate: signupMutate, isPending: isSignupPending } = useAuth.signup()
+  const { mutate: signupMutate, isPending: isSignupPending } = useAuth().signup
 
   const {
     data: provinceCityData,

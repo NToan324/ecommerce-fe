@@ -5,25 +5,25 @@ import { Profile } from '@/types/user.type'
 
 export interface AuthState {
   user: Profile | null
-  acessToken: string
+  accessToken: string
   refreshToken: string
 
   setUser: (user: Profile | null) => void
-  setAcessToken: (token: string) => void
+  setAccessToken: (token: string) => void
   setRefreshToken: (token: string) => void
 
-  logout?: () => void
+  logout: () => void
   storeAccessTokenCookie?: (token: string) => void
   storeRefreshTokenCookie?: (token: string) => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  acessToken: '',
+  accessToken: '',
   refreshToken: '',
 
   setUser: (user) => set(() => ({ user })),
-  setAcessToken: (token) => set(() => ({ acessToken: token })),
+  setAccessToken: (token) => set(() => ({ accessToken: token })),
   setRefreshToken: (token) => set(() => ({ refreshToken: token })),
   storeAccessTokenCookie: (token) => {
     Cookies.set('accessToken', token, { expires: 7 })
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     Cookies.remove('refreshToken')
     set(() => ({
       user: null,
-      acessToken: '',
+      accessToken: '',
       refreshToken: '',
     }))
   },

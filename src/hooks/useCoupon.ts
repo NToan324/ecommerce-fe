@@ -75,7 +75,11 @@ class UseCoupon {
       mutationKey: ['coupon'],
       mutationFn: (code: string) => couponService.getCouponByCode(code),
       onSuccess: async (response) => {
-        toastSuccess(`Apply coupon ${formatPrice(response.data.discount_amount)} successfully`)
+        if (response.data.usage_limit === response.data.usage_count) {
+          toastError(`Coupon has reached its usage limit.`)
+        } else {
+          toastSuccess(`Apply coupon ${formatPrice(response.data.discount_amount)} successfully`)
+        }
         props.onClose()
       },
       onError: (error: IHttpErrorResponseDto) => {

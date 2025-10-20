@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { IoIosArrowDown } from 'react-icons/io'
 
 import { Button } from '@/components/ui/button'
+import { PAYMENT_METHOD } from '@/constant'
 import { useOrderStore } from '@/stores/order.store'
 import { Order } from '@/types/order.type'
 import { convertStringToDate, formatPrice } from '@/utils/helpers'
@@ -19,7 +20,15 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
   const clearOrderStore = useOrderStore((state) => state.clearOrderComplete)
   const route = useRouter()
 
-  const subtotal = order.items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
+  const subtotal = useMemo(
+    () => order.items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0),
+    [order.items]
+  )
+  const discountAmount = useMemo(
+    () => order.items.reduce((sum, item) => sum + item.unit_price * item.discount * item.quantity, 0),
+    [order.items]
+  )
+  const vatAmount = useMemo(() => (subtotal - discountAmount) * 0.1, [subtotal, discountAmount])
 
   const handleBack = () => {
     route.push('/')
@@ -35,7 +44,7 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
           A Great Big Thank You!
         </h1>
         <p className="font-medium text-sm text-black/50 text-center leading-7 md:max-w-[600px] line-clamp-3 md:line-clamp-6">
-          We sent an email to <span className="font-bold text-blue-primary">example@gmail.com</span> with your order
+          We sent an email to <span className="font-bold text-blue-night/70">{order.email}</span> with your order
           confirmation and receipt. If the email hasn’t arrived within two mins, please check your spam folder to see if
           the email was routed there.
         </p>
@@ -62,7 +71,7 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
               <p className="text-[clamp(0.75rem,2vw,1.125rem)] font-bold">Personal Information</p>
               <div className="flex flex-col gap-3">
                 <p className="text-[clamp(0.75rem,2vw,1.125rem)]">{order.user_name}</p>
-                <p className="text-[clamp(0.75rem,2vw,1.125rem)] md:max-w-[200px] w-full">{order.address}</p>
+                <p className="text-[clamp(0.75rem,2vw,1.125rem)] w-full">{order.address}</p>
               </div>
             </div>
           </div>
@@ -74,7 +83,9 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
                 <div className="relative w-9 h-9 overflow-hidden">
                   <Image src={'/images/zalopay.webp'} alt="ZaloPay" fill className="object-contain" />
                 </div>
-                <p className="text-[clamp(0.75rem,2vw,1.125rem)]">Zalo Pay</p>
+                <p className="text-[clamp(0.75rem,2vw,1.125rem)]">
+                  {order.payment_method === PAYMENT_METHOD.BANK_TRANSFER ? 'Bank Transfer' : 'Cash on Delivery'}
+                </p>
               </div>
             </div>
           </div>
@@ -142,9 +153,7 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
               </div>
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Tax</p>
-                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                  {formatPrice(order.total_amount * 0.1)}
-                </span>
+                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(vatAmount)}</span>
               </div>
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Shipping</p>
@@ -152,6 +161,10 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
               </div>
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Discount</p>
+                <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(discountAmount)}</span>
+              </div>
+              <div className="flex justify-between items-center gap-4 w-full">
+                <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
                 <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
                   {formatPrice(order.discount_amount)}
                 </span>

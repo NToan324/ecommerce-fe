@@ -4,13 +4,15 @@ import Cookies from 'js-cookie'
 
 import axiosBuilder from '@/http/axios-builder'
 import type { IHttpResponseDto } from '@/http/types/http.response'
+import { useAuthStore } from '@/stores/auth.store'
 
 // const isRefreshToken = false
 
 axiosBuilder
   .setBaseUrl(process.env.NEXT_PUBLIC_API_URL)
   .addInterceptor(async (config: any) => {
-    const token = Cookies.get('accessToken') || ''
+    const accessTokenStore = useAuthStore.getState().accessToken
+    const token = accessTokenStore || Cookies.get('accessToken') || ''
     config.params = {
       ...config.params,
     }

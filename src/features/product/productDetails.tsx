@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { CarouselApi } from '@/components/ui/carousel'
 import { attributeOptions } from '@/config'
 import socketConfig from '@/config/socket'
+import useCart from '@/hooks/useCart'
 import useProduct from '@/hooks/useProduct'
 import { useAuthStore } from '@/stores/auth.store'
 import { useCartStore } from '@/stores/cart.store'
@@ -50,6 +51,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
     limit: 10,
     page: 1,
   })
+  const { mutate: createCartWithHasUser, isPending: isPendingCreateCart } = useCart.createCart()
 
   useEffect(() => {
     if (!api) {
@@ -136,14 +138,22 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
       available_quantity: product.productVariant.quantity,
       quantity: quantity,
     })
-    toastSuccess('You have added the product to the cart successfully!')
+    if (user) {
+      createCartWithHasUser({
+        productVariantId: product.productVariant._id,
+        quantity: quantity,
+      })
+    } else {
+      toastSuccess('You have added the product to the cart successfully!')
+    }
   }
 
   const handleIncrease = () => {
-    if (quantity < product.productVariant.quantity) {
+    const itemInCart = cart.find((item) => item._id === product.productVariant._id)?.quantity || 0
+    if (quantity < product.productVariant.quantity && product.productVariant.quantity > itemInCart + quantity) {
       setQuantity(quantity + 1)
     }
-    if (quantity === product.productVariant.quantity) {
+    if (quantity >= product.productVariant.quantity || product.productVariant.quantity <= itemInCart + quantity) {
       toastWarning('Reached maximum available quantity')
     }
   }
@@ -194,37 +204,51 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
               )
             })}
           </div>
-          <div className="flex justify-start items-center gap-6 w-full mt-4 absolute md:relative md:bottom-0 md:right-0 -right-[180px] -bottom-[380px]">
-            {/* Increase and Descrease */}
-            <div className="flex items-center rounded-4xl justify-between w-full h-12 md:h-14 max-w-[105px] md:max-w-[150px] border-2 border-blue-secondary">
+          {product.productVariant.quantity === 0 ? (
+            // Out of stock
+            <div className="flex justify-start items-center gap-6 w-full mt-4 absolute md:relative md:bottom-0 md:right-0 -right-[180px] -bottom-[380px]">
               <Button
-                title={`Available ${product.productVariant.quantity}`}
-                variant={'ghost'}
-                className="hover:bg-transparent"
-                onClick={handleDecrease}
+                variant="destructive"
+                disabled
+                className="bg-gray-400 text-black font-semibold rounded-4xl  w-[140px] md:h-14 px-10 h-12 cursor-not-allowed"
               >
-                <FiMinus size={24} className="text-blue-secondary" strokeWidth={3} />
-              </Button>
-              <span className="text-blue-tertiary text-[clamp(0.875rem,2vw,1.25rem)]">{quantity}</span>
-              <Button
-                title={`Available ${product.productVariant.quantity}`}
-                variant={'ghost'}
-                className="hover:bg-transparent"
-                onClick={handleIncrease}
-              >
-                <GoPlus size={24} className="text-blue-secondary" strokeWidth={1} />
+                Out of Stock
               </Button>
             </div>
-            {/* Add to Cart  */}
-            <Button
-              variant={'default'}
-              onClick={() => handleAddToCart()}
-              className="bg-violet-primary rounded-4xl md:w-full max-w-[150px] md:h-14 px-10 hover:bg-violet-primary/90 w-12 h-12"
-            >
-              <FiShoppingCart className="md:hidden block" />
-              <span className="md:block hidden">Add to Cart</span>
-            </Button>
-          </div>
+          ) : (
+            <div className="flex justify-start items-center gap-6 w-full mt-4 absolute md:relative md:bottom-0 md:right-0 -right-[180px] -bottom-[380px]">
+              {/* Increase and Descrease */}
+              <div className="flex items-center rounded-4xl justify-between w-full h-12 md:h-14 max-w-[105px] md:max-w-[150px] border-2 border-blue-secondary">
+                <Button
+                  title={`Available ${product.productVariant.quantity}`}
+                  variant={'ghost'}
+                  className="hover:bg-transparent"
+                  onClick={handleDecrease}
+                >
+                  <FiMinus size={24} className="text-blue-secondary" strokeWidth={3} />
+                </Button>
+                <span className="text-blue-tertiary text-[clamp(0.875rem,2vw,1.25rem)]">{quantity}</span>
+                <Button
+                  title={`Available ${product.productVariant.quantity}`}
+                  variant={'ghost'}
+                  className="hover:bg-transparent"
+                  onClick={handleIncrease}
+                >
+                  <GoPlus size={24} className="text-blue-secondary" strokeWidth={1} />
+                </Button>
+              </div>
+              {/* Add to Cart  */}
+              <Button
+                variant={'default'}
+                onClick={() => handleAddToCart()}
+                className="bg-violet-primary rounded-4xl md:w-full max-w-[150px] md:h-14 px-10 hover:bg-violet-primary/90 w-12 h-12"
+              >
+                {isPendingCreateCart ? <Loading /> : <FiShoppingCart className="md:hidden block" />}
+
+                <span className="md:block hidden">Add to Cart</span>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       <div className="lg:px-[120px] px-7 md:space-y-[120px] space-y-20 mt-20 mb-10 md:mt-[120px]">

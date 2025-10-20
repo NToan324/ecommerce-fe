@@ -13,6 +13,7 @@ class UseOrder {
     const queryClient = useQueryClient()
     const setOrderCompleteStore = useOrderStore((state) => state.setOrderComplete)
     const clearCartStore = useCartStore((state) => state.clearCart)
+    const setCoupon = useCartStore((state) => state.setCoupon)
     const route = useRouter()
     return useMutation({
       mutationKey: ['createOrder'],
@@ -22,10 +23,12 @@ class UseOrder {
           toastSuccess('Order created successfully!')
           setTimeout(() => {
             queryClient.invalidateQueries({ queryKey: ['coupons'] })
+            queryClient.invalidateQueries({ queryKey: ['profile'] })
           }, 800)
           setOrderCompleteStore(response.data)
           clearCartStore()
-          route.push(`/order-complete/${response.data._id}`)
+          setCoupon(null)
+          route.replace(`/order-complete/${response.data._id}`)
         } else {
           toastError('Error occurred while creating order. Please try again.')
         }

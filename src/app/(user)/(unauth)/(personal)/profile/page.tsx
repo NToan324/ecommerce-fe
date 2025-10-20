@@ -20,13 +20,16 @@ export default function page() {
     <div className=" bg-white min-h-screen flex flex-col justify-start items-center text-4xl gap-20  p-7 lg:px-[120px] lg:pb-20 lg:pt-10 overflow-hidden w-full">
       {/* Name */}
       <div className="flex justify-center items-center gap-12">
-        <div className="relative md:w-[100px] md:h-[100px] w-[70px] h-[70px] rounded-full">
-          <Image
-            src={user?.avatar.url || 'https://avatar.iran.liara.run/public'}
-            alt="avatar"
-            fill
-            className="object-cover"
-          />
+        <div className="relative">
+          <div className="relative md:w-[100px] border border-blue-gray/50 md:h-[100px] w-[70px] h-[70px] rounded-full overflow-hidden">
+            <Image
+              src={user?.avatar.url || 'https://avatar.iran.liara.run/public'}
+              alt="avatar"
+              fill
+              objectFit="contain"
+              className="absolute"
+            />
+          </div>
           <div className="absolute bottom-0 right-0">
             <DialogUpdateAvatarProfile open={open} setOpen={setOpen} data={user?.avatar || ({} as ImageType)} />
           </div>

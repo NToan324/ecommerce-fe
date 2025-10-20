@@ -3,11 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import Cookies from 'js-cookie'
 import { IoIosArrowForward } from 'react-icons/io'
-
-import useUser from '@/hooks/useUser'
-import { useAuthStore } from '@/stores/auth.store'
 
 const PLACEHOLDER_TEXT = [
   "Asus ROG Strix G16 (2024, i9-13980HX, RTX 4080, 16GB RAM, 1TB SSD, 16'' QHD+ 240Hz)",
@@ -24,16 +20,8 @@ const PLACEHOLDER_TEXT = [
 
 export default function page() {
   const [placeholder, setPlaceholder] = useState('')
-  const accessToken = Cookies.get('accessToken')
 
   const router = useRouter()
-  const { data: profile, isSuccess } = useUser.getProfile(!!accessToken)
-  const setUser = useAuthStore((state) => state.setUser)
-  useEffect(() => {
-    if (isSuccess && profile.data._id !== '') {
-      setUser(profile.data)
-    }
-  }, [isSuccess, profile])
 
   useEffect(() => {
     let id = 0
@@ -69,7 +57,7 @@ export default function page() {
         <input
           type="text"
           placeholder={placeholder}
-          className="shadow-blue-primary focus-visible:ring-blue-primary absolute md:bottom-[8%] bottom-[15%] left-[50%] h-[80px] w-[340px] min-w-[340px] translate-x-[-50%] translate-y-[-50%] rounded-[50px] bg-white px-8 placeholder-[#C3C3C3] shadow-[0_1px_250px_rgba(0,0,0,1)] outline-none focus-visible:ring-1 sm:w-[600px] lg:w-[780px]"
+          className="shadow-blue-primary focus-visible:ring-blue-primary absolute md:bottom-[8%] bottom-[20%] left-[50%] h-[80px] w-[340px] min-w-[340px] translate-x-[-50%] translate-y-[-50%] rounded-[50px] bg-white px-8 placeholder-[#C3C3C3] shadow-[0_1px_250px_rgba(0,0,0,1)] outline-none focus-visible:ring-1 sm:w-[600px] lg:w-[780px]"
         />
       </div>
       <div className="relative flex flex-col items-center justify-center gap-10 overflow-hidden p-7 lg:justify-start lg:p-[120px]">

@@ -15,7 +15,7 @@ import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
-import useAuth from '@/hooks/useAuth'
+import { useAuth } from '@/hooks/useAuth'
 import { authSchema } from '@/schemas/auth.schema'
 
 export default function page() {
@@ -28,7 +28,7 @@ export default function page() {
   })
 
   const [showPassword, setShowPassword] = useState(false)
-  const { mutate: loginMutate, isPending: isPendingLogin } = useAuth.signin()
+  const { mutate: loginMutate, isPending: isPendingLogin } = useAuth().signin
 
   const handleLogin = (data: z.infer<typeof authSchema.login>) => {
     loginMutate(data)

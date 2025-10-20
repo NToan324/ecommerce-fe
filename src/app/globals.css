@@ -32,6 +32,7 @@
   --color-info: #eef2fa;
   --color-info-foreground: #2e5aac;
   --color-disabled: #f2f4f7;
+  --color-green-secondary: #d1f5e4;
 
   --color-success-toastify: #49a078;
   --color-success-toasttify-box: #2d6a4f;
@@ -85,6 +86,7 @@
   --color-blue-light: var(--color-blue-light);
   --color-purple-primary: var(--color-purple-primary);
   --color-blue-gray: var(--color-blue-gray);
+  --color-green-secondary: var(--color-green-secondary);
 
   --color-pending: var(--color-pending);
   --color-pending-foreground: var(--color-pending-foreground);

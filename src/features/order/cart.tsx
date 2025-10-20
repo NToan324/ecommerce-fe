@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import EmptyShoppingCart from '@public/images/empty-shopping-cart.png'
@@ -8,13 +8,15 @@ import { BsCart2 } from 'react-icons/bs'
 import { FiMinus } from 'react-icons/fi'
 import { GoPlus } from 'react-icons/go'
 import { HiOutlineTrash } from 'react-icons/hi2'
-import { IoIosArrowDown } from 'react-icons/io'
+import { IoIosArrowDown, IoIosClose } from 'react-icons/io'
 
 import Loading from '@/components/loading'
-import { toastSuccess, toastWarning } from '@/components/toastify'
+import { toastInfo, toastSuccess, toastWarning } from '@/components/toastify'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import useCart from '@/hooks/useCart'
 import useCoupon from '@/hooks/useCoupon'
+import { useAuthStore } from '@/stores/auth.store'
 import { useCartStore } from '@/stores/cart.store'
 import { CartDetail } from '@/types/cart.type'
 import { formatPrice } from '@/utils/helpers'
@@ -29,35 +31,62 @@ export default function CartPage({ cart }: CartPageProps) {
   const setCouponState = useCartStore((state) => state.setCoupon)
   const deleteProductFromCart = useCartStore((state) => state.deleteProductFromCart)
   const couponStore = useCartStore((state) => state.coupon)
-  const [coupon, setCoupon] = useState('')
+  const user = useAuthStore((state) => state.user)
+  const [couponCode, setCouponCode] = useState('')
   const route = useRouter()
+
+  const { mutateAsync: updateCartByUser } = useCart.updateCartByUser(false)
   const {
     mutate: getCouponByCode,
     isPending: isPendingGetCouponByCode,
     data: couponData,
+    reset: resetCouponData,
   } = useCoupon.getCouponByCode({
-    onClose: () => {
-      setCoupon('')
-    },
+    onClose: () => {},
   })
+  const { mutate: deleteCartByUser, isPending: isPendingDeleteCartByUser } = useCart.deleteCartByUser()
 
-  const subtotal = cart.reduce((sum, item) => sum + item.original_price * item.quantity, 0)
-  const discount = cart.reduce((sum, item) => sum + (item.original_price - item.price) * item.quantity, 0)
+  const discountFromVoucher =
+    couponData?.data?.usage_count === couponData?.data?.usage_limit ? null : couponData?.data.discount_amount
+  const subtotal = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.original_price * item.quantity, 0)
+  }, [cart])
+
+  const discount = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.original_price * item.discount * item.quantity, 0)
+  }, [cart])
+
+  const taxAmount = useMemo(() => {
+    return (subtotal - discount) * 0.1
+  }, [subtotal, discount])
+
   const shippingFee = 49000
-  const couponDiscount = couponData?.data?.discount_amount || couponStore?.discount_amount || 0
-  const total = subtotal - discount - shippingFee - couponDiscount
+
+  const couponDiscount = useMemo(() => {
+    return discountFromVoucher || couponStore?.discount_amount || 0
+  }, [discountFromVoucher, couponStore])
+
+  const total = useMemo(() => {
+    return subtotal - discount + taxAmount + shippingFee - couponDiscount
+  }, [subtotal, discount, shippingFee, couponDiscount])
 
   const handleIncrease = (quantity: number, product: CartDetail) => {
     if (quantity < product.available_quantity) {
       setCartState({ ...product, quantity: 1 })
+      if (user) {
+        updateCartByUser({ id: product._id, payload: { quantity: quantity + 1 } })
+      }
     }
-    if (quantity === product.available_quantity) {
+    if (quantity >= product.available_quantity) {
       toastWarning('Maximum quantity reached')
     }
   }
   const handleDecrease = (quantity: number, product: CartDetail) => {
     if (quantity > 1) {
       setCartState({ ...product, quantity: -1 })
+      if (user) {
+        updateCartByUser({ id: product._id, payload: { quantity: quantity - 1 } })
+      }
     }
     if (quantity === 1) {
       toastWarning('Minimum quantity is 1')
@@ -65,26 +94,47 @@ export default function CartPage({ cart }: CartPageProps) {
   }
   const handleDelete = (productId: string) => {
     deleteProductFromCart(productId)
-    toastSuccess(`Delete product from cart successfully`)
+    if (user) {
+      deleteCartByUser(productId)
+    } else {
+      toastSuccess(`Delete product from cart successfully`)
+    }
   }
 
   const handleGetCoupon = () => {
-    if (coupon === '') {
+    if (couponCode === '') {
       toastWarning('Please enter a coupon code')
       return
     }
-    getCouponByCode(coupon)
+    getCouponByCode(couponCode)
   }
 
   const handleCheckout = () => {
-    if (couponData?.data) {
+    if (couponData?.data && discountFromVoucher) {
       setCouponState({
         code: couponData.data.code,
-        discount_amount: couponData.data.discount_amount,
+        discount_amount: discountFromVoucher,
       })
     }
     route.push('/checkout')
   }
+
+  const handleRemoveCoupon = () => {
+    setCouponCode('')
+    if (couponStore) {
+      setCouponState(null)
+    }
+    if (couponData) {
+      resetCouponData()
+    }
+    toastInfo('You have removed the coupon code successfully')
+  }
+
+  useEffect(() => {
+    if (couponStore) {
+      setCouponCode(couponStore.code || '')
+    }
+  }, [couponStore])
 
   return (
     <div className="relative min-h-[calc(100vh-80px)] flex flex-col items-start justify-start gap-10 overflow-hidden p-7 lg:px-[120px] lg:pb-20 lg:pt-10">
@@ -127,7 +177,7 @@ export default function CartPage({ cart }: CartPageProps) {
                       </div>
                     </div>
                     <div className="flex justify-between items-center gap-4 w-full">
-                      <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center justify-between gap-2">
                         <Button
                           variant={'ghost'}
                           className="hover:bg-transparent border border-blue-primary/90 w-9 h-9"
@@ -135,7 +185,9 @@ export default function CartPage({ cart }: CartPageProps) {
                         >
                           <FiMinus size={24} className="text-black" strokeWidth={3} />
                         </Button>
-                        <span className="text-black text-[clamp(0.875rem,2vw,1.25rem)]">{item.quantity}</span>
+                        <span className="text-black text-[clamp(0.875rem,2vw,1.25rem)] text-center w-6">
+                          {item.quantity}
+                        </span>
                         <Button
                           variant={'ghost'}
                           className="hover:bg-transparent border border-blue-primary/90 w-9 h-9"
@@ -145,16 +197,21 @@ export default function CartPage({ cart }: CartPageProps) {
                         </Button>
                       </div>
                       <Button
+                        disabled={isPendingDeleteCartByUser}
                         title={'Delete product ' + item.variant_name}
                         variant={'ghost'}
                         className="group hover:bg-transparent border border-blue-primary/90 w-9 h-9"
                         onClick={() => handleDelete(item._id)}
                       >
-                        <HiOutlineTrash
-                          size={24}
-                          className="text-black group-hover:scale-105 transition-all duration-200"
-                          strokeWidth={1}
-                        />
+                        {!isPendingDeleteCartByUser ? (
+                          <HiOutlineTrash
+                            size={24}
+                            className="text-black group-hover:scale-105 transition-all duration-200"
+                            strokeWidth={1}
+                          />
+                        ) : (
+                          <Loading color="text-blue-night" />
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -177,18 +234,18 @@ export default function CartPage({ cart }: CartPageProps) {
                       <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(subtotal)}</span>
                     </div>
                     <div className="flex justify-between items-center gap-4 w-full">
+                      <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Discount</p>
+                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(discount)}</span>
+                    </div>
+                    <div className="flex justify-between items-center gap-4 w-full">
                       <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Tax</p>
-                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(0)}</span>
+                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(taxAmount)}</span>
                     </div>
                     <div className="flex justify-between items-center gap-4 w-full">
                       <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Shipping</p>
                       <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
                         {formatPrice(shippingFee)}
                       </span>
-                    </div>
-                    <div className="flex justify-between items-center gap-4 w-full">
-                      <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Discount</p>
-                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(discount)}</span>
                     </div>
                     <div className="flex justify-between items-center gap-4 w-full">
                       <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
@@ -220,24 +277,39 @@ export default function CartPage({ cart }: CartPageProps) {
                 </div>
                 <div className="flex flex-col gap-6 justify-between items-center p-6 md:p-9 bg-gradient-to-b from-white to-blue-secondary/20 rounded-2xl w-full">
                   <h2 className="font-bold text-[clamp(1rem,2vw,1.25rem)] text-blue-tertiary w-full text-start">
-                    Have a coupon?
+                    Have a couponCode?
                   </h2>
                   <div className="rounded-2xl border border-blue-primary p-2 flex justify-between items-center gap-4 w-full">
                     <Input
+                      disabled={!!couponStore || !!discountFromVoucher}
                       type="text"
                       placeholder="Coupon code"
-                      value={coupon}
-                      onChange={(e) => setCoupon(e.target.value)}
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
                       className="border-none outline-none focus-visible:ring-0 shadow-none"
                     />
-                    <Button
-                      disabled={isPendingGetCouponByCode}
-                      onClick={handleGetCoupon}
-                      variant={'ghost'}
-                      className="text-blue-secondary hover:bg-transparent duration-500 transition-colors"
-                    >
-                      {isPendingGetCouponByCode ? <Loading color="black" /> : 'Apply'}
-                    </Button>
+                    {couponStore || discountFromVoucher ? (
+                      <div
+                        title={`Remove voucher ${couponStore?.code || couponData?.data?.code}`}
+                        className="group rounded-[10px] cursor-pointer bg-green-secondary p-2 flex justify-between items-center gap-2 w-full max-w-[128px]"
+                      >
+                        <p className="text-sm font-medium text-green-900">-{formatPrice(100000)}</p>
+                        <IoIosClose
+                          onClick={handleRemoveCoupon}
+                          size={20}
+                          className="text-black/50 group-hover:scale-110 transition-all duration-150"
+                        />
+                      </div>
+                    ) : (
+                      <Button
+                        disabled={isPendingGetCouponByCode}
+                        onClick={handleGetCoupon}
+                        variant={'ghost'}
+                        className="text-blue-secondary hover:bg-transparent duration-500 transition-colors"
+                      >
+                        {isPendingGetCouponByCode ? <Loading color="black" /> : 'Apply'}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

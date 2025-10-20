@@ -14,7 +14,8 @@ class OrderSchema {
         product_variant_name: z.string().nonempty('Product variant name is required'),
         quantity: z.number().int('Quantity must be an integer').min(1, 'Quantity must be at least 1'),
         unit_price: z.number().min(0, 'Price must be at least 0'),
-        discount: z.number().min(0, 'Discount must be at least 0').optional(),
+        attributes: z.record(z.string(), z.string()),
+        discount: z.number().min(0, 'Discount must be at least 0'),
         images: z.object({
           url: z.string().nonempty('Image URL is required'),
         }),

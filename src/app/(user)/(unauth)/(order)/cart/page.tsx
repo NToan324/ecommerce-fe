@@ -5,12 +5,22 @@ import ShoppingCardLoader from '@public/lotties/Shopping Cart Loader.json'
 import Lottie from 'lottie-react'
 
 import CartPage from '@/features/order/cart'
+import useCart from '@/hooks/useCart'
+import { useAuthStore } from '@/stores/auth.store'
 import { useCartStore } from '@/stores/cart.store'
 
 export default function page() {
   const cart = useCartStore((state) => state.cart)
+  const user = useAuthStore((state) => state.user)
+  const { data: cartByUser } = useCart.getCartByUser(!!user)
+
   const [isLoading, setIsLoading] = useState(true)
 
+  useEffect(() => {
+    if (cartByUser) {
+      console.log('Cart data from server:', cartByUser)
+    }
+  }, [cartByUser])
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setIsLoading(false)

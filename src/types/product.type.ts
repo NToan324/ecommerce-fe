@@ -58,7 +58,7 @@ export interface ProductVariant {
   original_price: number
   price: number
   quantity: number
-  discount?: number
+  discount: number
   images: Image[]
   isActive: boolean
 }
