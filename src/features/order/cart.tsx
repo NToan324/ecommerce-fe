@@ -17,13 +17,14 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import useCart from '@/hooks/useCart'
 import useCoupon from '@/hooks/useCoupon'
+import useProduct from '@/hooks/useProduct'
 import { useAuthStore } from '@/stores/auth.store'
 import { useCartStore } from '@/stores/cart.store'
-import { CartDetail } from '@/types/cart.type'
+import { CartStore } from '@/types/cart.type'
 import { formatPrice } from '@/utils/helpers'
 
 interface CartPageProps {
-  cart: CartDetail[]
+  cart: CartStore[]
 }
 
 export default function CartPage({ cart }: CartPageProps) {
@@ -47,15 +48,17 @@ export default function CartPage({ cart }: CartPageProps) {
     onClose: () => {},
   })
   const { mutate: deleteCartByUser, isPending: isPendingDeleteCartByUser } = useCart.deleteCartByUser()
+  const { mutateAsync: checkProductVariantIdFromCart } = useProduct.checkProductVariantIdFromCart()
 
   const discountFromVoucher =
     couponData?.data?.usage_count === couponData?.data?.usage_limit ? null : couponData?.data.discount_amount
+
   const subtotal = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.original_price * item.quantity, 0)
+    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   }, [cart])
 
   const discount = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.original_price * item.discount * item.quantity, 0)
+    return cart.reduce((sum, item) => sum + item.price * item.discount * item.quantity, 0)
   }, [cart])
 
   const taxAmount = useMemo(() => {
@@ -76,18 +79,20 @@ export default function CartPage({ cart }: CartPageProps) {
     return subtotal - discount + taxAmount + shippingFee - couponDiscount - loyaltyPointDiscount
   }, [subtotal, discount, shippingFee, couponDiscount])
 
-  const handleIncrease = (quantity: number, product: CartDetail) => {
-    if (quantity < product.available_quantity) {
+  const handleIncrease = async (quantity: number, product: CartStore) => {
+    // if (quantity < product.available_quantity) {
+    const quantityFromProductVariantId = await checkProductVariantIdFromCart(product._id)
+    if (product.quantity + 1 <= quantityFromProductVariantId.data.productVariant.quantity) {
       setCartState({ ...product, quantity: 1 })
       if (user) {
         updateCartByUser({ id: product._id, payload: { quantity: quantity + 1 } })
       }
-    }
-    if (quantity >= product.available_quantity) {
+    } else {
       toastWarning('Maximum quantity reached')
     }
   }
-  const handleDecrease = (quantity: number, product: CartDetail) => {
+
+  const handleDecrease = async (quantity: number, product: CartStore) => {
     if (quantity > 1) {
       setCartState({ ...product, quantity: -1 })
       if (user) {
@@ -166,7 +171,7 @@ export default function CartPage({ cart }: CartPageProps) {
                   <div className="flex flex-col justify-start items-center gap-4 w-full max-w-[600px]" key={index}>
                     <div className="flex justify-start items-center w-full gap-4 md:gap-16 border-b border-blue-primary/90 pb-4">
                       <div className="relative min-w-[100px] w-[100px] h-[100px] lg:min-w-[160px] lg:w-[160px] lg:h-[160px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
-                        <Image src={item.images[0].url} alt="Laptop" fill className="object-cover" />
+                        <Image src={item.images.url} alt="Laptop" fill className="object-cover" />
                       </div>
                       <div className="flex flex-col justify-start items-start gap-2">
                         <h3 className="font-bold text-[clamp(1rem,2vw,1.5rem)] line-clamp-2">{item.variant_name}</h3>
@@ -174,11 +179,11 @@ export default function CartPage({ cart }: CartPageProps) {
                         <p className="font-medium text-[clamp(0.75rem,2vw,1rem)]">{color}</p>
                         <div className="flex items-center gap-4">
                           <p className="font-bold text-[clamp(1rem,2vw,1.5rem)]">{formatPrice(item.price)}</p>
-                          {item.original_price !== item.price && (
+                          {/* {item.original_price !== item.price && (
                             <p className="font-bold text-[clamp(0.75rem,2vw,1rem)] text-black/20 line-through">
                               {formatPrice(item.original_price)}
                             </p>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </div>

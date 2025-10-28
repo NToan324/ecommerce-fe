@@ -128,20 +128,21 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
     }
     setCart({
       _id: product.productVariant._id,
-      product_id: product.productVariant.product_id,
       variant_name: product.productVariant.variant_name,
       attributes: product.productVariant.attributes,
-      original_price: product.productVariant.price,
       price: product.productVariant.price,
+      images: product.productVariant.images[0],
+      quantity: quantity,
       discount: product.productVariant.discount,
-      images: product.productVariant.images,
-      available_quantity: product.productVariant.quantity,
+    })
+    console.log('Added to cart:', {
+      productVariantId: product.productVariant._id,
       quantity: quantity,
     })
     if (user) {
       createCartWithHasUser({
         productVariantId: product.productVariant._id,
-        quantity: quantity,
+        quantity: 1,
       })
     } else {
       toastSuccess('You have added the product to the cart successfully!')
@@ -157,6 +158,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
       toastWarning('Reached maximum available quantity')
     }
   }
+
   const handleDecrease = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1)
@@ -371,14 +373,21 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
               <p className="font-medium text-sm text-blue-primary md:block hidden">Impressions up to now</p>
             </div>
             <div className="flex w-full flex-col-reverse justify-between items-start gap-2 border-0 md:border-l border-black md:pl-14">
-              {Array.from({ length: 5 }).map((_, index) => {
-                return (
-                  <div className="flex justify-start items-center gap-4 w-full" key={index}>
-                    <span className="w-3 font-medium text-sm ">{index + 1}</span>
-                    <div className="w-full max-w-[250px] h-2 rounded-4xl bg-blue-tertiary ml-2"></div>
-                  </div>
-                )
-              })}
+              {reviews?.data.rating_distribution &&
+                Object.entries(reviews.data.rating_distribution).map(([key, value], index) => {
+                  const widthRating = (value / reviews.data.reviews_with_rating) * 100
+                  return (
+                    <div className="flex justify-start items-center gap-4 w-full" key={key}>
+                      <span className="w-3 font-medium text-sm ">{index + 1}</span>
+                      <div className=" ml-2 w-full relative  bg-black/5 rounded-4xl h-2 max-w-[250px]">
+                        <div
+                          className="w-full left-0 absolute h-2 rounded-4xl bg-blue-tertiary"
+                          style={{ width: `${widthRating}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )
+                })}
             </div>
           </div>
         </div>
@@ -387,7 +396,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
         >
           <div className="flex justify-between w-full items-center md:items-start gap-3 md:flex-col">
             <p className="text-[clamp(1rem,2vw,2rem)] font-bold text-blue-tertiary line-clamp-1">
-              Hello! <span className="text-black">{user?.fullName}</span>
+              Hello! <span className="text-black">{user?.fullName || 'My fiend'}</span>
             </p>
             <p className="text-[clamp(0.75rem,2vw,0.875rem)] font-medium text-blue-night">Friday, Aug 29</p>
           </div>

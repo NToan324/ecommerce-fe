@@ -10,7 +10,17 @@ export interface CartDetail {
   available_quantity: number
   quantity: number
   discount: number
-  images: Image[]
+  images: Image
+}
+
+export interface CartStore {
+  _id: string
+  variant_name: string
+  attributes: Record<string, string>
+  price: number
+  images: Image
+  quantity: number
+  discount: number
 }
 
 export interface CreateCart {
@@ -31,6 +41,7 @@ export interface CartItemDetail {
   product_variant_name: string
   quantity: number
   unit_price: number
+  attributes: Record<string, string>
   discount: number
   images: Image
   product_detail: CartDetail

@@ -26,7 +26,7 @@ export default function page() {
               src={user?.avatar.url || 'https://avatar.iran.liara.run/public'}
               alt="avatar"
               fill
-              objectFit="contain"
+              objectFit="cover"
               className="absolute"
             />
           </div>

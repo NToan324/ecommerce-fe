@@ -40,6 +40,13 @@ class UseProduct {
     })
   }
 
+  checkProductVariantIdFromCart = () => {
+    return useMutation({
+      mutationKey: ['checkProductVariantId'],
+      mutationFn: (productVariantId: string) => productService.getProductVariantById(productVariantId),
+    })
+  }
+
   getReviewsProductVariant = (id: string, searchParams: SearchParams) => {
     return useQuery({
       queryKey: ['getReviewsProductVariant', id, searchParams],

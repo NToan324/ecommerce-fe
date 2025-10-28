@@ -19,9 +19,11 @@ export default function Header() {
   const user = useAuthStore((state) => state.user)
   const cartQuantity = useCartStore((state) => state.cartQuantity)
   const logout = useAuthStore((state) => state.logout)
+  const clearCart = useCartStore((state) => state.clearCart)
 
   const handleLogout = async () => {
     logout()
+    clearCart()
     router.push('/')
     toastSuccess('So sad to see you go! You have been logged out successfully.')
   }
@@ -134,9 +136,8 @@ export default function Header() {
               <Image
                 src={user?.avatar.url ? user.avatar.url : 'https://avatar.iran.liara.run/public'}
                 alt="avatar"
-                width={45}
-                height={45}
-                className="object-cover"
+                fill
+                objectFit="cover"
               />
             </div>
             <div className="md:flex hidden opacity-100 scale-0 group-hover:scale-100 origin-top-right group-hover:opacity-100 transition-all duration-300 absolute z-[50] -left-[165px] -bottom-[170px] w-[200px] rounded-2xl shadow-2xl shadow-blue-primary bg-gradient-to-bl from-blue-primary to-white via-blue-primary flex-col justify-start items-start gap-4 p-4">

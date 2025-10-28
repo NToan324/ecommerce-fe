@@ -23,9 +23,8 @@ export function useAuth() {
         authStore.storeAccessTokenCookie?.(response.data.accessToken)
         queryClient.invalidateQueries({ queryKey: ['profile'] })
         toastSuccess('Signin successful!')
-
-        await syncUserData()
         router.push('/')
+        await syncUserData()
       } else {
         toastError('Signin failed! Please try again.')
       }

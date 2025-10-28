@@ -19,12 +19,12 @@ import useOrder from '@/hooks/useOrder'
 import orderSchema from '@/schemas/order.schema'
 import { useAuthStore } from '@/stores/auth.store'
 import { useCartStore } from '@/stores/cart.store'
-import { CartDetail } from '@/types/cart.type'
+import { CartStore } from '@/types/cart.type'
 import { Coupon } from '@/types/coupon.type'
 import { formatPrice } from '@/utils/helpers'
 
 interface CheckoutPageProps {
-  cart: CartDetail[]
+  cart: CartStore[]
   coupon: Partial<Coupon> | null
 }
 
@@ -49,11 +49,11 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
 
   const paymentMethod = form.watch('payment_method')
   const subtotal = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.original_price * item.quantity, 0)
+    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   }, [cart])
 
   const discount = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.original_price * item.discount * item.quantity, 0)
+    return cart.reduce((sum, item) => sum + item.price * item.discount * item.quantity, 0)
   }, [cart])
 
   const taxAmount = useMemo(() => {
@@ -123,7 +123,7 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
         discount: item.discount || 0,
         attributes: item.attributes,
         images: {
-          url: item.images[0]?.url || '',
+          url: item.images.url || '',
         },
       }))
 
@@ -139,6 +139,7 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
       toastError('Your cart is empty. Please add items to your cart before placing an order.')
       return
     }
+    console.log('data', data)
     createOrder(data)
   }
 
@@ -181,6 +182,7 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
                         <FormControl>
                           <div className="relative w-full">
                             <FloatingInput
+                              disabled={!!user}
                               {...field}
                               value={field.value}
                               type="email"
@@ -292,7 +294,7 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
                         key={index}
                       >
                         <div className="relative min-w-[100px] w-[100px] h-[100px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
-                          <Image src={item.images[0].url} alt="Laptop" fill className="object-cover" />
+                          <Image src={item.images.url} alt="Laptop" fill className="object-cover" />
                         </div>
                         <div className="flex flex-col justify-start items-start gap-2">
                           <h3 className="font-bold text-[clamp(0.625rem,2vw,0.875rem)] line-clamp-2">

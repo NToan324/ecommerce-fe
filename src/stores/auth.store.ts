@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 import { create } from 'zustand'
 
 import { Profile } from '@/types/user.type'
+import { useCartStore } from './cart.store'
 
 export interface AuthState {
   user: Profile | null

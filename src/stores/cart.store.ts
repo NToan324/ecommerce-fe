@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-import { CartDetail } from '@/types/cart.type'
+import { CartStore } from '@/types/cart.type'
 import { Coupon } from '@/types/coupon.type'
 
 interface ProfileUser {
@@ -11,8 +11,8 @@ interface ProfileUser {
 }
 
 interface useCartState {
-  cart: CartDetail[]
-  setCart: (cart: CartDetail) => void
+  cart: CartStore[]
+  setCart: (cart: CartStore) => void
   deleteProductFromCart: (cartId: string) => void
   clearCart: () => void
   cartQuantity: number
@@ -34,6 +34,7 @@ export const useCartStore = create<useCartState>()(
       profileUser: null,
       setCart: (cart) =>
         set((state) => {
+          console.log('Adding to cart', cart)
           const existingItemIndex = state.cart.findIndex((item) => item._id === cart._id)
           let newCart
           if (existingItemIndex !== -1) {

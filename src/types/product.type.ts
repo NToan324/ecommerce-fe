@@ -81,7 +81,16 @@ export interface ReviewPagination {
   average_rating: number
   review_count: number
   reviews_with_rating: number
+  rating_distribution: RatingDistribution
   data: Review[]
+}
+
+export interface RatingDistribution {
+  one_star: number
+  two_star: number
+  three_star: number
+  four_star: number
+  five_star: number
 }
 
 export interface Review {

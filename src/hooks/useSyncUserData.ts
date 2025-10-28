@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { toastSuccess } from '@/components/toastify'
 import { useAuthStore } from '@/stores/auth.store'
 import { useCartStore } from '@/stores/cart.store'
-import { CartItemDetail } from '@/types/cart.type'
+import { CartItemDetail, CartStore } from '@/types/cart.type'
 import useCart from './useCart'
 
 export const useSyncUserData = () => {
@@ -11,6 +11,8 @@ export const useSyncUserData = () => {
   const user = useAuthStore((state) => state.user)
   const { data: cartByUser, refetch } = useCart.getCartByUser(!!user)
   const cart = useCartStore((state) => state.cart)
+  const clearCart = useCartStore((state) => state.clearCart)
+  const setCart = useCartStore((state) => state.setCart)
   const { mutateAsync: updateCartByUser } = useCart.updateCartByUser(false)
   const { mutateAsync: createCart } = useCart.createCart(false)
 
@@ -18,62 +20,55 @@ export const useSyncUserData = () => {
     const result = await refetch()
     const cartData = result.data ? result.data : cartByUser
 
-    //Đây là bug BE: Khi user chưa có cart, API trả về data: [] chứ không phải null
-    if (cart.length > 0 && Array.isArray(cartData?.data) && (cartData.data as CartItemDetail[]).length === 0) {
-      console.log('Cart is already synchronized', cart)
-      await Promise.all(
-        cart.map(
-          (
-            item // dùng toàn bộ cart local khi server rỗng
-          ) =>
-            createCart({
-              productVariantId: item._id,
-              quantity: item.quantity,
-            })
-        )
-      )
-      toastSuccess('Cart synchronized successfully')
-      queryClient.invalidateQueries({ queryKey: ['getCartByUser'] })
-      return
-    }
+    let cartFromDb: CartStore[] = []
 
-    const productVariantMap = new Map(cartData?.data.items.map((p) => [p.product_variant_id, p.quantity]))
-    const checkCartisDifferent = cart.filter((item) => !productVariantMap.has(item._id))
+    const response = await Promise.all(
+      cart.map(async (item) => {
+        const response = await createCart({
+          productVariantId: item._id,
+          quantity: item.quantity,
+        })
+        console.log('CREATE CART RESPONSE', response.data.items)
+        return response.data.items
+      })
+    )
 
-    const cartItemsInDB = cart
-      .filter((item) => productVariantMap.has(item._id) && productVariantMap.get(item._id) !== item.quantity)
-      .map((item) => ({
-        id: item._id,
+    if (response && response.length > 0) {
+      cartFromDb = response[response.length - 1].map((item: CartItemDetail) => ({
+        _id: item.product_variant_id,
+        variant_name: item.product_variant_name,
+        attributes: item.attributes,
+        price: item.unit_price,
         quantity: item.quantity,
+        images: item.images,
+        discount: item.discount,
       }))
-
-    console.log('cartItemsInDB:', cartItemsInDB)
-    console.log('checkCartisDifferent:', checkCartisDifferent)
-
-    if (cartItemsInDB.length > 0) {
-      await Promise.all(
-        cartItemsInDB.map((item) =>
-          updateCartByUser({
-            id: item.id,
-            payload: { quantity: item.quantity },
-          })
-        )
-      )
     }
 
-    if (checkCartisDifferent.length > 0) {
-      await Promise.all(
-        cart.map(
-          (
-            item // dùng toàn bộ cart local khi server rỗng
-          ) =>
-            createCart({
-              productVariantId: item._id,
-              quantity: item.quantity,
-            })
-        )
-      )
+    if (cartData && cartData.data && cartData.data.items.length > 0 && cart.length === 0) {
+      cartFromDb = [
+        ...cartFromDb,
+        ...(cartData?.data.items.map((item) => ({
+          _id: item.product_variant_id,
+          variant_name: item.product_variant_name,
+          attributes: item.attributes,
+          price: item.unit_price,
+          quantity: item.quantity,
+          images: item.images,
+          discount: item.discount,
+        })) || []),
+      ]
+      cartFromDb.forEach((item) => {
+        setCart(item)
+      })
+      console.log('HAS CART FROM USER', cartFromDb)
     }
+
+    clearCart()
+
+    cartFromDb.forEach((item) => {
+      setCart(item)
+    })
 
     toastSuccess('Cart synchronized successfully')
     queryClient.invalidateQueries({ queryKey: ['getCartByUser'] })
