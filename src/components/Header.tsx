@@ -78,12 +78,16 @@ export default function Header() {
           Contact
         </Link>
         <div className="md:hidden flex flex-col gap-4 border-t border-blue-primary/70 pt-4 w-full">
-          <Link href="/profile" className="w-full" onClick={() => setOpen(false)}>
-            Profile
-          </Link>
-          <Link href="/orders" className="w-full" onClick={() => setOpen(false)}>
-            Orders
-          </Link>
+          {user && (
+            <>
+              <Link href="/profile" className="w-full" onClick={() => setOpen(false)}>
+                Profile
+              </Link>
+              <Link href="/orders" className="w-full" onClick={() => setOpen(false)}>
+                Orders
+              </Link>
+            </>
+          )}
           <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
             Settings
           </Link>
@@ -140,13 +144,18 @@ export default function Header() {
                 objectFit="cover"
               />
             </div>
-            <div className="md:flex hidden opacity-100 scale-0 group-hover:scale-100 origin-top-right group-hover:opacity-100 transition-all duration-300 absolute z-[50] -left-[165px] -bottom-[170px] w-[200px] rounded-2xl shadow-2xl shadow-blue-primary bg-gradient-to-bl from-blue-primary to-white via-blue-primary flex-col justify-start items-start gap-4 p-4">
-              <Link href="/profile" className="w-full" onClick={() => setOpen(false)}>
-                <p className="w-full text-sm font-semibold text-black/70 hover:underline">Profile</p>
-              </Link>
-              <Link href="/orders" className="w-full" onClick={() => setOpen(false)}>
-                <p className="w-full text-sm font-semibold text-black/70 hover:underline">Orders</p>
-              </Link>
+            <div className="md:flex hidden top-[50px] opacity-100 scale-0 group-hover:scale-100 origin-top-right group-hover:opacity-100 transition-all duration-300 absolute z-[50] -left-[165px] w-[200px] rounded-2xl shadow-2xl shadow-blue-primary bg-gradient-to-bl from-blue-primary to-white via-blue-primary flex-col justify-start items-start gap-4 p-4">
+              {user && (
+                <>
+                  <Link href="/profile" className="w-full" onClick={() => setOpen(false)}>
+                    <p className="w-full text-sm font-semibold text-black/70 hover:underline">Profile</p>
+                  </Link>
+                  <Link href="/orders" className="w-full" onClick={() => setOpen(false)}>
+                    <p className="w-full text-sm font-semibold text-black/70 hover:underline">Orders</p>
+                  </Link>
+                </>
+              )}
+
               <Link href="/settings" className="w-full" onClick={() => setOpen(false)}>
                 <p className="w-full text-sm font-semibold text-black/70 hover:underline">Settings</p>
               </Link>

@@ -2,15 +2,18 @@ version: "3.9"
 
 services:
   frontend:
+    image: ecommerce-frontend
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ecommerce-frontend
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:3000/api/v1
+        - NEXT_PUBLIC_SOCKET_URL=http://localhost:3000/review
     ports:
       - "3001:3001"
     volumes:
       - .:/app
       - /app/node_modules
     environment:
-      - PORT=3000
+      - PORT=3001
     restart: unless-stopped
