@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import CardProduct from '@user/(unauth)/products/components/card'
 import { CgArrowsExchangeV } from 'react-icons/cg'
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2'
@@ -11,14 +12,15 @@ import PaginationCustom from '@/components/paginationCustom'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
+import { useProductVariantStore } from '@/stores/product.store'
 import { Brand } from '@/types/brand.type'
 import { Category } from '@/types/category.type'
-import { ProductVariant } from '@/types/product.type'
+import { ProductVariantPagination } from '@/types/product.type'
 import { formatPrice } from '@/utils/helpers'
 
 type Attribute = {
   name: string
-  items: { name: string }[]
+  items: { name: string; id: string }[]
 }
 
 type FiltersItem = {
@@ -30,20 +32,66 @@ type FiltersItem = {
 type SliderValue = number[]
 
 interface ProductPageProps {
-  products: ProductVariant[]
+  products: ProductVariantPagination
   categories: Category[]
   brands: Brand[]
 }
 
 export default function ProductPage({ products, categories, brands }: ProductPageProps) {
+  const categoryIds = useProductVariantStore((state) => state.category_ids)
+  const brandIds = useProductVariantStore((state) => state.brand_ids)
+  const minPrice = useProductVariantStore((state) => state.min_price)
+  const maxPrice = useProductVariantStore((state) => state.max_price)
+  const sortName = useProductVariantStore((state) => state.sort_name)
+  const sortPrice = useProductVariantStore((state) => state.sort_price)
+
+  const totalPages = products.totalPages || 1
+  const currentPage = products.page || 1
+
   const [attributes, setAttributes] = useState<Array<Attribute>>([])
-  const [sliderValue, setSliderValue] = useState<SliderValue>([0, 100000000])
+  const [sliderValue, setSliderValue] = useState<SliderValue>([minPrice, maxPrice])
   const [openFilter, setOpenFilter] = useState(false)
+
+  const limit = useProductVariantStore((state) => state.limit)
+  const setCategoryIds = useProductVariantStore((state) => state.setCategoryIds)
+  const setBrandIds = useProductVariantStore((state) => state.setBrandIds)
+  const setMinPrice = useProductVariantStore((state) => state.setMinPrice)
+  const setMaxPrice = useProductVariantStore((state) => state.setMaxPrice)
+  const setSortName = useProductVariantStore((state) => state.setSortName)
+  const setSortPrice = useProductVariantStore((state) => state.setSortPrice)
+  const setPage = useProductVariantStore((state) => state.setPage)
+
+  const router = useRouter()
+
+  const filterItems = [
+    {
+      name: 'Name - A to Z',
+      value: 'name_asc',
+    },
+    {
+      name: 'Name - Z to A',
+      value: 'name_desc',
+    },
+    {
+      name: 'Price - Low to High',
+      value: 'price_asc',
+    },
+    {
+      name: 'Price - High to Low',
+      value: 'price_desc',
+    },
+  ]
+
   const [selectedCategory, setSelectedCategory] = useState<FiltersItem>({
-    categories: [],
-    brands: [],
+    categories: categoryIds || [],
+    brands: brandIds || [],
     prices: [],
   })
+
+  const handlePageChange = (page: number) => {
+    setPage(page)
+    router.push(`/products?page=${page}&limit=${limit}`)
+  }
 
   const handleSelectCategory = (type: keyof FiltersItem, value: string) => {
     const typeLower = type.toLowerCase()
@@ -64,15 +112,32 @@ export default function ProductPage({ products, categories, brands }: ProductPag
   }
 
   useEffect(() => {
+    setCategoryIds(selectedCategory.categories)
+  }, [selectedCategory.categories, setCategoryIds])
+
+  useEffect(() => {
+    setBrandIds(selectedCategory.brands)
+  }, [selectedCategory.brands, setBrandIds])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setMinPrice(sliderValue[0])
+      setMaxPrice(sliderValue[1])
+    }, 300)
+
+    return () => clearTimeout(timeout)
+  }, [sliderValue, setMinPrice, setMaxPrice])
+
+  useEffect(() => {
     if (categories && brands) {
       setAttributes([
         {
           name: 'Categories',
-          items: categories.map((category) => ({ name: category.category_name })),
+          items: categories.map((category) => ({ name: category.category_name, id: category._id })),
         },
         {
           name: 'Brands',
-          items: brands.map((brand) => ({ name: brand.brand_name })),
+          items: brands.map((brand) => ({ name: brand.brand_name, id: brand._id })),
         },
       ])
     }
@@ -109,13 +174,13 @@ export default function ProductPage({ products, categories, brands }: ProductPag
                 <ul className="list-none list-inside space-y-4 mt-4 ">
                   {category.items.map((item) => {
                     const isSelected = selectedCategory[category.name.toLowerCase() as keyof FiltersItem].includes(
-                      item.name
+                      item.id
                     )
                     return (
                       <li
-                        className={`${isSelected ? 'text-black' : 'text-[#999999]'} cursor-pointer hover:text-black`}
+                        className={`${isSelected ? 'text-black' : 'text-black/30'} cursor-pointer hover:text-black w-fit`}
                         key={item.name}
-                        onClick={() => handleSelectCategory(category.name as keyof FiltersItem, item.name)}
+                        onClick={() => handleSelectCategory(category.name as keyof FiltersItem, item.id)}
                       >
                         {item.name}
                       </li>
@@ -131,7 +196,6 @@ export default function ProductPage({ products, categories, brands }: ProductPag
                 step={1000000}
                 max={100000000}
                 onValueChange={(value) => {
-                  console.log(value)
                   setSliderValue(value)
                 }}
                 className="w-full mt-4"
@@ -151,15 +215,37 @@ export default function ProductPage({ products, categories, brands }: ProductPag
         {/* Category Item */}
         <div className="flex flex-col justify-start items-start gap-4 w-full ">
           <div className="w-full flex justify-end gap-2">
-            <Select>
-              <SelectTrigger className="w-[180px] ">
+            <Select
+              onValueChange={(value) => {
+                if (value.includes('name')) {
+                  setSortName(value === 'name_asc' ? 'asc' : 'desc')
+                  setSortPrice(undefined)
+                } else if (value.includes('price')) {
+                  setSortPrice(value === 'price_asc' ? 'asc' : 'desc')
+                  setSortName(undefined)
+                }
+              }}
+              value={
+                sortName
+                  ? sortName === 'asc'
+                    ? 'name_asc'
+                    : 'name_desc'
+                  : sortPrice
+                    ? sortPrice === 'asc'
+                      ? 'price_asc'
+                      : 'price_desc'
+                    : ''
+              }
+            >
+              <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="name_asc">Name: A to Z</SelectItem>
-                <SelectItem value="name_desc">Name: Z to A</SelectItem>
-                <SelectItem value="price_asc">Price: Low to High</SelectItem>
-                <SelectItem value="price_desc">Price: High to Low</SelectItem>
+                {filterItems.map((item) => (
+                  <SelectItem value={item.value} key={item.value}>
+                    {item.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Button className="md:hidden" variant={'outline'} onClick={() => setOpenFilter((prev) => !prev)}>
@@ -167,8 +253,8 @@ export default function ProductPage({ products, categories, brands }: ProductPag
             </Button>
           </div>
           <div className="grid w-full gap-8 content-between lg:grid-cols-3 grid-cols-2">
-            {products && products.length > 0 ? (
-              products.map((product) => {
+            {products && products.data.length > 0 ? (
+              products.data.map((product) => {
                 return (
                   <Link href={`/products/${product._id}`} key={product._id} className="w-full">
                     <CardProduct key={product._id} data={product} />
@@ -176,11 +262,17 @@ export default function ProductPage({ products, categories, brands }: ProductPag
                 )
               })
             ) : (
-              <div className="">No data available</div>
+              <div className=" col-span-2 lg:col-span-3 flex justify-center items-center text-center min-h-[350px]">
+                No data available
+              </div>
             )}
           </div>
           <div className="w-full flex justify-center items-center">
-            <PaginationCustom />
+            <PaginationCustom
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={(page) => handlePageChange(page)}
+            />
           </div>
         </div>
       </div>

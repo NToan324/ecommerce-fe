@@ -1,7 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 
-import PaginationCustom from '@/components/paginationCustom'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { formatPrice } from '@/utils/helpers'
 
@@ -41,7 +40,6 @@ export default function OrderTable() {
           </TableRow>
         </TableBody>
       </Table>
-      <PaginationCustom />
     </div>
   )
 }

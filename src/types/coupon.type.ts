@@ -2,7 +2,7 @@ export interface CouponPagination {
   total: number
   page: number
   limit: number
-  totalPage: number
+  totalPages: number
   data: Coupon[]
 }
 

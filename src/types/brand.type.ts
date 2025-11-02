@@ -4,7 +4,7 @@ export interface BrandPagination {
   total: number
   page: number
   limit: number
-  totalPage: number
+  totalPages: number
   brands: Brand[]
 }
 

@@ -21,4 +21,12 @@ export interface SearchParams {
   limit?: number
   sortBy?: string
   sortOrder?: 'asc' | 'desc'
+  name?: string
+  category_ids?: string[]
+  brand_ids?: string[]
+  min_price?: number
+  max_price?: number
+  ratings?: number
+  sort_price?: 'asc' | 'desc'
+  sort_name?: 'asc' | 'desc'
 }

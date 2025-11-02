@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import productService from '@/services/product.service'
+import { useProductVariantStore } from '@/stores/product.store'
+import { useReviewStore } from '@/stores/review.store'
 import { SearchParams } from '@/types/common.type'
 import { CreateProduct, CreateVariantProduct } from '@/types/product.type'
 
@@ -26,9 +28,40 @@ class UseProduct {
   }
 
   getProductVariantsByUser = () => {
+    const brand_ids = useProductVariantStore((state) => state.brand_ids)
+    const category_ids = useProductVariantStore((state) => state.category_ids)
+    const min_price = useProductVariantStore((state) => state.min_price)
+    const max_price = useProductVariantStore((state) => state.max_price)
+    const name = useProductVariantStore((state) => state.name)
+    const sort_price = useProductVariantStore((state) => state.sort_price)
+    const sort_name = useProductVariantStore((state) => state.sort_name)
+    const page = useProductVariantStore((state) => state.page)
+    const limit = useProductVariantStore((state) => state.limit)
+
+    let params: Partial<SearchParams> = {}
+
+    if (sort_price) {
+      params.sort_price = sort_price
+    }
+
+    if (sort_name) {
+      params.sort_name = sort_name
+    }
+
+    params = {
+      ...params,
+      brand_ids: brand_ids,
+      category_ids: category_ids,
+      min_price: min_price,
+      max_price: max_price,
+      name: name,
+      page: page,
+      limit: limit,
+    }
+
     return useQuery({
-      queryKey: ['productVariantsByUser'],
-      queryFn: () => productService.getProductVariantsByUser(),
+      queryKey: ['productVariantsByUser', params],
+      queryFn: () => productService.getProductVariantsByUser(params),
     })
   }
 
@@ -47,7 +80,10 @@ class UseProduct {
     })
   }
 
-  getReviewsProductVariant = (id: string, searchParams: SearchParams) => {
+  getReviewsProductVariant = (id: string) => {
+    const page = useReviewStore((state) => state.page)
+    const limit = useReviewStore((state) => state.limit)
+    const searchParams = { page, limit }
     return useQuery({
       queryKey: ['getReviewsProductVariant', id, searchParams],
       queryFn: () => productService.getReviewsProductVariant(id, searchParams),

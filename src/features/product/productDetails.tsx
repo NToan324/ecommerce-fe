@@ -9,6 +9,7 @@ import { CarouselProduct } from '@user/(unauth)/products/components/carouselProd
 import { FaRegDotCircle, FaStar } from 'react-icons/fa'
 import { FiMinus, FiShoppingCart } from 'react-icons/fi'
 import { GoPlus } from 'react-icons/go'
+import { IoIosArrowUp } from 'react-icons/io'
 import { LuDot, LuStar } from 'react-icons/lu'
 import { RiSendPlaneLine } from 'react-icons/ri'
 
@@ -21,6 +22,7 @@ import useCart from '@/hooks/useCart'
 import useProduct from '@/hooks/useProduct'
 import { useAuthStore } from '@/stores/auth.store'
 import { useCartStore } from '@/stores/cart.store'
+import { useReviewStore } from '@/stores/review.store'
 import { ProductVariantDetail } from '@/types/product.type'
 import { formatPrice } from '@/utils/helpers'
 
@@ -38,7 +40,6 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
   const [isSending, setIsSending] = useState(false)
   const [ratings, setRatings] = useState(0)
   const [quantity, setQuantity] = useState(1)
-  const setCart = useCartStore((state) => state.setCart)
   const cart = useCartStore((state) => state.cart)
 
   const user = useAuthStore((state) => state.user)
@@ -47,10 +48,12 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
   const colorEntry = entriesAttributes.find(([key]) => key === 'Color')
   const otherEntries = entriesAttributes.filter(([key]) => key !== 'Color')
 
-  const { data: reviews, isSuccess: isSuccessReviews } = useProduct.getReviewsProductVariant(id as string, {
-    limit: 10,
-    page: 1,
-  })
+  const setCart = useCartStore((state) => state.setCart)
+
+  const limit = useReviewStore((state) => state.limit)
+  const setLimit = useReviewStore((state) => state.setLimit)
+
+  const { data: reviews, isSuccess: isSuccessReviews } = useProduct.getReviewsProductVariant(id as string)
   const { mutate: createCartWithHasUser, isPending: isPendingCreateCart } = useCart.createCart()
 
   useEffect(() => {
@@ -73,6 +76,10 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
     }
   }
 
+  const handleSeeMore = () => {
+    setLimit(limit + 10)
+  }
+
   useEffect(() => {
     if (product && product.productVariant?.images.length > 0) {
       setCount(product && product.productVariant?.images.length)
@@ -88,7 +95,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
       setComment('')
       setRatings(0)
       toastSuccess('Thank you for your review!')
-      queryClient.invalidateQueries({ queryKey: ['getReviewsProductVariant', id, { limit: 10, page: 1 }] })
+      queryClient.invalidateQueries({ queryKey: ['getReviewsProductVariant', id] })
     }
     socketConfig.on('new_review', handleNewReview)
 
@@ -461,7 +468,17 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
             </div>
           )}
           {isSuccessReviews && reviews.data.data.length >= 10 && (
-            <p className="w-full text-center text-base font-medium text-black/50">See more</p>
+            <div className="relative h-[50px] cursor-pointer" title="See more" onClick={() => handleSeeMore()}>
+              <IoIosArrowUp size={44} className="rotate-180 absolute arrow-animation text-blue-primary -top-2" />
+              <IoIosArrowUp
+                size={44}
+                className="rotate-180 absolute arrow-animation text-blue-primary !delay-300 -top-4"
+              />
+              <IoIosArrowUp
+                size={44}
+                className="rotate-180 absolute arrow-animation text-blue-primary !delay-500 -top-6"
+              />
+            </div>
           )}
         </div>
       </div>

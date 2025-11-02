@@ -12,11 +12,11 @@ interface CarouselProductProps {
 
 export function CarouselProduct({ data, setApi }: CarouselProductProps) {
   return (
-    <Carousel setApi={setApi} className="w-full">
+    <Carousel setApi={setApi} className="w-full md:w-1/2">
       <CarouselContent>
         {data.map((image, index) => (
           <CarouselItem key={index} className="w-full">
-            <div className="relative overflow-hidden w-full h-screen min-h-[50px] md:h-[650px] md:-left-[300px] md:top-0">
+            <div className="relative overflow-hidden w-full h-screen min-h-[50px] md:h-[650px] md:-left-[0] md:top-0">
               <Image
                 src={image.url || '/images/laptop.png'}
                 alt="Laptop"

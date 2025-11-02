@@ -5,7 +5,7 @@ export interface ProductPagination {
   total: number
   page: number
   limit: number
-  totalPage: number
+  totalPages: number
   data: Product[]
 }
 
@@ -43,7 +43,7 @@ export interface ProductVariantPagination {
   total: number
   page: number
   limit: number
-  totalPage: number
+  totalPages: number
   data: ProductVariant[]
 }
 
@@ -77,7 +77,7 @@ export interface ReviewPagination {
   total: number
   page: number
   limit: number
-  totalPage: number
+  totalPages: number
   average_rating: number
   review_count: number
   reviews_with_rating: number

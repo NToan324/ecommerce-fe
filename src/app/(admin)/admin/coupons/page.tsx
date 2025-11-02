@@ -7,7 +7,6 @@ import { HiOutlineTrash } from 'react-icons/hi'
 
 import DialogDelete from '@/components/dialogDelete'
 import Loading from '@/components/loading'
-import PaginationCustom from '@/components/paginationCustom'
 import HeaderTitleAdmin from '@/components/ui/headerTitleAdmin'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import useCategory from '@/hooks/useCategory'
@@ -136,7 +135,6 @@ export default function page() {
             )}
           </TableBody>
         </Table>
-        <PaginationCustom />
         <DialogDelete
           open={!!openDelete}
           onOpenChange={() => setOpenDelete(null)}

@@ -68,7 +68,16 @@ export default function Header() {
         <Link href="/" onClick={() => setOpen(false)}>
           Home
         </Link>
-        <Link href="/products" onClick={() => setOpen(false)}>
+        <Link
+          href={{
+            pathname: '/products',
+            query: {
+              page: '1',
+              limit: '12',
+            },
+          }}
+          onClick={() => setOpen(false)}
+        >
           Product
         </Link>
         <Link href="/about" onClick={() => setOpen(false)}>
@@ -117,7 +126,16 @@ export default function Header() {
           <Link href="/" onClick={() => setOpen(false)}>
             Home
           </Link>
-          <Link href="/products" onClick={() => setOpen(false)}>
+          <Link
+            href={{
+              pathname: '/products',
+              query: {
+                page: '1',
+                limit: '12',
+              },
+            }}
+            onClick={() => setOpen(false)}
+          >
             Product
           </Link>
           <Link href="/about" onClick={() => setOpen(false)}>

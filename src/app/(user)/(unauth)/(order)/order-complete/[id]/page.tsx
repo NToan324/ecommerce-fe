@@ -15,7 +15,7 @@ export default function page() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setIsLoading(false)
-    }, 1000)
+    }, 300)
     return () => {
       clearTimeout(timeoutId)
     }

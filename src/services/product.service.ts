@@ -1,3 +1,5 @@
+import qs from 'querystring'
+
 import { httpClient as axios } from '@/http/index'
 import { ApiResponse } from '@/http/types/http.response'
 import { Image, SearchParams } from '@/types/common.type'
@@ -44,8 +46,13 @@ class ProductService {
     return response.data
   }
 
-  getProductVariantsByUser = async () => {
-    const response = await axios.get<ApiResponse<ProductVariantPagination>>(`/product/variant`)
+  getProductVariantsByUser = async (params: Partial<SearchParams>) => {
+    const response = await axios.get<ApiResponse<ProductVariantPagination>>(`/product/variant/search`, {
+      params,
+      paramsSerializer: (params) => {
+        return qs.stringify(params)
+      },
+    })
     return response.data
   }
 
@@ -65,10 +72,9 @@ class ProductService {
   }
 
   getReviewsProductVariant = async (id: string, searchParams: SearchParams) => {
-    const { page = 1, limit = 10 } = searchParams
-    const response = await axios.get<ApiResponse<ReviewPagination>>(
-      `/product/variant/${id}/reviews?page=${page}&limit=${limit}`
-    )
+    const response = await axios.get<ApiResponse<ReviewPagination>>(`/product/variant/${id}/reviews`, {
+      params: searchParams,
+    })
     return response.data
   }
 
