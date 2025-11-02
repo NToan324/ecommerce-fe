@@ -27,7 +27,7 @@ class UseProduct {
     })
   }
 
-  getProductVariantsByUser = () => {
+  getProductVariantsByUser = (enabled: boolean = true) => {
     const brand_ids = useProductVariantStore((state) => state.brand_ids)
     const category_ids = useProductVariantStore((state) => state.category_ids)
     const min_price = useProductVariantStore((state) => state.min_price)
@@ -62,6 +62,7 @@ class UseProduct {
     return useQuery({
       queryKey: ['productVariantsByUser', params],
       queryFn: () => productService.getProductVariantsByUser(params),
+      enabled: enabled,
     })
   }
 

@@ -16,11 +16,13 @@ function ProductPageContent() {
   const router = useRouter()
   const pageParam = searchParams.get('page')
   const limitParam = searchParams.get('limit')
+  const nameParam = searchParams.get('name')
 
   const page = useProductVariantStore((state) => state.page)
   const limit = useProductVariantStore((state) => state.limit)
   const setPage = useProductVariantStore((state) => state.setPage)
   const setLimit = useProductVariantStore((state) => state.setLimit)
+  const setName = useProductVariantStore((state) => state.setName)
 
   const { data: brands, isSuccess: isSuccessBrands, isPending: isPendingBrands } = useBrand.getAllBrandsByUser()
   const [isLoading, setIsLoading] = useState(true)
@@ -52,10 +54,15 @@ function ProductPageContent() {
       setPage(Number(pageParam))
       setLimit(Number(limitParam))
     }
+    if (nameParam) {
+      setName(nameParam)
+    } else {
+      setName('')
+    }
     if (!pageParam || !limitParam) {
       router.replace(`/products?page=${page}&limit=${limit}`)
     }
-  }, [page, limit, pageParam, limitParam, setPage, setLimit, router])
+  }, [page, limit, pageParam, limitParam, setPage, setLimit, router, nameParam, setName])
 
   if (isPendingBrands || isPendingCategories || isPendingProducts || isLoading) {
     return (

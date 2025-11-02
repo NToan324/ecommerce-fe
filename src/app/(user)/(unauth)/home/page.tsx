@@ -5,6 +5,12 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { IoIosArrowForward } from 'react-icons/io'
 
+import SearchComponent from '@/app/(user)/(unauth)/home/components/search'
+import { useDebounce } from '@/hooks/useDebounce'
+import useProduct from '@/hooks/useProduct'
+import { useProductVariantStore } from '@/stores/product.store'
+import { ProductVariant } from '@/types/product.type'
+
 const PLACEHOLDER_TEXT = [
   "Asus ROG Strix G16 (2024, i9-13980HX, RTX 4080, 16GB RAM, 1TB SSD, 16'' QHD+ 240Hz)",
   "Asus Zenbook 14 OLED (UX3402, i7-1360P, 16GB RAM, 512GB SSD, 14'' 2.8K OLED Touch)",
@@ -20,8 +26,26 @@ const PLACEHOLDER_TEXT = [
 
 export default function page() {
   const [placeholder, setPlaceholder] = useState('')
-
+  const [searchValue, setSearchValue] = useState('')
+  const [searchResult, setsearchResult] = useState<ProductVariant[]>([])
+  const searchDebounce = useDebounce(searchValue, 500)
+  const setName = useProductVariantStore((state) => state.setName)
   const router = useRouter()
+  const { data: productVariants } = useProduct.getProductVariantsByUser(searchDebounce.trim().length > 3)
+
+  useEffect(() => {
+    if (searchDebounce.trim().length > 3) {
+      setName(searchDebounce)
+    }
+  }, [searchDebounce])
+
+  useEffect(() => {
+    if (productVariants?.data && searchDebounce.trim().length > 3) {
+      setsearchResult(productVariants.data.data)
+    } else {
+      setsearchResult([])
+    }
+  }, [searchDebounce, productVariants, setsearchResult])
 
   useEffect(() => {
     let id = 0
@@ -41,8 +65,8 @@ export default function page() {
   }, [])
 
   return (
-    <div className="">
-      <div className="relative min-h-[calc(100vh-80px)] overflow-hidden">
+    <div className="overflow-hidden">
+      <div className="relative min-h-[calc(100vh-80px)]">
         <h2 className="absolute top-[195px] left-[30px] z-10 w-full max-w-[300px] text-[clamp(2.5rem,8.8vw,8.5rem)] font-bold sm:top-[60px] sm:left-[108px] sm:max-w-[500px] md:max-w-[1000px]">
           Your Hub{' '}
           <span className="bg-gradient-to-tr from-white via-gray-300 to-black bg-clip-text text-transparent">For </span>
@@ -54,10 +78,12 @@ export default function page() {
         <div className="animate-bounce-slow-50 from-blue-primary via-blue-primary/40 absolute bottom-[200px] left-[40px] block h-[130px] w-[130px] rounded-full bg-gradient-to-tr to-white blur-xs sm:bottom-[50px] sm:left-[83px]"></div>
         <div className="from-blue-primary via-blue-primary/40 animate-bounce-slow-70 absolute top-[80px] -right-[250px] z-20 block h-[360px] w-[360px] rounded-full bg-gradient-to-tr to-white blur-xs md:right-[20px] lg:right-[120px]"></div>
         <div className="bg-blue-primary absolute bottom-[20px] left-[60px] z-0 block h-[430px] w-[430px] rounded-full blur-[300px]"></div>
-        <input
-          type="text"
+        <SearchComponent
+          searchResult={searchResult}
           placeholder={placeholder}
-          className="shadow-blue-primary focus-visible:ring-blue-primary absolute md:bottom-[8%] bottom-[20%] left-[50%] h-[80px] w-[340px] min-w-[340px] translate-x-[-50%] translate-y-[-50%] rounded-[50px] bg-white px-8 placeholder-[#C3C3C3] shadow-[0_1px_250px_rgba(0,0,0,1)] outline-none focus-visible:ring-1 sm:w-[600px] lg:w-[780px]"
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          isSearching={searchValue.trim().length > 3 && !productVariants}
         />
       </div>
       <div className="relative flex flex-col items-center justify-center gap-10 overflow-hidden p-7 lg:justify-start lg:p-[120px]">

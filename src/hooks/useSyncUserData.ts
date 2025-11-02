@@ -13,7 +13,6 @@ export const useSyncUserData = () => {
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
   const setCart = useCartStore((state) => state.setCart)
-  const { mutateAsync: updateCartByUser } = useCart.updateCartByUser(false)
   const { mutateAsync: createCart } = useCart.createCart(false)
 
   const syncUserData = async () => {
@@ -28,7 +27,6 @@ export const useSyncUserData = () => {
           productVariantId: item._id,
           quantity: item.quantity,
         })
-        console.log('CREATE CART RESPONSE', response.data.items)
         return response.data.items
       })
     )
@@ -61,7 +59,6 @@ export const useSyncUserData = () => {
       cartFromDb.forEach((item) => {
         setCart(item)
       })
-      console.log('HAS CART FROM USER', cartFromDb)
     }
 
     clearCart()
@@ -70,7 +67,6 @@ export const useSyncUserData = () => {
       setCart(item)
     })
 
-    toastSuccess('Cart synchronized successfully')
     queryClient.invalidateQueries({ queryKey: ['getCartByUser'] })
   }
   return { syncUserData }
