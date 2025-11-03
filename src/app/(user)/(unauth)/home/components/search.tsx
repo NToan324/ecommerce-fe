@@ -9,7 +9,7 @@ interface SearchComponentProps {
   placeholder: string
   searchValue: string
   isSearching: boolean
-  searchResult: ProductVariant[]
+  searchResult: ProductVariant[] | null
   setSearchValue: (value: string) => void
 }
 
@@ -36,26 +36,32 @@ export default function SearchComponent({
         </div>
       )}
 
-      {searchResult.length > 0 && (
-        <div className="absolute bg-white w-full mt-2 rounded-2xl p-4 shadow-2xl">
-          {searchResult.map((item) => (
-            <div
-              key={item._id}
-              className="flex cursor-pointer justify-between items-center py-2 border-b last:border-b-0"
-              onClick={() => router.push(`products?page=1&limit=12&name=${searchValue}`)}
-            >
-              <div>
-                <p className="font-semibold text-base line-clamp-1">{item.variant_name}</p>
-                <p className="text-sm text-gray-500 line-clamp-1">{item.variant_description}</p>
-              </div>
+      {searchResult ? (
+        searchResult.length > 0 ? (
+          <div className="absolute bg-white w-full mt-2 rounded-2xl p-4 shadow-2xl">
+            {searchResult.map((item) => (
+              <div
+                key={item._id}
+                className="flex cursor-pointer justify-between items-center py-2 border-b last:border-b-0"
+                onClick={() => router.push(`products?page=1&limit=12&name=${searchValue}`)}
+              >
+                <div>
+                  <p className="font-semibold text-base line-clamp-1">{item.variant_name}</p>
+                  <p className="text-sm text-gray-500 line-clamp-1">{item.variant_description}</p>
+                </div>
 
-              <div className="w-10 h-10">
-                <RxExternalLink className="text-2xl text-gray-400" />
+                <div className="w-10 h-10">
+                  <RxExternalLink className="text-2xl text-gray-400" />
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        ) : (
+          <div className="absolute bg-white w-full mt-2 rounded-2xl p-4 shadow-2xl">
+            <p className="text-center text-gray-500">Oops! Nothing here</p>
+          </div>
+        )
+      ) : null}
     </div>
   )
 }

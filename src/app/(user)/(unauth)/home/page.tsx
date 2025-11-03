@@ -27,23 +27,23 @@ const PLACEHOLDER_TEXT = [
 export default function page() {
   const [placeholder, setPlaceholder] = useState('')
   const [searchValue, setSearchValue] = useState('')
-  const [searchResult, setsearchResult] = useState<ProductVariant[]>([])
+  const [searchResult, setsearchResult] = useState<ProductVariant[] | null>(null)
   const searchDebounce = useDebounce(searchValue, 500)
   const setName = useProductVariantStore((state) => state.setName)
   const router = useRouter()
-  const { data: productVariants } = useProduct.getProductVariantsByUser(searchDebounce.trim().length > 3)
+  const { data: productVariants, isFetching } = useProduct.getProductVariantsByUser(searchDebounce.trim().length > 1)
 
   useEffect(() => {
-    if (searchDebounce.trim().length > 3) {
+    if (searchDebounce.trim().length > 1) {
       setName(searchDebounce)
     }
   }, [searchDebounce])
 
   useEffect(() => {
-    if (productVariants?.data && searchDebounce.trim().length > 3) {
+    if (productVariants?.data && searchDebounce.trim().length > 1) {
       setsearchResult(productVariants.data.data)
     } else {
-      setsearchResult([])
+      setsearchResult(null)
     }
   }, [searchDebounce, productVariants, setsearchResult])
 
@@ -83,7 +83,7 @@ export default function page() {
           placeholder={placeholder}
           searchValue={searchValue}
           setSearchValue={setSearchValue}
-          isSearching={searchValue.trim().length > 3 && !productVariants}
+          isSearching={isFetching}
         />
       </div>
       <div className="relative flex flex-col items-center justify-center gap-10 overflow-hidden p-7 lg:justify-start lg:p-[120px]">
