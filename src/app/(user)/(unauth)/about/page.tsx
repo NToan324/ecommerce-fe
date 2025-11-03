@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import { CiKeyboard, CiSpeaker } from 'react-icons/ci'
 import { LuSmartphone } from 'react-icons/lu'

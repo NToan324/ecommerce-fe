@@ -27,3 +27,13 @@ export interface User {
   role: string
   loyaltyPoint: number
 }
+
+export interface VerifyCode {
+  user_id: string
+  otp_code: string
+}
+
+export interface ResetPassword {
+  id: string
+  password: string
+}

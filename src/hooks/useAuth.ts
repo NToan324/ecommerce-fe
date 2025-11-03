@@ -5,7 +5,7 @@ import { toastError, toastSuccess } from '@/components/toastify'
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import authService from '@/services/auth.service'
 import { useAuthStore } from '@/stores/auth.store'
-import { ChangePassword, Signin, Signup } from '@/types/auth.type'
+import { ChangePassword, ResetPassword, Signin, Signup, VerifyCode } from '@/types/auth.type'
 import { useSyncUserData } from './useSyncUserData'
 
 export function useAuth() {
@@ -77,5 +77,67 @@ export function useAuth() {
     },
   })
 
-  return { signin, signup, changePassword }
+  const forgotPassword = useMutation({
+    mutationKey: ['forgotPassword'],
+    mutationFn: (email: string) => authService.forgotPassword(email),
+    onSuccess: (response) => {
+      if (response.data.id !== null) {
+        localStorage.setItem('forgotPasswordUserId', response.data.id)
+        router.push(`/verify-code`)
+        toastSuccess('OTP sent to your email address!')
+      } else {
+        toastError('Request failed! Please try again.')
+      }
+    },
+    onError: (error: IHttpErrorResponseDto) => {
+      if (error.error.message) {
+        toastError(`${error.error.message}`)
+      } else {
+        toastError('Error occurred during the request. Please try again.')
+      }
+    },
+  })
+
+  const verifyOtp = useMutation({
+    mutationKey: ['verifyOtp'],
+    mutationFn: (payload: VerifyCode) => authService.verifyOtp(payload),
+    onSuccess: (response) => {
+      if (response.data !== null) {
+        toastSuccess('Verification successful! You can now reset your password.')
+        router.push('/reset-password')
+      } else {
+        toastError('Verification failed! Please try again.')
+      }
+    },
+    onError: (error: IHttpErrorResponseDto) => {
+      if (error.error.message) {
+        toastError(`${error.error.message}`)
+      } else {
+        toastError('Error occurred during verification. Please try again.')
+      }
+    },
+  })
+
+  const resetPassword = useMutation({
+    mutationKey: ['resetPassword'],
+    mutationFn: (payload: ResetPassword) => authService.resetPassword(payload),
+    onSuccess: (response) => {
+      if (response.data !== null) {
+        toastSuccess('Password reset successful! Please log in with your new password.')
+        router.push('/signin')
+        localStorage.removeItem('forgotPasswordUserId')
+      } else {
+        toastError('Password reset failed! Please try again.')
+      }
+    },
+    onError: (error: IHttpErrorResponseDto) => {
+      if (error.error.message) {
+        toastError(`${error.error.message}`)
+      } else {
+        toastError('Error occurred during password reset. Please try again.')
+      }
+    },
+  })
+
+  return { signin, signup, changePassword, forgotPassword, verifyOtp, resetPassword }
 }

@@ -26,6 +26,25 @@ class AuthSchema {
       message: 'Passwords do not match',
       path: ['confirmPassword'],
     })
+  forgotPassword = z.object({
+    email: z
+      .string()
+      .nonempty('Please enter your email')
+      .regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Email is invalid'),
+  })
+
+  resetPassword = z
+    .object({
+      confirmPassword: z
+        .string()
+        .nonempty('Please enter your confirm password')
+        .min(6, 'Password must be at least 6 characters'),
+      password: z.string().nonempty('Please enter your password').min(6, 'Password must be at least 6 characters'),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: 'Passwords do not match',
+      path: ['confirmPassword'],
+    })
 }
 
 const authSchema = new AuthSchema()

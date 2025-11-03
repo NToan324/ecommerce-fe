@@ -111,9 +111,9 @@ export default function page() {
                 </FormItem>
               )}
             />
-            <a href="#" className="text-sm text-black/60 float-right">
+            <Link href={'/forgot-password'} className="text-sm text-black/60 float-right">
               Forgot your password?
-            </a>
+            </Link>
             <Button
               disabled={isPendingLogin}
               type="submit"

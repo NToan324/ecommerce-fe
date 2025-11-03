@@ -26,3 +26,9 @@ export const convertByteToMB = (bytes: number) => {
 export const formatDateWithSuffix = (date: string) => {
   return formatDistance(new Date(date), new Date(), { addSuffix: true })
 }
+
+export const formatTimeSecondToMinute = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = seconds % 60
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+}
