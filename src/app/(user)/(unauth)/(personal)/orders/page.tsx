@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { notFound, useRouter, useSearchParams } from 'next/navigation'
 import ShoppingCardLoader from '@public/lotties/Shopping Cart Loader.json'
 import Lottie from 'lottie-react'
@@ -9,7 +9,7 @@ import OrderUser from '@/features/order/orderUser'
 import useOrder from '@/hooks/useOrder'
 import { useOrderUserStore } from '@/stores/order.store'
 
-export default function page() {
+export const OrderPageContent = () => {
   const searchParams = useSearchParams()
   const { data: orders, isSuccess, isPending } = useOrder.getAllOrders()
   const setOrders = useOrderUserStore((state) => state.setOrders)
@@ -64,4 +64,12 @@ export default function page() {
   }
 
   return <OrderUser />
+}
+
+export default function page() {
+  return (
+    <Suspense fallback={<div>Loading orders...</div>}>
+      <OrderPageContent />
+    </Suspense>
+  )
 }
