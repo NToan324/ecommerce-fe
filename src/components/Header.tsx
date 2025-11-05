@@ -92,7 +92,17 @@ export default function Header() {
               <Link href="/profile" className="w-full" onClick={() => setOpen(false)}>
                 Profile
               </Link>
-              <Link href="/orders" className="w-full" onClick={() => setOpen(false)}>
+              <Link
+                href={{
+                  pathname: '/orders',
+                  query: {
+                    page: '1',
+                    limit: '10',
+                  },
+                }}
+                className="w-full"
+                onClick={() => setOpen(false)}
+              >
                 Orders
               </Link>
             </>
@@ -168,7 +178,17 @@ export default function Header() {
                   <Link href="/profile" className="w-full" onClick={() => setOpen(false)}>
                     <p className="w-full text-sm font-semibold text-black/70 hover:underline">Profile</p>
                   </Link>
-                  <Link href="/orders" className="w-full" onClick={() => setOpen(false)}>
+                  <Link
+                    href={{
+                      pathname: '/orders',
+                      query: {
+                        page: '1',
+                        limit: '10',
+                      },
+                    }}
+                    className="w-full"
+                    onClick={() => setOpen(false)}
+                  >
                     <p className="w-full text-sm font-semibold text-black/70 hover:underline">Orders</p>
                   </Link>
                 </>

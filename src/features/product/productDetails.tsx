@@ -356,13 +356,15 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
           <div className="flex justify-between items-center gap-8 w-full">
             <div className=" flex-col justify-between items-start gap-2 hidden md:flex w-full">
               <h4 className="text-lg font-bold">Total reviews</h4>
-              <p className="text-3xl font-bold mt-2">{isSuccessReviews && reviews.data.review_count}</p>
+              <p className="text-3xl font-bold mt-2">{(isSuccessReviews && reviews.data.review_count) || 0}</p>
               <p className="font-medium text-sm text-blue-primary">Impressions up to now</p>
             </div>
             <div className="flex flex-col justify-between items-start gap-2 w-full border-0 md:border-l md:border-black md:pl-14">
               <h4 className="text-lg font-bold hidden md:block">Avarage ratings</h4>
               <div className="flex justify-start items-center gap-2 md:gap-4 md:flex-row flex-col">
-                <p className="text-3xl font-bold mt-2">{isSuccessReviews && reviews.data.average_rating.toFixed(1)}</p>
+                <p className="text-3xl font-bold mt-2">
+                  {(isSuccessReviews && reviews.data.average_rating.toFixed(1)) || 0}
+                </p>
                 <span className="text-[8px] font-medium text-blue-secondary md:hidden">
                   {isSuccessReviews && reviews.data.review_count} reviews
                 </span>

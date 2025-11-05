@@ -7,12 +7,14 @@ import { toastError } from '@components/toastify'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
+import { HiOutlineTrash } from 'react-icons/hi2'
 import { IoIosClose } from 'react-icons/io'
 import { MdOutlineCloudUpload } from 'react-icons/md'
 import { NumericFormat } from 'react-number-format'
 import z from 'zod'
 
 import { Combobox } from '@/components/comboBox'
+import DialogDelete from '@/components/dialogDelete'
 import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
@@ -49,6 +51,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
   })
 
   const [open, setOpen] = useState(false)
+  const [openDelete, setOpenDelete] = useState<ProductVariant | null>(null)
   const [updateProductVariant, setUpdateProductVariant] = useState<ProductVariant | null>(null)
 
   const [viewProductVariants, setViewProductVariants] = useState(false)
@@ -59,6 +62,14 @@ export default function UpdateProduct(props: UpdateProductProps) {
   const { data: productVariants, isLoading: isLoadingProductVariants } = useProduct.getProductVariantsByProductId(
     product._id,
     viewProductVariants
+  )
+  const { mutate: deleteProduct, isPending: isPendingDeleteProduct } = useProduct.deleteProductVariant(
+    {
+      onClose: () => {
+        setOpenDelete(null)
+      },
+    },
+    product._id
   )
 
   const onDrop = useCallback(
@@ -93,6 +104,10 @@ export default function UpdateProduct(props: UpdateProductProps) {
       'image/svg+xml': ['.svg'],
     },
   })
+
+  const handleDeleteProduct = (id: string) => {
+    deleteProduct(id)
+  }
 
   const handleSubmit = async (data: z.infer<typeof productSchema.updateProduct>) => {
     // Nếu có hình ảnh
@@ -139,7 +154,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
           className="w-full flex flex-col gap-6 p-4 rounded-2xl border"
         >
           <div className="gap-8 w-full flex-col flex justify-start items-center">
-            <div className="w-full flex justify-end items-center">
+            <div className="w-full gap-4 flex justify-end items-center">
               <Button
                 disabled={isPendingUpdateProduct || isPendingUploadProductImage}
                 type="submit"
@@ -383,15 +398,31 @@ export default function UpdateProduct(props: UpdateProductProps) {
                   </div>
                   <div className="col-span-2 flex justify-between items-center gap-2">
                     <h3 className="text-base font-bold">General</h3>
-                    <Button
-                      type="button"
-                      className="w-full max-w-[150px] h-12 bg-blue-tertiary hover:bg-blue-tertiary/90 rounded-2xl"
-                      onClick={() => {
-                        setUpdateProductVariant(productVariant)
-                      }}
-                    >
-                      Update Variant
-                    </Button>
+                    <div className="flex justify-end items-center gap-4">
+                      <Button
+                        type="button"
+                        className="w-full max-w-[150px] h-12 bg-blue-tertiary hover:bg-blue-tertiary/90 rounded-2xl"
+                        onClick={() => {
+                          setUpdateProductVariant(productVariant)
+                        }}
+                      >
+                        Update Variant
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setOpenDelete(productVariant)
+                        }}
+                        type="button"
+                        className=" h-12 w-12  bg-red-600 hover:bg-red-700 rounded-2xl"
+                      >
+                        <HiOutlineTrash
+                          size={24}
+                          title={`Delete ${product.product_name}`}
+                          className="text-white cursor-pointer transition-all duration-300"
+                          strokeWidth={1.5}
+                        />
+                      </Button>
+                    </div>
                   </div>
                   <div className="relative w-full">
                     <FloatingInput
@@ -542,6 +573,14 @@ export default function UpdateProduct(props: UpdateProductProps) {
           disableButton={true}
         />
       )}
+      <DialogDelete
+        open={!!openDelete}
+        onOpenChange={() => setOpenDelete(null)}
+        name={openDelete?.variant_name || ''}
+        handleDelete={(id: string) => handleDeleteProduct(id)}
+        id={openDelete?._id || ''}
+        isPending={isPendingDeleteProduct}
+      />
     </div>
   )
 }

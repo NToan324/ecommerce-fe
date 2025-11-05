@@ -1,64 +1,67 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import OrderTable from '@user/(unauth)/(personal)/orders/components/orderTable'
+import { useEffect, useState } from 'react'
+import { notFound, useRouter, useSearchParams } from 'next/navigation'
+import ShoppingCardLoader from '@public/lotties/Shopping Cart Loader.json'
+import Lottie from 'lottie-react'
 
-import { ORDER_STATUS } from '@/constant'
+import OrderUser from '@/features/order/orderUser'
+import useOrder from '@/hooks/useOrder'
+import { useOrderUserStore } from '@/stores/order.store'
 
 export default function page() {
-  const scroller = useRef<HTMLSpanElement[] | null>([])
-  const [selectedStatus, setSelectedStatus] = useState<ORDER_STATUS>(ORDER_STATUS.DELIVERED)
-  const orderStatus = [ORDER_STATUS.PENDING, ORDER_STATUS.SHIPPING, ORDER_STATUS.CANCELLED, ORDER_STATUS.DELIVERED]
+  const searchParams = useSearchParams()
+  const { data: orders, isSuccess, isPending } = useOrder.getAllOrders()
+  const setOrders = useOrderUserStore((state) => state.setOrders)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const handleStatus = (status: ORDER_STATUS, index: number) => {
-    setSelectedStatus(status)
-    if (scroller.current) {
-      scroller.current[index]?.scrollIntoView({
-        behavior: 'smooth',
-        inline: 'center',
-        block: 'nearest',
-      })
-    }
-  }
+  const router = useRouter()
+  const pageStore = useOrderUserStore((state) => state.page)
+  const limitStore = useOrderUserStore((state) => state.limit)
+
+  const setPage = useOrderUserStore((state) => state.setPage)
+  const setLimit = useOrderUserStore((state) => state.setLimit)
+  const setTotalPages = useOrderUserStore((state) => state.setTotalPages)
 
   useEffect(() => {
-    if (scroller.current) {
-      const orderStatusIndex = orderStatus.indexOf(selectedStatus)
-      scroller.current[orderStatusIndex].scrollIntoView({
-        behavior: 'smooth',
-        inline: 'center',
-        block: 'nearest',
-      })
+    if (isSuccess && orders.data.data.length > 0) {
+      setOrders(orders.data.data)
     }
-  }, [])
+    if (!isPending) {
+      const timer = setTimeout(() => setIsLoading(false), 300)
+      return () => clearTimeout(timer)
+    } else {
+      setIsLoading(true)
+    }
+  }, [orders, isPending, isSuccess, setOrders])
 
-  return (
-    <div className="relative flex flex-col items-start justify-start gap-10 overflow-hidden bg-white p-7 lg:px-[120px] lg:pb-20 lg:pt-10">
-      <h1 className="text-4xl font-bold bg-gradient-to-r bg-clip-text text-transparent from-violet-primary to-blue-light">
-        Order History
-      </h1>
-      <div className="w-full space-y-9">
-        <div className="flex justify-start no-scrollbar items-center gap-8 md:gap-25 overflow-x-auto">
-          {orderStatus.map((status, index) => {
-            return (
-              <span
-                key={index}
-                ref={(rel) => {
-                  if (scroller.current && rel) {
-                    scroller.current[index] = rel
-                  }
-                }}
-                onClick={() => handleStatus(status, index)}
-                className={`${selectedStatus === status ? 'font-bold' : 'text-black/50'} min-w-[80px] md:min-w-[100px] text-[clamp(0.875rem,1vw,1rem)] transition-all duration-500 cursor-pointer`}
-              >
-                {status}
-              </span>
-            )
-          })}
-        </div>
-        {/* <Order Table /> */}
-        <OrderTable />
+  useEffect(() => {
+    const { page, limit } = Object.fromEntries([...searchParams.entries()])
+    if (!page || !limit) {
+      router.replace(`/orders?page=${pageStore}&limit=${limitStore}`)
+    }
+    if (page) {
+      setPage(Number(page))
+    }
+    if (limit) {
+      setLimit(Number(limit))
+    }
+    if (isSuccess && orders.data) {
+      setTotalPages(orders.data.totalPages)
+    }
+  }, [searchParams, router, pageStore, limitStore, setPage, setLimit, isSuccess, orders, setTotalPages])
+
+  if (isPending || isLoading) {
+    return (
+      <div className="w-full relative flex justify-center flex-col items-center col-span-2 lg:col-span-3 h-screen">
+        <Lottie animationData={ShoppingCardLoader} loop={true} />
       </div>
-    </div>
-  )
+    )
+  }
+
+  if (!isSuccess || !orders?.data) {
+    return notFound()
+  }
+
+  return <OrderUser />
 }

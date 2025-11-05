@@ -34,7 +34,6 @@ export const useCartStore = create<useCartState>()(
       profileUser: null,
       setCart: (cart) =>
         set((state) => {
-          console.log('Adding to cart', cart)
           const existingItemIndex = state.cart.findIndex((item) => item._id === cart._id)
           let newCart
           if (existingItemIndex !== -1) {

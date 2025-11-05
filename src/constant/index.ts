@@ -1,3 +1,8 @@
+export enum USER_ROLE {
+  ADMIN = 'ADMIN',
+  CUSTOMER = 'CUSTOMER',
+}
+
 export enum ORDER_STATUS {
   PENDING = 'PENDING',
   SHIPPING = 'SHIPPING',
@@ -50,4 +55,23 @@ export enum CATEGORY_PRODUCT {
   DOCKING = 'Docking Station / USB Hub',
   SOFTWARE = 'Software',
   ACCESSORY = 'Other Accessories',
+}
+
+export const ORDER_STATUS_COLOR: Record<ORDER_STATUS, { label: string; className: string }> = {
+  [ORDER_STATUS.PENDING]: {
+    label: 'Pending',
+    className: 'bg-yellow-100 text-yellow-800',
+  },
+  [ORDER_STATUS.SHIPPING]: {
+    label: 'Shipping',
+    className: 'bg-blue-100 text-blue-800',
+  },
+  [ORDER_STATUS.DELIVERED]: {
+    label: 'Delivered',
+    className: 'bg-green-100 text-green-800',
+  },
+  [ORDER_STATUS.CANCELLED]: {
+    label: 'Cancelled',
+    className: 'bg-red-100 text-red-800',
+  },
 }

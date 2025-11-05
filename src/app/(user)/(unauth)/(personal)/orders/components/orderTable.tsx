@@ -1,10 +1,27 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 
+import PaginationCustom from '@/components/paginationCustom'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { ORDER_STATUS_COLOR } from '@/constant'
+import { useOrderUserStore } from '@/stores/order.store'
 import { formatPrice } from '@/utils/helpers'
 
-export default function OrderTable() {
+interface OrderTableProps {
+  selectedStatus: string
+}
+export default function OrderTable({ selectedStatus }: OrderTableProps) {
+  const orders = useOrderUserStore((state) => state.orders)
+  const page = useOrderUserStore((state) => state.page)
+  const limit = useOrderUserStore((state) => state.limit)
+  const setPage = useOrderUserStore((state) => state.setPage)
+  const totalPages = useOrderUserStore((state) => state.totalPages)
+
+  const handlePageChange = (page: number) => {
+    setPage(page)
+    router.replace(`/orders?page=${page}&limit=${limit}`)
+  }
+
   const router = useRouter()
   return (
     <div>
@@ -18,28 +35,30 @@ export default function OrderTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow onClick={() => router.push('/orders/INV001')} className="cursor-pointer">
-            <TableCell>INV001</TableCell>
-            <TableCell className="block md:max-w-[400px] max-w-[80px] truncate">Macbook Air M1</TableCell>
-            <TableCell>{formatPrice(7600000)}</TableCell>
-            <TableCell className="flex justify-center items-center">
-              <p className="text-[clamp(0.5rem,2vw,1rem)] flex justify-center items-center rounded-[10px] h-6 md:h-9 bg-confirmed text-center text-confirmed-foreground px-2 py-1 w-[60px] md:w-[110px]">
-                Confirmed
-              </p>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>INV001</TableCell>
-            <TableCell className="block md:max-w-[400px] max-w-[80px] truncate">Macbook Pro M4 256GB</TableCell>
-            <TableCell>{formatPrice(200000)}</TableCell>
-            <TableCell className="flex justify-center items-center">
-              <p className="text-[clamp(0.5rem,2vw,1rem)] flex justify-center items-center rounded-[10px] h-6 md:h-9 bg-complete text-center text-complete-foreground px-2 py-1 w-[60px] md:w-[110px]">
-                Delivery
-              </p>
-            </TableCell>
-          </TableRow>
+          {orders.map((order) => {
+            const isSelectedStatus = order.status === selectedStatus
+            const status = ORDER_STATUS_COLOR[order.status]
+            const orderCode = 'ORD' + order._id.slice(-4).toUpperCase()
+            return isSelectedStatus ? (
+              <TableRow onClick={() => router.push(`/orders/${order._id}`)} className="cursor-pointer" key={order._id}>
+                <TableCell>{orderCode}</TableCell>
+                <TableCell className="md:max-w-[400px] max-w-[80px] truncate">
+                  {order.items.map((product) => product.product_variant_name).join(', ')}
+                </TableCell>
+                <TableCell>{formatPrice(order.total_amount)}</TableCell>
+                <TableCell className="flex justify-center items-center">
+                  <p
+                    className={`text-[clamp(0.5rem,2vw,1rem)] flex justify-center items-center rounded-[10px] h-6 md:h-9 ${status.className} text-center px-2 py-1 w-[60px] md:w-[110px]`}
+                  >
+                    {status.label}
+                  </p>
+                </TableCell>
+              </TableRow>
+            ) : null
+          })}
         </TableBody>
       </Table>
+      <PaginationCustom currentPage={page} totalPages={totalPages} onPageChange={(page) => handlePageChange(page)} />
     </div>
   )
 }

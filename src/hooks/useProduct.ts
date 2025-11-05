@@ -222,6 +222,31 @@ class UseProduct {
       },
     })
   }
+
+  deleteProductVariant = (props: UseProductProps, productId: string) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+      mutationKey: ['deleteProductVariant'],
+      mutationFn: (variantId: string) => productService.deleteProductVariantById(variantId),
+      onSuccess: (response) => {
+        if (response.data) {
+          toastSuccess('Product variant deleted successfully')
+          queryClient.invalidateQueries({ queryKey: ['getProductVariantsByProductId', productId] })
+        } else {
+          toastError(response.message || 'Failed to delete product variant')
+        }
+        props.onClose()
+      },
+      onError: (error: IHttpErrorResponseDto) => {
+        if (error.error.message) {
+          toastError(`${error.error.message}`)
+        } else {
+          toastError('Error occurred while deleting product. Please try again.')
+        }
+        props.onClose()
+      },
+    })
+  }
 }
 
 const useProduct = new UseProduct()

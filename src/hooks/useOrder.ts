@@ -5,7 +5,7 @@ import { toastError, toastSuccess } from '@/components/toastify'
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import orderService from '@/services/order.service'
 import { useCartStore } from '@/stores/cart.store'
-import { useOrderStore } from '@/stores/order.store'
+import { useOrderStore, useOrderUserStore } from '@/stores/order.store'
 import { CreateOrder } from '@/types/order.type'
 
 class UseOrder {
@@ -48,6 +48,16 @@ class UseOrder {
       queryKey: ['order', id],
       queryFn: () => orderService.getOrderById(id),
       enabled: !!id,
+    })
+  }
+
+  getAllOrders = () => {
+    const page = useOrderUserStore((state) => state.page)
+    const limit = useOrderUserStore((state) => state.limit)
+    const params = { page, limit }
+    return useQuery({
+      queryKey: ['orders', params],
+      queryFn: () => orderService.getAllOrders(params),
     })
   }
 }

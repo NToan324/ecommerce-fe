@@ -1,7 +1,9 @@
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { jwtDecode } from 'jwt-decode'
 
 import { toastError, toastSuccess } from '@/components/toastify'
+import { USER_ROLE } from '@/constant'
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import authService from '@/services/auth.service'
 import { useAuthStore } from '@/stores/auth.store'
@@ -19,11 +21,17 @@ export function useAuth() {
     mutationFn: (payload: Signin) => authService.signin(payload),
     onSuccess: async (response) => {
       if (response.data) {
-        authStore.setAccessToken(response.data.accessToken)
-        authStore.storeAccessTokenCookie?.(response.data.accessToken)
+        const accessToken = response.data.accessToken
+        authStore.setAccessToken(accessToken)
+        authStore.storeAccessTokenCookie?.(accessToken)
         queryClient.invalidateQueries({ queryKey: ['profile'] })
         toastSuccess('Signin successful!')
-        router.push('/')
+        const role = jwtDecode<{ role: string }>(accessToken).role
+        if (role === USER_ROLE.ADMIN) {
+          router.push('/admin')
+        } else {
+          router.push('/')
+        }
         await syncUserData()
       } else {
         toastError('Signin failed! Please try again.')

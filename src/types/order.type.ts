@@ -1,5 +1,13 @@
 import { ORDER_STATUS, PAYMENT_METHOD, PAYMENT_STATUS } from '@/constant'
 
+export interface OrderPagination {
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+  data: Order[]
+}
+
 export interface CreateOrder {
   name: string
   email: string

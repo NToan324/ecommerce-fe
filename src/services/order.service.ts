@@ -1,6 +1,7 @@
 import { httpClient as axios } from '@/http/index'
 import { ApiResponse } from '@/http/types/http.response'
-import { CreateOrder, Order } from '@/types/order.type'
+import { SearchParams } from '@/types/common.type'
+import { CreateOrder, Order, OrderPagination } from '@/types/order.type'
 
 class OrderService {
   createOrder = async (payload: Partial<CreateOrder>) => {
@@ -9,6 +10,12 @@ class OrderService {
   }
   getOrderById = async (id: string) => {
     const response = await axios.get<ApiResponse<Order>>(`/order/${id}`)
+    return response.data
+  }
+
+  // orders
+  getAllOrders = async (params: SearchParams) => {
+    const response = await axios.get<ApiResponse<OrderPagination>>('/user/orders', { params })
     return response.data
   }
 }

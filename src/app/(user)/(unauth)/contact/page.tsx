@@ -87,7 +87,7 @@ export default function page() {
         </div>
         <div className="w-1/3"></div>
       </div>
-      <div className="flex justify-start items-start gap-10 flex-col relative bg-black/5 w-full px-10 py-6 md:py-[60px] md:px-[120px]">
+      <div className="flex justify-start items-start gap-10 flex-col relative w-full px-10 py-6 md:py-[60px] md:px-[120px]">
         <h3 className="leading-10 md:leading-16 from-blue-secondary  bg-gradient-to-r to-black bg-clip-text font-medium text-transparent uppercase text-[clamp(1.875rem,3vw,3.75rem)]">
           frequently asked <br /> questions
         </h3>
@@ -96,7 +96,11 @@ export default function page() {
             <div key={index} onClick={() => handleShowFaqAnswers(faq.id)} className="cursor-pointer">
               <div className="flex justify-between items-center gap-4 w-full p-3 border-y border-gray-300">
                 <p className="text-[clamp(1rem,2vw,1.25rem)] font-[500]">{faq.question}</p>
-                {showFaqAnswers.includes(faq.id) ? <LuMinus size={24} /> : <FiPlus size={24} />}
+                {showFaqAnswers.includes(faq.id) ? (
+                  <LuMinus size={24} className="min-w-6" />
+                ) : (
+                  <FiPlus size={24} className="min-w-6" />
+                )}
               </div>
               {showFaqAnswers.includes(faq.id) && (
                 <p className="text-[clamp(0.875rem,2vw,1rem)] p-3 text-black/70">{faq.answer}</p>
@@ -105,7 +109,7 @@ export default function page() {
           ))}
         </div>
         <div className="flex justify-between w-full items-start gap-10 relative mt-20 md:flex-row flex-col-reverse">
-          <div className="border max-w-[600px] rounded-[20px] border-white relative overflow-hidden flex flex-col gap-6 justify-between items-center p-4 md:p-9 bg-transparent md:bg-gradient-to-b from-blue-primary to-blue-secondary/20 w-full">
+          <div className="border max-w-[600px] rounded-[20px] border-white relative overflow-hidden flex flex-col gap-6 justify-between items-center p-4 md:p-9 bg-transparent md:bg-gradient-to-b from-blue-gray to-blue-secondary/20 w-full">
             <h2 className="uppercase text-[clamp(1.25rem,2vw,1.5rem)] text-blue-tertiary w-full text-start">
               You can reach us anytime.
             </h2>

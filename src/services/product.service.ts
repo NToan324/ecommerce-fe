@@ -8,10 +8,8 @@ import {
   CreateVariantProduct,
   Product,
   ProductPagination,
-  ProductVariant,
   ProductVariantDetail,
   ProductVariantPagination,
-  Review,
   ReviewPagination,
 } from '@/types/product.type'
 
@@ -43,6 +41,11 @@ class ProductService {
 
   getProductVariantById = async (id: string) => {
     const response = await axios.get<ApiResponse<ProductVariantDetail>>(`/product/variant/${id}`)
+    return response.data
+  }
+
+  deleteProductVariantById = async (id: string) => {
+    const response = await axios.delete<ApiResponse<null>>(`/product/variant/${id}`)
     return response.data
   }
 
