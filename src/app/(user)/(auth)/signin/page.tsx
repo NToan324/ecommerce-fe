@@ -39,7 +39,6 @@ export default function page() {
 
   const loginWithGoogle = useGoogleLogin({
     onSuccess: (tokenResponse) => {
-      console.log(tokenResponse)
       if (tokenResponse.access_token) {
         signinWithGoogleMutate(tokenResponse.access_token)
       }
