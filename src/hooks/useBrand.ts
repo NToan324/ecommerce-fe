@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import brandService from '@/services/brand.service'
+import { useBrandStore } from '@/stores/brand.store'
 import { CreateBrand } from '@/types/brand.type'
 
 interface UseBrandProps {
@@ -11,9 +12,13 @@ interface UseBrandProps {
 
 class UseBrand {
   getAllBrands = () => {
+    const name = useBrandStore((state) => state.name)
+    const page = useBrandStore((state) => state.page)
+    const limit = useBrandStore((state) => state.limit)
+    const params = { page, limit, name }
     return useQuery({
-      queryKey: ['brands'],
-      queryFn: () => brandService.getAllBrands(),
+      queryKey: ['brands', params],
+      queryFn: () => brandService.getAllBrands(params),
     })
   }
 

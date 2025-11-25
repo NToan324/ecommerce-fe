@@ -1,7 +1,7 @@
 import { httpClient as axios } from '@/http/index'
 import { ApiResponse } from '@/http/types/http.response'
 import { Brand, BrandPagination, CreateBrand, UpdateBrand } from '@/types/brand.type'
-import { Image } from '@/types/common.type'
+import { Image, SearchParams } from '@/types/common.type'
 import { CreateProduct, CreateVariantProduct } from '@/types/product.type'
 
 class BrandService {
@@ -10,8 +10,8 @@ class BrandService {
     return response.data
   }
 
-  getAllBrands = async () => {
-    const response = await axios.get<ApiResponse<BrandPagination>>('/brand/admin')
+  getAllBrands = async (params: Partial<SearchParams>) => {
+    const response = await axios.get<ApiResponse<BrandPagination>>('/brand/admin', { params })
     return response.data
   }
 

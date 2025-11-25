@@ -15,6 +15,17 @@ class AuthService {
     return response.data
   }
 
+  signinWithGoogle = async (token: string) => {
+    const response = await axios.post<ApiResponse<SigninResponse>>(
+      '/auth/google-login',
+      { token },
+      {
+        skipAuth: true,
+      }
+    )
+    return response.data
+  }
+
   changePassword = async (payload: ChangePassword) => {
     const response = await axios.put<ApiResponse<null>>('/user/change-password', payload)
     return response.data

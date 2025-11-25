@@ -4,31 +4,35 @@ import { Bar, BarChart, CartesianGrid, LabelList, ResponsiveContainer, XAxis } f
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
+import { formatPrice } from '@/utils/helpers'
 
 export const description = 'A bar chart with a label'
 
-const chartData = [
-  { month: 'January', desktop: 186 },
-  { month: 'February', desktop: 300 },
-  { month: 'March', desktop: 237 },
-  { month: 'April', desktop: 73 },
-  { month: 'May', desktop: 209 },
-  { month: 'June', desktop: 214 },
-]
+export type chartData = {
+  month: string
+  value: number
+}
 
 const chartConfig = {
   desktop: {
-    label: 'Desktop',
-    color: 'var(--chart-1)',
+    label: 'value',
+    color: 'var(--color-blue-primary)',
   },
 } satisfies ChartConfig
 
 interface BarChartTotalRevenueProps {
   chartTitle?: string
   chartDescription?: string
+  data: chartData[]
+  typeFormat?: 'currency' | 'number'
 }
 
-export function BarChartTotalRevenue({ chartTitle, chartDescription }: BarChartTotalRevenueProps) {
+export function BarChartTotalRevenue({
+  chartTitle,
+  chartDescription,
+  data,
+  typeFormat = 'number',
+}: BarChartTotalRevenueProps) {
   return (
     <Card>
       <CardHeader>
@@ -40,7 +44,7 @@ export function BarChartTotalRevenue({ chartTitle, chartDescription }: BarChartT
           <ChartContainer config={chartConfig}>
             <BarChart
               accessibilityLayer
-              data={chartData}
+              data={data}
               margin={{
                 top: 20,
               }}
@@ -53,9 +57,23 @@ export function BarChartTotalRevenue({ chartTitle, chartDescription }: BarChartT
                 axisLine={false}
                 tickFormatter={(value) => value.slice(0, 3)}
               />
-              <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-              <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8}>
-                <LabelList position="top" offset={12} className="fill-foreground" fontSize={12} />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    hideLabel
+                    formatter={(value) => (typeFormat === 'currency' ? formatPrice(value as number) : value)}
+                  />
+                }
+              />
+              <Bar dataKey="value" fill="var(--color-blue-secondary)" radius={8}>
+                <LabelList
+                  position="top"
+                  offset={12}
+                  className="fill-foreground"
+                  fontSize={12}
+                  formatter={(value: number) => (typeFormat === 'currency' ? formatPrice(value as number) : value)}
+                />
               </Bar>
             </BarChart>
           </ChartContainer>

@@ -7,11 +7,13 @@ import Link from 'next/link'
 import 'next/navigation'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useGoogleLogin } from '@react-oauth/google'
 import { useForm } from 'react-hook-form'
 import { LuEye, LuEyeOff } from 'react-icons/lu'
 import z from 'zod'
 
 import Loading from '@/components/loading'
+import { toastError } from '@/components/toastify'
 import { Button } from '@/components/ui/button'
 import { FloatingInput, FloatingLabel } from '@/components/ui/floating-label-input'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
@@ -29,10 +31,23 @@ export default function page() {
 
   const [showPassword, setShowPassword] = useState(false)
   const { mutate: loginMutate, isPending: isPendingLogin } = useAuth().signin
+  const { mutate: signinWithGoogleMutate } = useAuth().signinWithGoogle
 
   const handleLogin = (data: z.infer<typeof authSchema.login>) => {
     loginMutate(data)
   }
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      console.log(tokenResponse)
+      if (tokenResponse.access_token) {
+        signinWithGoogleMutate(tokenResponse.access_token)
+      }
+    },
+    onError: () => {
+      toastError('Google sign-in was unsuccessful. Please try again.')
+    },
+  })
 
   return (
     <main>
@@ -129,13 +144,13 @@ export default function page() {
               <span className="inline-block w-full max-w-[80px] h-px bg-blue-primary/90"></span>
             </div>
             <div className="flex justify-center items-center gap-5">
-              <Button variant="outline" className="rounded-2xl h-14">
+              <Button type="button" variant="outline" className="rounded-2xl h-14" onClick={() => loginWithGoogle()}>
                 <Image src="/images/google.svg" alt="Google" width={30} height={30} />
-                Google
+                Login with Google
               </Button>
-              <Button variant="outline" className="rounded-2xl h-14">
+              <Button type="button" variant="outline" className="rounded-2xl h-14">
                 <Image src="/images/facebook.svg" alt="Facebook" width={30} height={30} />
-                Facebook
+                Login with Facebook
               </Button>
             </div>
           </form>

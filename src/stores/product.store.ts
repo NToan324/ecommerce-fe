@@ -1,6 +1,20 @@
 import { create } from 'zustand'
 
-import { ProductVariant } from '@/types/product.type'
+import { Product, ProductVariant } from '@/types/product.type'
+
+interface ProductState {
+  product: Product[]
+  totalPages: number
+  limit: number
+  page: number
+  name: string
+
+  setName: (name: string) => void
+  setProduct: (product: Product[]) => void
+  setLimit: (limit: number) => void
+  setTotalPages: (totalPages: number) => void
+  setPage: (page: number) => void
+}
 
 interface ProductVariantState {
   productVariant: ProductVariant | null
@@ -49,4 +63,17 @@ export const useProductVariantStore = create<ProductVariantState>((set) => ({
   setSortName: (sort_name) => set({ sort_name }),
   setPage: (page) => set({ page }),
   setLimit: (limit) => set({ limit }),
+}))
+
+export const useProductStore = create<ProductState>((set) => ({
+  product: [],
+  totalPages: 0,
+  limit: 10,
+  page: 1,
+  name: '',
+  setProduct: (product) => set({ product }),
+  setLimit: (limit) => set({ limit }),
+  setTotalPages: (totalPages) => set({ totalPages }),
+  setPage: (page) => set({ page }),
+  setName: (name) => set({ name }),
 }))

@@ -18,6 +18,14 @@ class UseUser {
     })
   }
 
+  getAllUsers = () => {
+    return useQuery({
+      queryKey: ['users'],
+      queryFn: () => userService.getAllUsers(),
+      refetchOnMount: true,
+    })
+  }
+
   updateProfile = (props: UserProps) => {
     const queryClient = useQueryClient()
     return useMutation({

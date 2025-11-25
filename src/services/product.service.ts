@@ -29,8 +29,10 @@ class ProductService {
     return response.data
   }
 
-  getAllProducts = async () => {
-    const response = await axios.get<ApiResponse<ProductPagination>>('/product')
+  getAllProducts = async (params: Partial<SearchParams>) => {
+    const response = await axios.get<ApiResponse<ProductPagination>>('/product', {
+      params,
+    })
     return response.data
   }
 

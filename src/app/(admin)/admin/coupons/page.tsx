@@ -1,27 +1,35 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { DialogCreateCoupon } from '@admin/admin/coupons/components/dialogCreateCoupon'
 import UpdateCoupon from '@admin/admin/coupons/components/updateCoupon'
 import { HiOutlineTrash } from 'react-icons/hi'
 
 import DialogDelete from '@/components/dialogDelete'
 import Loading from '@/components/loading'
+import PaginationCustom from '@/components/paginationCustom'
 import HeaderTitleAdmin from '@/components/ui/headerTitleAdmin'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import useCategory from '@/hooks/useCategory'
 import useCoupon from '@/hooks/useCoupon'
+import { useCouponStore } from '@/stores/coupon.store'
 import { Coupon } from '@/types/coupon.type'
 import { formatPrice } from '@/utils/helpers'
 
 export default function page() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState<Coupon | null>(null)
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null)
+  const page = useCouponStore((state) => state.page)
+  const limit = useCouponStore((state) => state.limit)
+  const totalPages = useCouponStore((state) => state.totalPages)
+  const setPage = useCouponStore((state) => state.setPage)
+  const setTotalPages = useCouponStore((state) => state.setTotalPages)
 
   const { data: coupons, isPending, isSuccess, isFetching } = useCoupon.getAllCoupons()
 
-  const { mutate: deleteCategory, isPending: isPendingDeleteCategory } = useCategory.deleteCategory({
+  const { mutate: deleteCoupon, isPending: isPendingDeleteCoupon } = useCoupon.deleteCoupon({
     onClose: () => {
       setOpenDelete(null)
       setSelectedCoupon(null)
@@ -36,9 +44,20 @@ export default function page() {
     }
   }
 
-  const handleDeleteCategory = (id: string) => {
-    deleteCategory(id)
+  const handleDeleteCoupon = (id: string) => {
+    deleteCoupon(id)
   }
+
+  const handleOnPageChange = (page: number) => {
+    setPage(page)
+    router.replace(`/admin/coupons?page=${page}&limit=${limit}`)
+  }
+
+  useEffect(() => {
+    if (isSuccess && coupons.data.totalPages) {
+      setTotalPages(coupons.data.totalPages)
+    }
+  }, [isSuccess, coupons])
 
   return (
     <div className="space-y-6">
@@ -82,7 +101,9 @@ export default function page() {
                     <TableCell>{formatPrice(coupon.discount_amount)}</TableCell>
                     <TableCell>{coupon.usage_count}</TableCell>
                     <TableCell>{coupon.usage_limit}</TableCell>
-                    <TableCell>{coupon.orders_used}</TableCell>
+                    <TableCell className="min-w-[200px] max-w-[300px] truncate">
+                      {coupon.orders_used.map((order) => 'ORD' + order.slice(-4)).join(', ')}
+                    </TableCell>
                     <TableCell>
                       <div className="flex justify-center items-center">
                         <p
@@ -139,11 +160,17 @@ export default function page() {
           open={!!openDelete}
           onOpenChange={() => setOpenDelete(null)}
           name={openDelete?.code || ''}
-          handleDelete={handleDeleteCategory}
+          handleDelete={handleDeleteCoupon}
           id={openDelete?._id || ''}
-          isPending={isPendingDeleteCategory}
+          isPending={isPendingDeleteCoupon}
         />
       </div>
+      <PaginationCustom
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={(page) => handleOnPageChange(page)}
+        hidden={totalPages <= 1}
+      />
     </div>
   )
 }

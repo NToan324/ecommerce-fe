@@ -1,22 +1,32 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import UpdateCategory from '@admin/admin/categories/components/updateCategory'
 import { HiOutlineTrash } from 'react-icons/hi'
 
 import { DialogCreateCategory } from '@/app/(admin)/admin/categories/components/dialogCreateCategory'
 import DialogDelete from '@/components/dialogDelete'
 import Loading from '@/components/loading'
-import HeaderTitleAdmin from '@/components/ui/headerTitleAdmin'
+import PaginationCustom from '@/components/paginationCustom'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import useCategory from '@/hooks/useCategory'
+import { useCategoryStore } from '@/stores/category.store'
 import { Category } from '@/types/category.type'
+import HeaderTitleAdmin from '@/components/ui/headerTitleAdmin'
 
 export default function page() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState<Category | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
+
+  const page = useCategoryStore((state) => state.page)
+  const limit = useCategoryStore((state) => state.limit)
+  const totalPages = useCategoryStore((state) => state.totalPages)
+  const setPage = useCategoryStore((state) => state.setPage)
+  const setTotalPages = useCategoryStore((state) => state.setTotalPages)
 
   const { data: categories, isPending, isSuccess, isFetching } = useCategory.getAllCategories()
 
@@ -38,6 +48,17 @@ export default function page() {
   const handleDeleteCategory = (id: string) => {
     deleteCategory(id)
   }
+
+  const handleOnPageChange = (page: number) => {
+    setPage(page)
+    router.replace(`/admin/categories?page=${page}&limit=${limit}`)
+  }
+
+  useEffect(() => {
+    if (isSuccess && categories.data.totalPages) {
+      setTotalPages(categories.data.totalPages)
+    }
+  }, [isSuccess, categories])
 
   return (
     <div className="space-y-6">
@@ -81,7 +102,7 @@ export default function page() {
                       <div className="w-full flex justify-center items-center">
                         <div className="relative w-[80px] h-[80px]">
                           <Image
-                            src={category.category_image.url}
+                            src={category.category_image.url || '/images/default_product_image.png'}
                             alt={category.category_name}
                             fill
                             objectFit="contain"
@@ -150,6 +171,12 @@ export default function page() {
           isPending={isPendingDeleteCategory}
         />
       </div>
+      <PaginationCustom
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={(page) => handleOnPageChange(page)}
+        hidden={totalPages <= 1}
+      />
     </div>
   )
 }

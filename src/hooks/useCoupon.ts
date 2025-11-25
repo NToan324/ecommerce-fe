@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toastError, toastSuccess } from '@/components/toastify'
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import couponService from '@/services/coupon.service'
+import { useCouponStore } from '@/stores/coupon.store'
 import { CreateCoupon } from '@/types/coupon.type'
 import { formatPrice } from '@/utils/helpers'
 
@@ -12,9 +13,13 @@ interface UseCouponProps {
 
 class UseCoupon {
   getAllCoupons = () => {
+    const page = useCouponStore((state) => state.page)
+    const limit = useCouponStore((state) => state.limit)
+    const params = { page, limit }
     return useQuery({
-      queryKey: ['coupons'],
-      queryFn: () => couponService.getAllCoupons(),
+      queryKey: ['coupons', params],
+
+      queryFn: () => couponService.getAllCoupons(params),
     })
   }
 
@@ -66,6 +71,29 @@ class UseCoupon {
         } else {
           toastError('Error occurred while updating brand. Please try again.')
         }
+      },
+    })
+  }
+
+  deleteCoupon = (props: UseCouponProps) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+      mutationKey: ['deleteCoupon'],
+      mutationFn: (couponId: string) => couponService.deleteCoupon(couponId),
+      onSuccess: async () => {
+        toastSuccess('Coupon deleted successfully!')
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ['coupons'] })
+        }, 800)
+        props.onClose()
+      },
+      onError: (error: IHttpErrorResponseDto) => {
+        if (error.error.message) {
+          toastError(`${error.error.message}`)
+        } else {
+          toastError('Error occurred while deleting coupon. Please try again.')
+        }
+        props.onClose()
       },
     })
   }

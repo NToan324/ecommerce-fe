@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { IHttpErrorResponseDto } from '@/http/types/http.response'
 import productService from '@/services/product.service'
-import { useProductVariantStore } from '@/stores/product.store'
+import { useProductStore, useProductVariantStore } from '@/stores/product.store'
 import { useReviewStore } from '@/stores/review.store'
 import { SearchParams } from '@/types/common.type'
 import { CreateProduct, CreateVariantProduct } from '@/types/product.type'
@@ -14,9 +14,13 @@ interface UseProductProps {
 
 class UseProduct {
   getAllProducts = () => {
+    const name = useProductStore((state) => state.name)
+    const page = useProductStore((state) => state.page)
+    const limit = useProductStore((state) => state.limit)
+    const params = { page, limit, name }
     return useQuery({
-      queryKey: ['products'],
-      queryFn: () => productService.getAllProducts(),
+      queryKey: ['products', params],
+      queryFn: () => productService.getAllProducts(params),
     })
   }
 

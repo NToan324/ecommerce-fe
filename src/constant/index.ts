@@ -3,6 +3,13 @@ export enum USER_ROLE {
   CUSTOMER = 'CUSTOMER',
 }
 
+export enum INTERVAL {
+  day = 'day',
+  week = 'week',
+  month = 'month',
+  year = 'year',
+}
+
 export enum ORDER_STATUS {
   PENDING = 'PENDING',
   SHIPPING = 'SHIPPING',

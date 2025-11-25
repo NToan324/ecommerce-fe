@@ -32,14 +32,14 @@ export default function UpdateCoupon({ coupon }: UpdateCouponProps) {
 
   useEffect(() => {
     form.reset({
-      code: coupon._id,
+      code: coupon.code,
       discount_amount: coupon.discount_amount,
       usage_limit: coupon.usage_limit || 0,
       isActive: coupon.isActive,
     })
   }, [coupon, form])
 
-  const { mutate: updateCoupon, isPending: isPendingUpdateCoupon } = useCoupon.updateCoupon(coupon._id)
+  const { mutate: updateCoupon, isPending: isPendingUpdateCoupon } = useCoupon.updateCoupon(coupon.code)
 
   const handleSubmit = async (data: z.infer<typeof couponSchema.updateCoupon>) => {
     updateCoupon(data)

@@ -1,3 +1,11 @@
+export interface UserPagination {
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+  users: Profile[]
+}
+
 export interface Profile {
   _id: string
   email: string

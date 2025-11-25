@@ -25,13 +25,13 @@ export function useAuth() {
         authStore.setAccessToken(accessToken)
         authStore.storeAccessTokenCookie?.(accessToken)
         queryClient.invalidateQueries({ queryKey: ['profile'] })
-        toastSuccess('Signin successful!')
         const role = jwtDecode<{ role: string }>(accessToken).role
         if (role === USER_ROLE.ADMIN) {
           router.push('/admin')
         } else {
           router.push('/')
         }
+        toastSuccess('Signin successful!')
         await syncUserData()
       } else {
         toastError('Signin failed! Please try again.')
@@ -42,6 +42,36 @@ export function useAuth() {
         toastError(`${error.error.message}`)
       } else {
         toastError('Error occurred during signin. Please try again.')
+      }
+    },
+  })
+
+  const signinWithGoogle = useMutation({
+    mutationKey: ['signinWithGoogle'],
+    mutationFn: (token: string) => authService.signinWithGoogle(token),
+    onSuccess: async (response) => {
+      if (response.data) {
+        const accessToken = response.data.accessToken
+        authStore.setAccessToken(accessToken)
+        authStore.storeAccessTokenCookie?.(accessToken)
+        queryClient.invalidateQueries({ queryKey: ['profile'] })
+        const role = jwtDecode<{ role: string }>(accessToken).role
+        if (role === USER_ROLE.ADMIN) {
+          router.push('/admin')
+        } else {
+          router.push('/')
+        }
+        toastSuccess('Signin with Google successful!')
+        await syncUserData()
+      } else {
+        toastError('Signin with Google failed! Please try again.')
+      }
+    },
+    onError: (error: IHttpErrorResponseDto) => {
+      if (error.error.message) {
+        toastError(`${error.error.message}`)
+      } else {
+        toastError('Error occurred during signin with Google. Please try again.')
       }
     },
   })
@@ -147,5 +177,5 @@ export function useAuth() {
     },
   })
 
-  return { signin, signup, changePassword, forgotPassword, verifyOtp, resetPassword }
+  return { signin, signup, changePassword, forgotPassword, verifyOtp, resetPassword, signinWithGoogle }
 }

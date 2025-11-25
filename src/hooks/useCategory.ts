@@ -1,9 +1,13 @@
-import { toastError, toastSuccess } from '@components/toastify'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toastError, toastSuccess } from '@components/toastify';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { IHttpErrorResponseDto } from '@/http/types/http.response'
-import categoryService from '@/services/category.service'
-import { CreateCategory } from '@/types/category.type'
+
+
+import { IHttpErrorResponseDto } from '@/http/types/http.response';
+import categoryService from '@/services/category.service';
+import { useCategoryStore } from '@/stores/category.store';
+import { CreateCategory } from '@/types/category.type';
+
 
 interface UseCategoryProps {
   onClose: () => void
@@ -11,9 +15,13 @@ interface UseCategoryProps {
 
 class UseCategory {
   getAllCategories = () => {
+    const name = useCategoryStore((state) => state.name)
+    const page = useCategoryStore((state) => state.page)
+    const limit = useCategoryStore((state) => state.limit)
+    const params = { page, limit }
     return useQuery({
-      queryKey: ['categories'],
-      queryFn: () => categoryService.getAllCategories(),
+      queryKey: ['categories', params],
+      queryFn: () => categoryService.getAllCategories(params),
     })
   }
 

@@ -11,9 +11,15 @@ interface PaginationCustomProps {
   totalPages: number
   currentPage: number
   onPageChange: (page: number) => void
+  hidden?: boolean
 }
 
-export default function PaginationCustom({ totalPages, currentPage, onPageChange }: PaginationCustomProps) {
+export default function PaginationCustom({
+  totalPages,
+  currentPage,
+  onPageChange,
+  hidden = false,
+}: PaginationCustomProps) {
   const handlePrevious = () => {
     if (currentPage > 1 && currentPage <= totalPages) {
       onPageChange(currentPage - 1)
@@ -26,7 +32,7 @@ export default function PaginationCustom({ totalPages, currentPage, onPageChange
   }
   return (
     <div>
-      <Pagination className="mt-4">
+      <Pagination className="mt-4" hidden={hidden}>
         <PaginationContent>
           <PaginationItem className={currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}>
             <PaginationPrevious onClick={() => handlePrevious()} />

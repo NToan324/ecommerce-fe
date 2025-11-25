@@ -23,7 +23,7 @@ export default function CardProduct({ data }: CardProductProps) {
       </div>
       <div className="w-full h-full absolute md:top-[140px] left-0 group-hover:top-[70px] md:group-hover:top-[170px] duration-300 top-[60px]">
         <div className="relative top-[15px] overflow-hidden w-full h-[190px] md:top-0">
-          <Image src={data.images[0].url} alt="Laptop" fill objectFit="contain" className="md:scale-125 scale-75" />
+          <Image src={data.images[0].url} alt="Laptop" fill objectFit="contain" className="md:scale-100 scale-75" />
         </div>
       </div>
     </div>

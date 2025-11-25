@@ -1,7 +1,7 @@
 import { httpClient as axios } from '@/http/index'
 import { ApiResponse } from '@/http/types/http.response'
 import { Category, CategoryPagination, CreateCategory, UpdateCategory } from '@/types/category.type'
-import { Image } from '@/types/common.type'
+import { Image, SearchParams } from '@/types/common.type'
 
 class CategoryService {
   createCategory = async (payload: CreateCategory) => {
@@ -9,8 +9,8 @@ class CategoryService {
     return response.data
   }
 
-  getAllCategories = async () => {
-    const response = await axios.get<ApiResponse<CategoryPagination>>('/category/admin')
+  getAllCategories = async (params: Partial<SearchParams>) => {
+    const response = await axios.get<ApiResponse<CategoryPagination>>('/category/admin', { params })
     return response.data
   }
 

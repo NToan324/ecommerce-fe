@@ -37,7 +37,10 @@ export default function page() {
         <div className="flex flex-col justify-start items-start gap-3">
           <h1 className="font-medium text-[clamp(1.125rem,2vw,1.5rem)]">{user?.fullName || 'Unknown User'}</h1>
           <p className="font-medium text-[clamp(0.875rem,1vw,1rem)] text-black/50">
-            <span className="font-bold text-orange-primary">{user?.loyalty_points || 0} points</span> available.
+            <span className="font-bold text-orange-primary">
+              {user?.loyalty_points.toLocaleString('vi-VN') || 0} points
+            </span>{' '}
+            available.
           </p>
         </div>
       </div>

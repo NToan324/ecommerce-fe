@@ -2,21 +2,35 @@
 
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import UpdateBrand from '@admin/admin/brands/components/updateBrand'
 import { HiOutlineTrash } from 'react-icons/hi'
 
 import { DialogCreateBrand } from '@/app/(admin)/admin/brands/components/dialogCreateBrand'
 import DialogDelete from '@/components/dialogDelete'
 import Loading from '@/components/loading'
+import PaginationCustom from '@/components/paginationCustom'
 import HeaderTitleAdmin from '@/components/ui/headerTitleAdmin'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import useBrand from '@/hooks/useBrand'
+import { useDebounce } from '@/hooks/useDebounce'
+import { useBrandStore } from '@/stores/brand.store'
 import { Brand } from '@/types/brand.type'
 
 export default function page() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState<Brand | null>(null)
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null)
+  const page = useBrandStore((state) => state.page)
+  const limit = useBrandStore((state) => state.limit)
+  const totalPages = useBrandStore((state) => state.totalPages)
+  const setPage = useBrandStore((state) => state.setPage)
+  const setTotalPages = useBrandStore((state) => state.setTotalPages)
+  const setName = useBrandStore((state) => state.setName)
+
+  const [search, setSearch] = useState('')
+  const debounce = useDebounce(search, 500)
 
   const { data: brands, isPending, isSuccess, isFetching } = useBrand.getAllBrands()
 
@@ -39,13 +53,28 @@ export default function page() {
     deleteBrand(id)
   }
 
+  const handleOnPageChange = (page: number) => {
+    setPage(page)
+    router.replace(`/admin/brands?page=${page}&limit=${limit}`)
+  }
+
   useEffect(() => {
-    console.log('RENDER PAGE BRANDS', brands?.data.brands)
-  }, [brands])
+    if (isSuccess && brands.data.totalPages) {
+      setTotalPages(brands.data.totalPages)
+    }
+  }, [isSuccess, brands])
+
+  useEffect(() => {
+    if (debounce.trim().length > 2) {
+      setName(debounce.trim())
+    } else {
+      setName('')
+    }
+  }, [debounce])
 
   return (
     <div className="space-y-6">
-      <HeaderTitleAdmin title="Brand" />
+      <HeaderTitleAdmin title="Brand" search={search} setSearch={setSearch} />
       <div className="w-full flex justify-end items-center">
         <DialogCreateBrand open={open} setOpen={setOpen} />
       </div>
@@ -82,7 +111,12 @@ export default function page() {
                     <TableCell>
                       <div className="w-full flex justify-center items-center">
                         <div className="relative w-[80px] h-[80px]">
-                          <Image src={brand.brand_image.url} alt={brand.brand_name} fill objectFit="contain" />
+                          <Image
+                            src={brand.brand_image.url || '/images/default_product_image.png'}
+                            alt={brand.brand_name}
+                            fill
+                            objectFit="contain"
+                          />
                         </div>
                       </div>
                     </TableCell>
@@ -147,6 +181,12 @@ export default function page() {
           isPending={isPendingDeleteBrand}
         />
       </div>
+      <PaginationCustom
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={(page) => handleOnPageChange(page)}
+        hidden={totalPages <= 1}
+      />
     </div>
   )
 }

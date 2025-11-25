@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { INTERVAL } from '@/constant'
+
 export interface CommonLayoutProps {
   children: React.ReactNode
 }
@@ -29,4 +31,7 @@ export interface SearchParams {
   ratings?: number
   sort_price?: 'asc' | 'desc'
   sort_name?: 'asc' | 'desc'
+  from_date?: string | Date
+  to_date?: string | Date
+  interval?: INTERVAL
 }

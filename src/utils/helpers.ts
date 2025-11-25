@@ -11,8 +11,16 @@ export const formatDate = (date: Date) => {
     day: '2-digit',
   }).format(date)
 }
+
+export const formatDatePattern = (date: Date) => {
+  return format(date, 'yyyy-MM-dd')
+}
+
+export const formatDateTime = (date: Date) => {
+  return date.toISOString().split('T')[0]
+}
+
 export const convertStringToDate = (dateString: string) => {
-  console.log('dateString', dateString)
   return format(new Date(dateString), 'dd/MM/yyyy')
 }
 

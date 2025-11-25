@@ -13,20 +13,23 @@ import { cn } from '@/lib/utils'
 interface CalendarDateRangePickerProps extends React.HTMLAttributes<HTMLDivElement> {
   fromDate?: Date | undefined
   toDate?: Date | undefined
-  setFromDate?: (date: Date | undefined) => void
-  setToDate?: (date: Date | undefined) => void
+  setRangeDate?: (date: DateRange | undefined) => void
 }
 export function CalendarDateRangePicker({
   className,
   fromDate = new Date(),
+  setRangeDate,
   toDate = addDays(new Date(), 7),
-  // setFromDate,
-  // setToDate,
 }: CalendarDateRangePickerProps) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: fromDate,
     to: toDate,
   })
+
+  const handleSetDate = (date: DateRange | undefined) => {
+    setDate(date)
+    setRangeDate?.(date)
+  }
 
   return (
     <div className={cn('grid gap-2', className)}>
@@ -52,7 +55,13 @@ export function CalendarDateRangePicker({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="end">
-          <Calendar mode="range" defaultMonth={date?.from} selected={date} onSelect={setDate} numberOfMonths={2} />
+          <Calendar
+            mode="range"
+            defaultMonth={date?.from}
+            selected={date}
+            onSelect={(value) => handleSetDate(value)}
+            numberOfMonths={2}
+          />
         </PopoverContent>
       </Popover>
     </div>
