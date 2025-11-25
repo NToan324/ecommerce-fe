@@ -1,13 +1,10 @@
-import { toastError, toastSuccess } from '@components/toastify';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toastError, toastSuccess } from '@components/toastify'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-
-
-import { IHttpErrorResponseDto } from '@/http/types/http.response';
-import categoryService from '@/services/category.service';
-import { useCategoryStore } from '@/stores/category.store';
-import { CreateCategory } from '@/types/category.type';
-
+import { IHttpErrorResponseDto } from '@/http/types/http.response'
+import categoryService from '@/services/category.service'
+import { useCategoryStore } from '@/stores/category.store'
+import { CreateCategory } from '@/types/category.type'
 
 interface UseCategoryProps {
   onClose: () => void

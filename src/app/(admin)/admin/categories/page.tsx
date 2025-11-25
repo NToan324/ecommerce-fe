@@ -10,11 +10,11 @@ import { DialogCreateCategory } from '@/app/(admin)/admin/categories/components/
 import DialogDelete from '@/components/dialogDelete'
 import Loading from '@/components/loading'
 import PaginationCustom from '@/components/paginationCustom'
+import HeaderTitleAdmin from '@/components/ui/headerTitleAdmin'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import useCategory from '@/hooks/useCategory'
 import { useCategoryStore } from '@/stores/category.store'
 import { Category } from '@/types/category.type'
-import HeaderTitleAdmin from '@/components/ui/headerTitleAdmin'
 
 export default function page() {
   const router = useRouter()
