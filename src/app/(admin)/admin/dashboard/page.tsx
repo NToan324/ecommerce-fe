@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { ChartBarActive } from '@admin/admin/dashboard/components/barChartOrder'
 import { BarChartTotalRevenue } from '@admin/admin/dashboard/components/barChartTotalRevenue'
-import { ComparerativeChart } from '@admin/admin/dashboard/components/comparativeChart'
+import { ComparativeChart } from '@admin/admin/dashboard/components/comparativeChart'
 import IntervalSelector from '@admin/admin/dashboard/components/intervalSelector'
 import { DateRange } from 'react-day-picker'
 import { IoIosArrowRoundUp } from 'react-icons/io'
@@ -12,7 +12,7 @@ import { CalendarDateRangePicker } from '@/components/ui/date-range-picker'
 import { INTERVAL } from '@/constant'
 import useStatistic from '@/hooks/useStatistic'
 import { useStatisticStore } from '@/stores/statistic.store'
-import { formatDatePattern } from '@/utils/helpers'
+import { convertStringToDate, formatDatePattern } from '@/utils/helpers'
 
 export default function page() {
   const setFromDateStore = useStatisticStore((state) => state.setFromDate)
@@ -111,7 +111,7 @@ export default function page() {
           <BarChartTotalRevenue
             data={
               statisticAdvanced?.data.statsByInterval.map((item) => ({
-                month: item.date,
+                month: convertStringToDate(item.date),
                 value: item.totalRevenue,
               })) || []
             }
@@ -122,7 +122,7 @@ export default function page() {
           <BarChartTotalRevenue
             data={
               statisticAdvanced?.data.statsByInterval.map((item) => ({
-                month: item.date,
+                month: convertStringToDate(item.date),
                 value: item.totalProfit,
               })) || []
             }
@@ -133,7 +133,7 @@ export default function page() {
           <BarChartTotalRevenue
             data={
               statisticAdvanced?.data.statsByInterval.map((item) => ({
-                month: item.date,
+                month: convertStringToDate(item.date),
                 value: item.totalOrders,
               })) || []
             }
@@ -143,7 +143,7 @@ export default function page() {
           <BarChartTotalRevenue
             data={
               statisticAdvanced?.data.statsByInterval.map((item) => ({
-                month: item.date,
+                month: convertStringToDate(item.date),
                 value: item.totalProducts,
               })) || []
             }
@@ -151,7 +151,17 @@ export default function page() {
             chartTitle="Products"
           />
           <div className="w-full col-span-2">
-            <ComparerativeChart />
+            <ComparativeChart
+              data={
+                statisticAdvanced?.data.statsByInterval.map((item) => ({
+                  date: item.date,
+                  product: item.totalProducts,
+                  orders: item.totalOrders,
+                })) || []
+              }
+              description=""
+              title=""
+            />
           </div>
         </div>
       </div>

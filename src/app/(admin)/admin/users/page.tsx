@@ -22,10 +22,10 @@ export default function Page() {
   const setTotalPages = useUserStore((s) => s.setTotalPages)
 
   const { data: users, isPending, isSuccess } = useUser.getAllUsers()
-  console.log('users', users)
+
   useEffect(() => {
-    if (isSuccess) {
-      setTotalPages(users.data.totalPages)
+    if (users) {
+      setTotalPages(users.data.totalPage)
     }
   }, [isSuccess])
 

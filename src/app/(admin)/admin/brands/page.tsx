@@ -59,8 +59,16 @@ export default function page() {
   }
 
   useEffect(() => {
-    if (isSuccess && brands.data.totalPages) {
-      setTotalPages(brands.data.totalPages)
+    if (brands) {
+      setTotalPages(brands.data.totalPage)
+      setPage(brands.data.page)
+    }
+  }, [brands, setTotalPages, setPage])
+
+  useEffect(() => {
+    if (isSuccess && brands.data.totalPage) {
+      setTotalPages(brands.data.totalPage)
+      setPage(brands.data.page)
     }
   }, [isSuccess, brands])
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { HiOutlineTrash } from 'react-icons/hi'
 
 import Loading from '@/components/loading'
 import PaginationCustom from '@/components/paginationCustom'
@@ -51,7 +50,6 @@ export default function Page() {
               <TableHead>Loyalty Earned</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created</TableHead>
-              <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -91,10 +89,6 @@ export default function Page() {
                   </TableCell>
 
                   <TableCell>{convertStringToDate(order.createdAt)}</TableCell>
-
-                  <TableCell>
-                    <HiOutlineTrash className="text-red-600 hover:text-red-800 cursor-pointer" size={20} />
-                  </TableCell>
                 </TableRow>
               ))
             ) : (

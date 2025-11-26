@@ -2,7 +2,7 @@ export interface UserPagination {
   total: number
   page: number
   limit: number
-  totalPages: number
+  totalPage: number
   users: Profile[]
 }
 

@@ -37,6 +37,12 @@ export default function page() {
     },
   })
 
+  useEffect(() => {
+    if (isSuccess && categories.data.totalPage) {
+      setTotalPages(categories.data.totalPage)
+      setPage(categories.data.page)
+    }
+  }, [isSuccess, categories])
   const handleSelectCategory = (category: Category) => {
     if (selectedCategory?._id === category._id) {
       setSelectedCategory(null)
@@ -55,8 +61,8 @@ export default function page() {
   }
 
   useEffect(() => {
-    if (isSuccess && categories.data.totalPages) {
-      setTotalPages(categories.data.totalPages)
+    if (isSuccess && categories.data.totalPage) {
+      setTotalPages(categories.data.totalPage)
     }
   }, [isSuccess, categories])
 

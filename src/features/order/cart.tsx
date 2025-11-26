@@ -80,7 +80,6 @@ export default function CartPage({ cart }: CartPageProps) {
   }, [subtotal, discount, shippingFee, couponDiscount])
 
   const handleIncrease = async (quantity: number, product: CartStore) => {
-    // if (quantity < product.available_quantity) {
     const quantityFromProductVariantId = await checkProductVariantIdFromCart(product._id)
     if (product.quantity + 1 <= quantityFromProductVariantId.data.productVariant.quantity) {
       setCartState({ ...product, quantity: 1 })
@@ -171,7 +170,7 @@ export default function CartPage({ cart }: CartPageProps) {
                   <div className="flex flex-col justify-start items-center gap-4 w-full max-w-[600px]" key={index}>
                     <div className="flex justify-start items-center w-full gap-4 md:gap-16 border-b border-blue-primary/90 pb-4">
                       <div className="relative min-w-[100px] w-[100px] h-[100px] lg:min-w-[160px] lg:w-[160px] lg:h-[160px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
-                        <Image src={item.images.url} alt="Laptop" fill className="object-cover" />
+                        <Image src={item.images.url} alt="Laptop" fill className="object-contain" />
                       </div>
                       <div className="flex flex-col justify-start items-start gap-2">
                         <h3 className="font-bold text-[clamp(1rem,2vw,1.5rem)] line-clamp-2">{item.variant_name}</h3>
@@ -179,11 +178,6 @@ export default function CartPage({ cart }: CartPageProps) {
                         <p className="font-medium text-[clamp(0.75rem,2vw,1rem)]">{color}</p>
                         <div className="flex items-center gap-4">
                           <p className="font-bold text-[clamp(1rem,2vw,1.5rem)]">{formatPrice(item.price)}</p>
-                          {/* {item.original_price !== item.price && (
-                            <p className="font-bold text-[clamp(0.75rem,2vw,1rem)] text-black/20 line-through">
-                              {formatPrice(item.original_price)}
-                            </p>
-                          )} */}
                         </div>
                       </div>
                     </div>
@@ -246,7 +240,7 @@ export default function CartPage({ cart }: CartPageProps) {
                     </div>
                     <div className="flex justify-between items-center gap-4 w-full">
                       <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Discount</p>
-                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(discount)}</span>
+                      <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">-{formatPrice(discount)}</span>
                     </div>
                     <div className="flex justify-between items-center gap-4 w-full">
                       <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Tax</p>
@@ -261,14 +255,16 @@ export default function CartPage({ cart }: CartPageProps) {
                     <div className="flex justify-between items-center gap-4 w-full">
                       <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
                       <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                        {formatPrice(couponDiscount)}
+                        {couponDiscount > 0 ? `-${formatPrice(couponDiscount)}` : formatPrice(couponDiscount)}
                       </span>
                     </div>
                     {user && (
                       <div className="flex justify-between items-center gap-4 w-full">
                         <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Loyalty point</p>
                         <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                          {formatPrice(loyaltyPointDiscount)}
+                          {loyaltyPointDiscount > 0
+                            ? `-${formatPrice(loyaltyPointDiscount)}`
+                            : formatPrice(loyaltyPointDiscount)}
                         </span>
                       </div>
                     )}
@@ -346,8 +342,11 @@ export default function CartPage({ cart }: CartPageProps) {
                     />
 
                     <p className="text-sm">
-                      Use your <span className="font-bold text-orange-foreground">{user.loyalty_points}</span> loyalty
-                      points to get{' '}
+                      Use your{' '}
+                      <span className="font-bold text-orange-foreground">
+                        {user.loyalty_points.toLocaleString('vi-VN')}
+                      </span>{' '}
+                      loyalty points to get{' '}
                       <span className="font-bold text-orange-foreground">
                         {' '}
                         {formatPrice(user.loyalty_points * 1000)}

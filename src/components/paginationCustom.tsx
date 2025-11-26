@@ -53,9 +53,6 @@ export default function PaginationCustom({
               </PaginationLink>
             </PaginationItem>
           ))}
-          {/* <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem> */}
           <PaginationItem className={currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}>
             <PaginationNext onClick={() => handleNext()} />
           </PaginationItem>

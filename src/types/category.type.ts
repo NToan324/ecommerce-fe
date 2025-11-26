@@ -4,7 +4,7 @@ export interface CategoryPagination {
   total: number
   page: number
   limit: number
-  totalPages: number
+  totalPage: number
   categories: Category[]
 }
 
