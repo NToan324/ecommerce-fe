@@ -36,6 +36,11 @@ export default function page() {
   const setPage = useProductStore((state) => state.setPage)
   const setName = useProductStore((state) => state.setName)
 
+  const setLimitCategory = useCategoryStore((state) => state.setLimit)
+  const setLimitBrand = useBrandStore((state) => state.setLimit)
+  const setPageCategory = useCategoryStore((state) => state.setPage)
+  const setPageBrand = useBrandStore((state) => state.setPage)
+
   const categoryState = useCategoryStore()
   const brandsState = useBrandStore()
 
@@ -48,6 +53,13 @@ export default function page() {
       setSelectedProduct(null)
     },
   })
+
+  useEffect(() => {
+    setLimitCategory(1000)
+    setLimitBrand(1000)
+    setPageCategory(1)
+    setPageBrand(1)
+  }, [setLimitBrand, setLimitCategory, setPageCategory, setPageBrand])
 
   useEffect(() => {
     if (isSuccessCategories && categories.data.categories.length > 0) {

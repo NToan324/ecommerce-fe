@@ -27,6 +27,7 @@ export default function page() {
   const totalPages = useCategoryStore((state) => state.totalPages)
   const setPage = useCategoryStore((state) => state.setPage)
   const setTotalPages = useCategoryStore((state) => state.setTotalPages)
+  const setLimitCategory = useCategoryStore((state) => state.setLimit)
 
   const { data: categories, isPending, isSuccess, isFetching } = useCategory.getAllCategories()
 
@@ -37,12 +38,6 @@ export default function page() {
     },
   })
 
-  useEffect(() => {
-    if (isSuccess && categories.data.totalPage) {
-      setTotalPages(categories.data.totalPage)
-      setPage(categories.data.page)
-    }
-  }, [isSuccess, categories])
   const handleSelectCategory = (category: Category) => {
     if (selectedCategory?._id === category._id) {
       setSelectedCategory(null)
@@ -59,6 +54,10 @@ export default function page() {
     setPage(page)
     router.replace(`/admin/categories?page=${page}&limit=${limit}`)
   }
+
+  useEffect(() => {
+    setLimitCategory(10)
+  }, [setLimitCategory])
 
   useEffect(() => {
     if (isSuccess && categories.data.totalPage) {

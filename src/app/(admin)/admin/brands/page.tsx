@@ -28,6 +28,7 @@ export default function page() {
   const setPage = useBrandStore((state) => state.setPage)
   const setTotalPages = useBrandStore((state) => state.setTotalPages)
   const setName = useBrandStore((state) => state.setName)
+  const setLimitBrand = useBrandStore((state) => state.setLimit)
 
   const [search, setSearch] = useState('')
   const debounce = useDebounce(search, 500)
@@ -59,18 +60,15 @@ export default function page() {
   }
 
   useEffect(() => {
+    setLimitBrand(10)
+  }, [setLimitBrand])
+
+  useEffect(() => {
     if (brands) {
       setTotalPages(brands.data.totalPage)
       setPage(brands.data.page)
     }
   }, [brands, setTotalPages, setPage])
-
-  useEffect(() => {
-    if (isSuccess && brands.data.totalPage) {
-      setTotalPages(brands.data.totalPage)
-      setPage(brands.data.page)
-    }
-  }, [isSuccess, brands])
 
   useEffect(() => {
     if (debounce.trim().length > 2) {
