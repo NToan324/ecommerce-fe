@@ -333,14 +333,16 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
                   <div className="flex justify-between items-center gap-4 w-full">
                     <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
                     <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                      {formatPrice(couponDiscount)}
+                      {couponDiscount > 0 ? -formatPrice(couponDiscount) : formatPrice(couponDiscount)}
                     </span>
                   </div>
                   {user && (
                     <div className="flex justify-between items-center gap-4 w-full">
                       <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Loyalty point</p>
                       <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                        {formatPrice(loyaltyPointDiscount)}
+                        {loyaltyPointDiscount > 0
+                          ? -formatPrice(loyaltyPointDiscount)
+                          : formatPrice(loyaltyPointDiscount)}
                       </span>
                     </div>
                   )}
