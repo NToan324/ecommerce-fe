@@ -16,13 +16,13 @@ export default function Comment({ data, isSingle }: CommentProps) {
     <div
       className={`${!isSingle ? 'border-b border-black/10' : ''} flex justify-between items-start w-full min-h-[100px] gap-5 pb-12 bg-white`}
     >
-      <div className="w-[60px] h-[60px] relative rounded-full overflow-hidden">
+      <div className="w-[60px] h-[60px] relative shrink-0 rounded-full overflow-hidden">
         <Image
           src={data.user_id ? data.user.avatar : 'https://avatar.iran.liara.run/public'}
           alt={data.user_id ? data.user.name : 'Anonymous'}
-          width={100}
-          height={100}
+          fill
           objectFit="cover"
+          className="absolute"
         />
       </div>
       <div className="flex flex-col justify-start items-center w-full gap-4">

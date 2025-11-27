@@ -65,7 +65,6 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
     setCurrent(api.selectedScrollSnap() + 1)
 
     api.on('select', () => {
-      console.log('select', api.selectedScrollSnap())
       setCurrent(api.selectedScrollSnap() + 1)
     })
   }, [api])
@@ -142,10 +141,6 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
       quantity: quantity,
       discount: product.productVariant.discount,
     })
-    console.log('Added to cart:', {
-      productVariantId: product.productVariant._id,
-      quantity: quantity,
-    })
     if (user) {
       createCartWithHasUser({
         productVariantId: product.productVariant._id,
@@ -180,7 +175,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
       {/* Image Category */}
       <div className="bg-purple-primary min-h-[calc(100vh-80px)] relative overflow-hidden">
         <p className="text-[clamp(9.5rem,50vw,34rem)] absolute font-bold text-blue-light top-[30%] md:top-0 uppercase">
-          Lenovo
+          {product && product.productVariant?.brand_name}
         </p>
         <CarouselProduct
           data={product && product.productVariant ? product.productVariant?.images : []}
