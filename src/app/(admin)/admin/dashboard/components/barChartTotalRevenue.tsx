@@ -4,7 +4,7 @@ import { Bar, BarChart, CartesianGrid, LabelList, ResponsiveContainer, XAxis } f
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { formatPrice } from '@/utils/helpers'
+import { formatCurrencyToMillion } from '@/utils/helpers'
 
 export const description = 'A bar chart with a label'
 
@@ -40,9 +40,10 @@ export function BarChartTotalRevenue({
         <CardDescription>{chartDescription || 'January - June 2024'}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer>
+        <ResponsiveContainer className={'min-h-[250px]'}>
           <ChartContainer config={chartConfig}>
             <BarChart
+              className="min-h-[250px]"
               accessibilityLayer
               data={data}
               margin={{
@@ -62,7 +63,9 @@ export function BarChartTotalRevenue({
                 content={
                   <ChartTooltipContent
                     hideLabel
-                    formatter={(value) => (typeFormat === 'currency' ? formatPrice(value as number) : value)}
+                    formatter={(value) =>
+                      typeFormat === 'currency' ? formatCurrencyToMillion(value as number) : value
+                    }
                   />
                 }
               />
@@ -72,7 +75,9 @@ export function BarChartTotalRevenue({
                   offset={12}
                   className="fill-foreground"
                   fontSize={12}
-                  formatter={(value: number) => (typeFormat === 'currency' ? formatPrice(value as number) : value)}
+                  formatter={(value: number) =>
+                    typeFormat === 'currency' ? formatCurrencyToMillion(value as number) : value
+                  }
                 />
               </Bar>
             </BarChart>

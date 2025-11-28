@@ -12,6 +12,10 @@ export const formatDate = (date: Date) => {
   }).format(date)
 }
 
+export const formatCurrencyToMillion = (price: number) => {
+  return (price / 1000000).toFixed(2) + 'M VND'
+}
+
 export const formatDatePattern = (date: Date) => {
   return format(date, 'yyyy-MM-dd')
 }
