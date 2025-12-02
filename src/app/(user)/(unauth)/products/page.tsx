@@ -8,6 +8,7 @@ import Lottie from 'lottie-react'
 import ProductPage from '@/features/product/product'
 import useBrand from '@/hooks/useBrand'
 import useCategory from '@/hooks/useCategory'
+import { useDebounce } from '@/hooks/useDebounce'
 import useProduct from '@/hooks/useProduct'
 import { useProductVariantStore } from '@/stores/product.store'
 
@@ -23,6 +24,10 @@ function ProductPageContent() {
   const setPage = useProductVariantStore((state) => state.setPage)
   const setLimit = useProductVariantStore((state) => state.setLimit)
   const setName = useProductVariantStore((state) => state.setName)
+  const [isSearching, setIsSearching] = useState(false)
+
+  const [search, setSearch] = useState('')
+  const debounce = useDebounce(search, 500)
 
   const { data: brands, isSuccess: isSuccessBrands, isPending: isPendingBrands } = useBrand.getAllBrandsByUser()
   const [isLoading, setIsLoading] = useState(true)
@@ -41,6 +46,24 @@ function ProductPageContent() {
   } = useProduct.getProductVariantsByUser()
 
   useEffect(() => {
+    if (debounce.length > 3) {
+      setName(debounce)
+      setIsSearching(true)
+      router.replace(`/products?page=1&limit=${limit}&name=${debounce}`)
+    }
+    if (isSearching && debounce.length <= 3) {
+      setName('')
+      router.replace(`/products?page=1&limit=${limit}`)
+    }
+  }, [debounce, nameParam])
+
+  useEffect(() => {
+    if (!search && nameParam) {
+      setSearch(nameParam)
+    }
+  }, [searchParams])
+
+  useEffect(() => {
     if (!isFetchingProducts) {
       const timer = setTimeout(() => setIsLoading(false), 300)
       return () => clearTimeout(timer)
@@ -54,15 +77,15 @@ function ProductPageContent() {
       setPage(Number(pageParam))
       setLimit(Number(limitParam))
     }
+
     if (nameParam) {
       setName(nameParam)
-    } else {
-      setName('')
     }
+
     if (!pageParam || !limitParam) {
       router.replace(`/products?page=${page}&limit=${limit}`)
     }
-  }, [page, limit, pageParam, limitParam, setPage, setLimit, router, nameParam, setName])
+  }, [])
 
   if (isPendingBrands || isPendingCategories || isPendingProducts || isLoading) {
     return (
@@ -78,7 +101,13 @@ function ProductPageContent() {
 
   return (
     <div>
-      <ProductPage products={products.data} categories={categories.data.categories} brands={brands.data.brands} />
+      <ProductPage
+        products={products.data}
+        categories={categories.data.categories}
+        brands={brands.data.brands}
+        search={search}
+        setSearch={setSearch}
+      />
     </div>
   )
 }

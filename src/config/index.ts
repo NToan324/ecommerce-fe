@@ -29,7 +29,7 @@ export const attributeOptions = {
       { label: 'RAM', icon: RiRam2Line },
       { label: 'Storage', icon: MdOutlineStorage },
       { label: 'Size', icon: RiTv2Line },
-      { label: 'Battery Life', icon: RiBattery2ChargeLine },
+      { label: 'Battery', icon: RiBattery2ChargeLine },
       { label: 'Weight', icon: RiBox3Line },
       { label: 'Color', icon: RiBox3Line },
     ],
@@ -89,7 +89,7 @@ export const attributeOptions = {
       { label: 'Power Output', icon: RiSoundModuleLine },
       { label: 'Connection', icon: RiUsbLine },
       { label: 'Frequency Response', icon: RiSoundModuleLine },
-      { label: 'Battery Life', icon: RiBattery2ChargeLine },
+      { label: 'Battery', icon: RiBattery2ChargeLine },
     ],
   },
 

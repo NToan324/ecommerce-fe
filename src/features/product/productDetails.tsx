@@ -6,6 +6,7 @@ import { toastError, toastSuccess, toastWarning } from '@components/toastify'
 import { useQueryClient } from '@tanstack/react-query'
 import Comment from '@user/(unauth)/products/[id]/components/comment'
 import { CarouselProduct } from '@user/(unauth)/products/components/carouselProduct'
+import { format } from 'date-fns'
 import { FaRegDotCircle, FaStar } from 'react-icons/fa'
 import { FiMinus, FiShoppingCart } from 'react-icons/fi'
 import { GoPlus } from 'react-icons/go'
@@ -281,7 +282,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
           </div>
           <div className="relative w-[300px] lg:w-[500px] h-full overflow-hidden">
             <Image
-              src={(product && product.productVariant?.images[1].url) || '/images/laptop.png'}
+              src={(product && product.productVariant?.images[1].url) || '/images/default_product_image.png'}
               alt="Laptop"
               objectFit="contain"
               fill
@@ -311,7 +312,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
                       const IconMap =
                         attributeOptions[
                           product.productVariant.category_name as keyof typeof attributeOptions
-                        ]?.attributes.find((attr) => attr.label === key)?.icon ?? null
+                        ]?.attributes.find((attr) => attr.label.toLowerCase() === key.toLowerCase())?.icon ?? null
                       return (
                         <div key={key} className="flex justify-between items-center gap-3">
                           <div className="p-1 rounded-full border-1 border-black w-7 h-7 md:w-10 md:h-10 flex justify-center items-center">
@@ -337,7 +338,7 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
             <div className="relative w-full md:w-[300px] lg:w-[500px] h-[300px]">
               <div className="bg-conic-90 from-blue-light to-purple-primary rounded-[50%] w-full h-full absolute top-[50%] left-[50%] blur-xl transform translate-x-[-50%] translate-y-[-50%]"></div>
               <Image
-                src={(product && product.productVariant?.images[2].url) || '/images/laptop.png'}
+                src={(product && product.productVariant?.images[2].url) || '/images/default_product_image.png'}
                 alt="Laptop"
                 fill
                 objectFit="contain"
@@ -400,9 +401,11 @@ export default function ProductDetailsPage({ product }: ProductDetailsPageProps)
         >
           <div className="flex justify-between w-full items-center md:items-start gap-3 md:flex-col">
             <p className="text-[clamp(1rem,2vw,2rem)] font-bold text-blue-tertiary line-clamp-1">
-              Hello! <span className="text-black">{user?.fullName || 'My fiend'}</span>
+              Hello! <span className="text-black">{user?.fullName || 'My friend'}</span>
             </p>
-            <p className="text-[clamp(0.75rem,2vw,0.875rem)] font-medium text-blue-night">Friday, Aug 29</p>
+            <p className="text-[clamp(0.75rem,2vw,0.875rem)] font-medium text-blue-night">
+              {format(new Date(), 'MMMM dd, yyyy')}
+            </p>
           </div>
           <div className="w-full max-w-[600px] flex flex-col justify-start items-center gap-1">
             {user && (

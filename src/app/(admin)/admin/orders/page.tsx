@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
+import DialogOrderDetails from '@/app/(admin)/admin/orders/components/DialogOrderDetails'
 import Loading from '@/components/loading'
 import PaginationCustom from '@/components/paginationCustom'
 import HeaderTitleAdmin from '@/components/ui/headerTitleAdmin'
@@ -15,6 +16,7 @@ import { convertStringToDate, formatPrice } from '@/utils/helpers'
 
 export default function Page() {
   const [search, setSearch] = useState('')
+  const [open, setOpen] = useState<Order | null>(null)
 
   const page = useOrderUserStore((s) => s.page)
   const totalPages = useOrderUserStore((s) => s.totalPages)
@@ -62,7 +64,7 @@ export default function Page() {
               </TableRow>
             ) : orders?.data && orders.data?.data?.length > 0 ? (
               orders.data.data.map((order: Order, index: number) => (
-                <TableRow key={order._id}>
+                <TableRow key={order._id} onClick={() => setOpen(order)}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{order.user_name}</TableCell>
                   <TableCell>{order.email}</TableCell>
@@ -108,6 +110,7 @@ export default function Page() {
         onPageChange={(p) => setPage(p)}
         hidden={totalPages <= 1}
       />
+      {open && <DialogOrderDetails order={open} open={!!open} setOpen={() => setOpen(null)} />}
     </div>
   )
 }

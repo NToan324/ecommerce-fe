@@ -523,7 +523,7 @@ export function DialogCreateProductVariant({
                           <div className="flex w-full flex-col items-center justify-between gap-3 rounded-[12px] border border-[#E7E7E7] p-4">
                             <div className="relative overflow-hidden w-full h-[120px] border border-blue-primary rounded-[12px]">
                               <Image
-                                src={image.src || '/images/laptop.png'}
+                                src={image.src || '/images/default_product_image.png'}
                                 alt="product image"
                                 fill
                                 objectFit="cover"

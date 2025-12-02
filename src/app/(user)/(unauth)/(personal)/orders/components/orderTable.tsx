@@ -58,7 +58,12 @@ export default function OrderTable({ selectedStatus }: OrderTableProps) {
           })}
         </TableBody>
       </Table>
-      <PaginationCustom currentPage={page} totalPages={totalPages} onPageChange={(page) => handlePageChange(page)} />
+      <PaginationCustom
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={(page) => handlePageChange(page)}
+        hidden={totalPages <= 1}
+      />
     </div>
   )
 }

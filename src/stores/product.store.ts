@@ -51,7 +51,7 @@ export const useProductVariantStore = create<ProductVariantState>((set) => ({
   max_price: 100000000,
   ratings: 0,
   page: 1,
-  limit: 12,
+  limit: 9,
   setProductVariant: (productVariant) => set({ productVariant }),
   setName: (name) => set({ name }),
   setCategoryIds: (category_ids) => set({ category_ids }),
@@ -68,7 +68,7 @@ export const useProductVariantStore = create<ProductVariantState>((set) => ({
 export const useProductStore = create<ProductState>((set) => ({
   product: [],
   totalPages: 0,
-  limit: 10,
+  limit: 9,
   page: 1,
   name: '',
   setProduct: (product) => set({ product }),

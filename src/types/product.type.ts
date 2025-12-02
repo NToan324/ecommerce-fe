@@ -61,6 +61,8 @@ export interface ProductVariant {
   discount: number
   images: Image[]
   isActive: boolean
+  brand_name: string
+  category_name: string
 }
 
 export interface ProductVariantDetail {

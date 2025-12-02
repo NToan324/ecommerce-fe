@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation'
 import { RxExternalLink } from 'react-icons/rx'
 
 import Loading from '@/components/loading'
+import { useProductVariantStore } from '@/stores/product.store'
 import { ProductVariant } from '@/types/product.type'
 
 interface SearchComponentProps {
@@ -20,6 +21,9 @@ export default function SearchComponent({
   setSearchValue,
   searchResult,
 }: SearchComponentProps) {
+  const page = useProductVariantStore((state) => state.page)
+  const limit = useProductVariantStore((state) => state.limit)
+
   const router = useRouter()
   return (
     <div className="z-100 absolute md:bottom-[8%] bottom-[20%] left-[50%]  w-[340px] min-w-[340px] translate-x-[-50%] translate-y-[-50%] sm:w-[600px] lg:w-[780px]">
@@ -43,7 +47,7 @@ export default function SearchComponent({
               <div
                 key={item._id}
                 className="flex cursor-pointer justify-between items-center py-2 border-b last:border-b-0"
-                onClick={() => router.push(`products?page=1&limit=12&name=${searchValue}`)}
+                onClick={() => router.push(`products?page=${page}&limit=${limit}&name=${searchValue}`)}
               >
                 <div>
                   <p className="font-semibold text-base line-clamp-1">{item.variant_name}</p>

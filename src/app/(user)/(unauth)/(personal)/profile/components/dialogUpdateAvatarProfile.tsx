@@ -165,7 +165,7 @@ export function DialogUpdateAvatarProfile({ open, setOpen, data }: DialogCreateC
                       <div className="flex items-center justify-start gap-2">
                         <div className="relative overflow-hidden w-[120px] max-w-[120px] h-[120px] border border-blue-primary rounded-[20px]">
                           <Image
-                            src={avatarPreview.src || '/images/laptop.png'}
+                            src={avatarPreview.src || '/images/default_product_image.png'}
                             alt="product image"
                             fill
                             objectFit="contain"

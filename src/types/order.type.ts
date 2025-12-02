@@ -42,11 +42,13 @@ export interface Order {
   status: ORDER_STATUS
   payment_method: PAYMENT_METHOD
   payment_status: PAYMENT_STATUS
-  order_tracking: {
-    _id: string
-    status: string
-    updated_at: string
-  }
+  order_tracking: OrderTracking[]
   createdAt: string
+  updated_at: string
+}
+
+export interface OrderTracking {
+  _id: string
+  status: string
   updated_at: string
 }

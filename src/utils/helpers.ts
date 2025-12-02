@@ -35,6 +35,10 @@ export const convertByteToMB = (bytes: number) => {
   return bytes
 }
 
+export const formatFirstLetterUppercase = (str: string) => {
+  return str.toLowerCase().charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
+
 export const formatDateWithSuffix = (date: string) => {
   return formatDistance(new Date(date), new Date(), { addSuffix: true })
 }

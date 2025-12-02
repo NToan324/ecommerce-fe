@@ -5,11 +5,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import CardProduct from '@user/(unauth)/products/components/card'
 import { CgArrowsExchangeV } from 'react-icons/cg'
+import { FiSearch } from 'react-icons/fi'
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2'
 import { IoClose } from 'react-icons/io5'
 
 import PaginationCustom from '@/components/paginationCustom'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { useProductVariantStore } from '@/stores/product.store'
@@ -35,15 +37,18 @@ interface ProductPageProps {
   products: ProductVariantPagination
   categories: Category[]
   brands: Brand[]
+  search: string
+  setSearch: (value: string) => void
 }
 
-export default function ProductPage({ products, categories, brands }: ProductPageProps) {
+export default function ProductPage({ products, categories, brands, search, setSearch }: ProductPageProps) {
   const categoryIds = useProductVariantStore((state) => state.category_ids)
   const brandIds = useProductVariantStore((state) => state.brand_ids)
   const minPrice = useProductVariantStore((state) => state.min_price)
   const maxPrice = useProductVariantStore((state) => state.max_price)
   const sortName = useProductVariantStore((state) => state.sort_name)
   const sortPrice = useProductVariantStore((state) => state.sort_price)
+  const limit = useProductVariantStore((state) => state.limit)
 
   const totalPages = products.totalPages || 1
   const currentPage = products.page || 1
@@ -52,7 +57,6 @@ export default function ProductPage({ products, categories, brands }: ProductPag
   const [sliderValue, setSliderValue] = useState<SliderValue>([minPrice, maxPrice])
   const [openFilter, setOpenFilter] = useState(false)
 
-  const limit = useProductVariantStore((state) => state.limit)
   const setCategoryIds = useProductVariantStore((state) => state.setCategoryIds)
   const setBrandIds = useProductVariantStore((state) => state.setBrandIds)
   const setMinPrice = useProductVariantStore((state) => state.setMinPrice)
@@ -60,7 +64,6 @@ export default function ProductPage({ products, categories, brands }: ProductPag
   const setSortName = useProductVariantStore((state) => state.setSortName)
   const setSortPrice = useProductVariantStore((state) => state.setSortPrice)
   const setPage = useProductVariantStore((state) => state.setPage)
-
   const router = useRouter()
 
   const filterItems = [
@@ -112,6 +115,14 @@ export default function ProductPage({ products, categories, brands }: ProductPag
   }
 
   useEffect(() => {
+    const element = document.getElementById('container')
+    if (element) {
+      const top = element.getBoundingClientRect().top + window.pageYOffset - 100
+      window.scrollTo({ top, behavior: 'smooth' })
+    }
+  }, [])
+
+  useEffect(() => {
     setCategoryIds(selectedCategory.categories)
   }, [selectedCategory.categories, setCategoryIds])
 
@@ -152,7 +163,7 @@ export default function ProductPage({ products, categories, brands }: ProductPag
           What's hot: <span className="font-medium text-violet-primary">Laptop</span>
         </p>
       </div>
-      <div className="flex gap-12">
+      <div id="container" className="flex gap-12">
         {/* Category List */}
         <div
           className={`${openFilter ? 'bottom-0' : '-bottom-[100%]'} bg-white duration-300 overflow-scroll md:p-0 z-200 shadow-2xl md:shadow-none w-full h-[600px] rounded-t-2xl md:rounded-none fixed md:relative left-0 flex-col justify-between items-start gap-4 md:max-w-[300px] flex md:h-fit`}
@@ -214,7 +225,11 @@ export default function ProductPage({ products, categories, brands }: ProductPag
         </div>
         {/* Category Item */}
         <div className="flex flex-col justify-start items-start gap-4 w-full ">
-          <div className="w-full flex justify-end gap-2">
+          <div className="w-full flex justify-end gap-2 py-2">
+            <div className="relative flex w-full max-w-sm md:max-w-[250px]">
+              <Input placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
+              <FiSearch className="absolute right-3 top-2 text-gray-500 size-5" />
+            </div>
             <Select
               onValueChange={(value) => {
                 if (value.includes('name')) {

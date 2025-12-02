@@ -7,6 +7,7 @@ class UserService {
     const response = await axios.get<ApiResponse<Profile>>('/user/profile')
     return response.data
   }
+  
   updateProfile = async (payload: Partial<UpdateProfile>) => {
     const response = await axios.put<ApiResponse<Profile>>('/user/profile', payload)
     return response.data

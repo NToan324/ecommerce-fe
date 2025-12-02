@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { HiOutlineTrash } from 'react-icons/hi'
+import { IoBanOutline } from 'react-icons/io5'
 
 import Loading from '@/components/loading'
 import PaginationCustom from '@/components/paginationCustom'
@@ -69,7 +70,12 @@ export default function Page() {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>
                       <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                        <Image src={user.avatar?.url || '/default-avatar.png'} alt={user.fullName} fill />
+                        <Image
+                          src={user.avatar?.url || '/default-avatar.png'}
+                          alt={user.fullName}
+                          fill
+                          objectFit="cover"
+                        />
                       </div>
                     </TableCell>
                     <TableCell>{user.fullName}</TableCell>
@@ -77,7 +83,10 @@ export default function Page() {
                     <TableCell>{user.phone || '--'}</TableCell>
                     <TableCell>{user.loyalty_points}</TableCell>
                     <TableCell>
-                      <HiOutlineTrash className="text-red-600 hover:text-red-800 cursor-pointer" size={20} />
+                      <div className="flex gap-2 justify-center items-center">
+                        <HiOutlineTrash className="text-red-600 hover:text-red-800 cursor-pointer" size={20} />
+                        <IoBanOutline className="text-red-600 hover:text-red-800 cursor-pointer" size={20} />
+                      </div>
                     </TableCell>
                   </TableRow>
 

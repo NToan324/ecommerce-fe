@@ -2,13 +2,30 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
+import { format } from 'date-fns'
 import { IoIosArrowDown } from 'react-icons/io'
 
+import { ORDER_STATUS } from '@/constant'
 import { Order } from '@/types/order.type'
-import { formatPrice } from '@/utils/helpers'
+import { formatFirstLetterUppercase, formatPrice } from '@/utils/helpers'
 
 interface OrderTrackingProps {
   order: Order
+}
+
+export function getTrackingDescription(status: string): string {
+  switch (status) {
+    case ORDER_STATUS.PENDING:
+      return 'Waiting for seller to confirm the order.'
+    case ORDER_STATUS.SHIPPING:
+      return 'Seller confirmed the order.'
+    case ORDER_STATUS.DELIVERED:
+      return 'The order has been delivered to the customer.'
+    case ORDER_STATUS.CANCELLED:
+      return 'The order has been cancelled.'
+    default:
+      return ''
+  }
 }
 
 export default function OrderTracking({ order }: OrderTrackingProps) {
@@ -42,69 +59,44 @@ export default function OrderTracking({ order }: OrderTrackingProps) {
       </h1>
       <div className="flex justify-between items-start gap-16 w-full flex-col md:flex-row">
         <div className="flex flex-col justify-between items-start gap-8 rounded-2xl bg-gradient-to-b from-blue-gray/50 to-blue-primary/10 p-9">
-          {/* Timeline */}
-          <div className="flex justify-start items-start gap-6 h-full w-full">
-            <div className="flex flex-col justify-start items-start gap-4">
-              <p className="w-[60px] text-[clamp(0.75rem,2vw,1rem)] font-medium text-black/50 min-h-[100px]">
-                Sep 9 2025
-              </p>
-            </div>
-            <div className="flex flex-col justify-start items-center">
-              <span className="block w-5 h-5 rounded-full border-[6px] border-blue-secondary"></span>
-              <span className="block h-[90px] w-px bg-blue-secondary mt-1"></span>
-              <span className="block h-px w-4 bg-blue-secondary"></span>
-              <span className="block h-px w-4 bg-blue-secondary mt-1"></span>
-            </div>
-            <div className="flex flex-col justify-start items-start gap-2 min-h-[100px]">
-              <p className="font-bold text-[clamp(0.875rem,2vw,1.125rem)]">Confirmation</p>
-              <p className="text-[clamp(0.875rem,2vw,1.125rem)] font-medium text-black/50">
-                Seller confirmed the order
-              </p>
-            </div>
-          </div>
-          {/* Confirmation */}
-          <div className="flex justify-start items-start gap-6 h-full w-full">
-            <div className="flex flex-col justify-start items-start gap-4">
-              <p className="w-[60px] text-[clamp(0.75rem,2vw,1rem)] font-medium text-black/50 min-h-[100px]">
-                Sep 9 2025
-              </p>
-              <p className="w-[60px] text-[clamp(0.75rem,2vw,1rem)] font-medium text-black/50 min-h-[100px]">
-                Sep 9 2025
-              </p>
-              <p className="w-[60px] text-[clamp(0.75rem,2vw,1rem)] font-medium text-black/50 min-h-[100px]">
-                Sep 9 2025
-              </p>
-            </div>
-            <div className="flex flex-col justify-start items-center h-[400px]">
-              <span className="block w-5 h-5 rounded-full border-[6px] border-blue-secondary "></span>
-              <span className="block flex-1 w-px bg-blue-secondary mt-1"></span>
-              <span className="block h-px w-4 bg-blue-secondary"></span>
-              <span className="block h-px w-4 bg-blue-secondary mt-1"></span>
-            </div>
-            <div className="flex flex-col justify-start items-start gap-4">
-              <div className="flex flex-col justify-start items-start gap-2 min-h-[100px]">
-                <p className="font-bold text-[clamp(0.875rem,2vw,1.125rem)]">Confirmation</p>
-                <p className="text-[clamp(0.875rem,2vw,1.125rem)] font-medium text-black/50">
-                  Seller confirmed the order
+          {order.order_tracking.map((item, index) => (
+            <div key={item._id} className="flex justify-start items-start gap-6 h-full w-full">
+              {/* DATE COLUMN */}
+              <div className="flex flex-col justify-start items-start gap-4">
+                <p className="w-[100px] text-[clamp(0.75rem,2vw,1rem)] font-medium text-black/50 min-h-[100px]">
+                  {format(new Date(item.updated_at), 'MMMM dd, yyyy')}
                 </p>
               </div>
-              <div className="flex flex-col justify-start items-start gap-2 min-h-[100px]">
-                <p className="font-bold text-[clamp(0.875rem,2vw,1.125rem)]">Order successful</p>
-                <p className="text-[clamp(0.875rem,2vw,1.125rem)] font-medium text-black/50">
-                  You have successfully placed your order.
-                </p>
+
+              {/* LINE COLUMN */}
+              <div className="flex flex-col justify-start items-center">
+                {/* cục tròn */}
+                <span
+                  className={`block w-5 h-5 rounded-full border-[6px] 
+          ${index === 0 ? 'border-blue-secondary' : 'border-blue-secondary/50'}`}
+                ></span>
+
+                {/* vertical line giữa các node */}
+                {<span className="block h-[90px] w-px bg-blue-secondary mt-1"></span>}
+
+                {/* nhỏ nhỏ dưới */}
+                <span className="block h-px w-4 bg-blue-secondary mt-1"></span>
+                <span className="block h-px w-4 bg-blue-secondary mt-1"></span>
               </div>
+
+              {/* CONTENT */}
               <div className="flex flex-col justify-start items-start gap-2 min-h-[100px]">
                 <p className="font-bold text-[clamp(0.875rem,2vw,1.125rem)]">
-                  Order <span className="text-blue-secondary">#thanhbinhcutie</span> — Successful
+                  {formatFirstLetterUppercase(item.status)}
                 </p>
                 <p className="text-[clamp(0.875rem,2vw,1.125rem)] font-medium text-black/50">
-                  Order placed successfully. Paid via ZaloPay.
+                  {getTrackingDescription(item.status)}
                 </p>
               </div>
             </div>
-          </div>
+          ))}
         </div>
+
         <div className="flex flex-col justify-start items-center gap-8 w-full max-w-[650px]">
           <div className="p-[2px] md:shadow-2xl md:bg-gradient-to-br shadow-blue-primary/50 from-blue-gray to-blue-primary via-blue-primary w-full rounded-2xl">
             <div className="flex flex-col gap-4 justify-start items-start p-6 md:p-9 bg-white rounded-[14px] w-full">
@@ -126,8 +118,8 @@ export default function OrderTracking({ order }: OrderTrackingProps) {
                     className="flex justify-start items-center w-full gap-4 border-b border-blue-primary/90 pb-4"
                     key={item.product_variant_id}
                   >
-                    <div className="relative w-[100px] min-h-[100px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
-                      <Image src={item.images.url} alt="Laptop" fill className="object-cover" />
+                    <div className="relative w-[100px] min-h-[100px] shrink-0 bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
+                      <Image src={item.images.url} alt="Laptop" fill className="object-contain" />
                     </div>
                     <div className="flex flex-col justify-start items-start gap-2 w-full">
                       <h3 className="font-bold text-[clamp(0.625rem,2vw,0.875rem)]">{item.product_variant_name}</h3>
@@ -158,12 +150,14 @@ export default function OrderTracking({ order }: OrderTrackingProps) {
                 </div>
                 <div className="flex justify-between items-center gap-4 w-full">
                   <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Discount</p>
-                  <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">{formatPrice(discountAmount)}</span>
+                  <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
+                    {discountAmount > 0 ? formatPrice(-discountAmount) : 0}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center gap-4 w-full">
                   <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
                   <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                    {formatPrice(order.discount_amount)}
+                    {order.discount_amount > 0 ? formatPrice(-order.discount_amount) : 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center gap-4 w-full">
@@ -171,6 +165,13 @@ export default function OrderTracking({ order }: OrderTrackingProps) {
                   <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
                     {formatPrice(order.loyalty_points_used * 1000)}
                   </span>
+                </div>
+                <div className="flex justify-start w-full gap-1 italic text-[clamp(0.875rem,2vw,1.125rem)]">
+                  You’ve redeemed
+                  <span className="font-semibold text-blue-secondary">
+                    {order.loyalty_points_used.toLocaleString('vi-VN')}
+                  </span>
+                  loyalty points.
                 </div>
               </div>
               <div className="w-full flex flex-col gap-6">

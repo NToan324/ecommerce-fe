@@ -176,7 +176,7 @@ export default function UpdateBrand({ brand }: UpdateBrandProps) {
             <div className="w-full grid grid-cols-2 gap-8">
               <div className="relative w-full overflow-hidden h-[400px] border border-blue-primary rounded-[12px]">
                 <Image
-                  src={avatarPreview?.src || brandImageUrl || '/images/laptop.png'}
+                  src={avatarPreview?.src || brandImageUrl || '/images/default_product_image.png'}
                   alt="product image"
                   fill
                   objectFit="cover"
@@ -223,7 +223,7 @@ export default function UpdateBrand({ brand }: UpdateBrandProps) {
                       <div className="flex items-center justify-start gap-2 w-full">
                         <div className="relative overflow-hidden w-[120px] max-w-[120px] h-[85px] border border-blue-primary rounded-[12px]">
                           <Image
-                            src={avatarPreview.src || '/images/laptop.png'}
+                            src={avatarPreview.src || '/images/default_product_image.png'}
                             alt="product image"
                             fill
                             objectFit="cover"

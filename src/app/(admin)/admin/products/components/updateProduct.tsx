@@ -288,7 +288,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
             <div className="w-full grid grid-cols-2 gap-8">
               <div className="relative w-full overflow-hidden h-[400px] border border-blue-primary rounded-[12px]">
                 <Image
-                  src={avatarPreview?.src || productImageUrl || '/images/laptop.png'}
+                  src={avatarPreview?.src || productImageUrl || '/images/default_product_image.png'}
                   alt="product image"
                   fill
                   objectFit="cover"
@@ -335,7 +335,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
                       <div className="flex items-center justify-start gap-2">
                         <div className="relative overflow-hidden w-[120px] max-w-[120px] h-[85px] border border-blue-primary rounded-[12px]">
                           <Image
-                            src={avatarPreview.src || '/images/laptop.png'}
+                            src={avatarPreview.src || '/images/default_product_image.png'}
                             alt="product image"
                             fill
                             objectFit="cover"
@@ -545,7 +545,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
                               <div className="flex w-full flex-col items-center justify-between gap-3 rounded-[12px] border border-[#E7E7E7] p-4">
                                 <div className="relative overflow-hidden w-full h-[280px] border border-blue-primary rounded-[12px]">
                                   <Image
-                                    src={image.url || '/images/laptop.png'}
+                                    src={image.url || '/images/default_product_image.png'}
                                     alt="product image"
                                     fill
                                     objectFit="cover"

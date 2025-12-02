@@ -35,6 +35,7 @@ export default function page() {
   const setTotalPages = useProductStore((state) => state.setTotalPages)
   const setPage = useProductStore((state) => state.setPage)
   const setName = useProductStore((state) => state.setName)
+  const setLimit = useProductStore((state) => state.setLimit)
 
   const setLimitCategory = useCategoryStore((state) => state.setLimit)
   const setLimitBrand = useBrandStore((state) => state.setLimit)
@@ -59,7 +60,8 @@ export default function page() {
     setLimitBrand(1000)
     setPageCategory(1)
     setPageBrand(1)
-  }, [setLimitBrand, setLimitCategory, setPageCategory, setPageBrand])
+    setLimit(10)
+  }, [setLimitBrand, setLimitCategory, setPageCategory, setPageBrand, setLimit])
 
   useEffect(() => {
     if (isSuccessCategories && categories.data.categories.length > 0) {

@@ -39,7 +39,7 @@ export default function page() {
                   key={index}
                 >
                   <div className="relative w-[100px] h-[100px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
-                    <Image src={'/images/laptop.png'} alt="Laptop" fill className="object-cover" />
+                    <Image src={'/images/default_product_image.png'} alt="Laptop" fill className="object-cover" />
                   </div>
                   <div className="flex flex-col justify-start items-start gap-2">
                     <h3 className="font-bold text-[clamp(0.625rem,2vw,0.875rem)]">Laptop Lenovo Idea Slim 5</h3>

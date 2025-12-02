@@ -4,11 +4,13 @@ import { useEffect, useRef, useState } from 'react'
 import OrderTable from '@user/(unauth)/(personal)/orders/components/orderTable'
 
 import { ORDER_STATUS } from '@/constant'
+import { useOrderUserStore } from '@/stores/order.store'
 
 export default function OrderUser() {
   const scroller = useRef<HTMLSpanElement[] | null>([])
   const [selectedStatus, setSelectedStatus] = useState<ORDER_STATUS>(ORDER_STATUS.PENDING)
   const orderStatus = [ORDER_STATUS.PENDING, ORDER_STATUS.SHIPPING, ORDER_STATUS.CANCELLED, ORDER_STATUS.DELIVERED]
+  const orders = useOrderUserStore((state) => state.orders)
 
   const handleStatus = (status: ORDER_STATUS, index: number) => {
     setSelectedStatus(status)
@@ -41,7 +43,7 @@ export default function OrderUser() {
         <div className="flex justify-start no-scrollbar items-center gap-8 md:gap-25 overflow-x-auto">
           {orderStatus.map((status, index) => {
             return (
-              <span
+              <div
                 key={index}
                 ref={(rel) => {
                   if (scroller.current && rel) {
@@ -49,10 +51,15 @@ export default function OrderUser() {
                   }
                 }}
                 onClick={() => handleStatus(status, index)}
-                className={`${selectedStatus === status ? 'font-bold' : 'text-black/50'} min-w-[80px] md:min-w-[100px] text-[clamp(0.875rem,1vw,1rem)] transition-all duration-500 cursor-pointer`}
+                className={`${selectedStatus === status ? 'font-bold' : 'text-black/50'} min-w-[80px] md:min-w-[100px] text-[clamp(0.875rem,1vw,1rem)] transition-all duration-500 cursor-pointer flex items-center gap-2`}
               >
-                {status}
-              </span>
+                <span className="mt-1">{status}</span>
+                <div
+                  className={`${selectedStatus === status ? 'bg-black' : 'bg-black/20'} size-5 rounded-[6px] text-center flex items-center justify-center text-xs text-white transition-all duration-500`}
+                >
+                  {orders.filter((order) => order.status === status).length}
+                </div>
+              </div>
             )
           })}
         </div>

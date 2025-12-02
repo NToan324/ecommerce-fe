@@ -11,6 +11,7 @@ import { IoIosArrowForward } from 'react-icons/io'
 
 import { useAuthStore } from '@/stores/auth.store'
 import { useCartStore } from '@/stores/cart.store'
+import { useProductStore } from '@/stores/product.store'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
@@ -18,6 +19,8 @@ export default function Header() {
   const router = useRouter()
   const user = useAuthStore((state) => state.user)
   const cartQuantity = useCartStore((state) => state.cartQuantity)
+  const limit = useProductStore((state) => state.limit)
+  const page = useProductStore((state) => state.page)
   const logout = useAuthStore((state) => state.logout)
   const clearCart = useCartStore((state) => state.clearCart)
 
@@ -72,8 +75,8 @@ export default function Header() {
           href={{
             pathname: '/products',
             query: {
-              page: '1',
-              limit: '12',
+              page: page,
+              limit: limit,
             },
           }}
           onClick={() => setOpen(false)}
@@ -96,8 +99,8 @@ export default function Header() {
                 href={{
                   pathname: '/orders',
                   query: {
-                    page: '1',
-                    limit: '10',
+                    page: page,
+                    limit: limit,
                   },
                 }}
                 className="w-full"
@@ -137,8 +140,8 @@ export default function Header() {
             href={{
               pathname: '/products',
               query: {
-                page: '1',
-                limit: '12',
+                page: page,
+                limit: limit,
               },
             }}
             onClick={() => setOpen(false)}
@@ -179,8 +182,8 @@ export default function Header() {
                     href={{
                       pathname: '/orders',
                       query: {
-                        page: '1',
-                        limit: '10',
+                        page: page,
+                        limit: limit,
                       },
                     }}
                     className="w-full"
