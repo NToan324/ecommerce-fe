@@ -291,7 +291,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
                   src={avatarPreview?.src || productImageUrl || '/images/default_product_image.png'}
                   alt="product image"
                   fill
-                  objectFit="cover"
+                  objectFit="contain"
                 />
               </div>
               <div className="flex flex-col flex-1 justify-start items-start gap-4">
@@ -338,7 +338,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
                             src={avatarPreview.src || '/images/default_product_image.png'}
                             alt="product image"
                             fill
-                            objectFit="cover"
+                            objectFit="contain"
                           />
                         </div>
                         <div className="flex flex-col items-start justify-between">
@@ -548,7 +548,7 @@ export default function UpdateProduct(props: UpdateProductProps) {
                                     src={image.url || '/images/default_product_image.png'}
                                     alt="product image"
                                     fill
-                                    objectFit="cover"
+                                    objectFit="contain"
                                   />
                                 </div>
                               </div>

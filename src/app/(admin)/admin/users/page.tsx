@@ -81,7 +81,7 @@ export default function Page() {
                     <TableCell>{user.fullName}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.phone || '--'}</TableCell>
-                    <TableCell>{user.loyalty_points}</TableCell>
+                    <TableCell>{user.loyalty_points.toLocaleString('vi')}</TableCell>
                     <TableCell>
                       <div className="flex gap-2 justify-center items-center">
                         <HiOutlineTrash className="text-red-600 hover:text-red-800 cursor-pointer" size={20} />
