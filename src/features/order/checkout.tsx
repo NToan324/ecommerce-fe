@@ -68,9 +68,17 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
     return user ? user?.loyalty_points * 1000 : 0
   }, [subtotal, user])
 
+  const checkoutLoyaltyPoint = useMemo(() => {
+    const maxLoyaltyPointDiscount = (subtotal - discount + taxAmount + shippingFee - couponDiscount) * 0.5
+    if (loyaltyPointDiscount > maxLoyaltyPointDiscount) {
+      return Math.floor(maxLoyaltyPointDiscount)
+    }
+    return user ? user.loyalty_points : 0
+  }, [subtotal, discount, shippingFee, couponDiscount, user])
+
   const total = useMemo(() => {
-    return subtotal - discount + taxAmount + shippingFee - couponDiscount - loyaltyPointDiscount
-  }, [subtotal, discount, shippingFee, couponDiscount])
+    return subtotal - discount + taxAmount + shippingFee - couponDiscount - checkoutLoyaltyPoint
+  }, [subtotal, discount, shippingFee, couponDiscount, checkoutLoyaltyPoint])
 
   const handleChangeAddress = (address: string) => {
     toastSuccess('Address updated successfully')
@@ -139,7 +147,6 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
       toastError('Your cart is empty. Please add items to your cart before placing an order.')
       return
     }
-    console.log('data', data)
     createOrder(data)
   }
 
@@ -294,7 +301,7 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
                         key={index}
                       >
                         <div className="relative min-w-[100px] w-[100px] h-[100px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
-                          <Image src={item.images.url} alt="Laptop" fill className="object-cover" />
+                          <Image src={item.images.url} alt="Laptop" fill objectFit="contain" />
                         </div>
                         <div className="flex flex-col justify-start items-start gap-2">
                           <h3 className="font-bold text-[clamp(0.625rem,2vw,0.875rem)] line-clamp-2">
@@ -333,16 +340,16 @@ export default function CheckoutPage({ cart, coupon }: CheckoutPageProps) {
                   <div className="flex justify-between items-center gap-4 w-full">
                     <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
                     <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                      {couponDiscount > 0 ? -formatPrice(couponDiscount) : formatPrice(couponDiscount)}
+                      {couponDiscount > 0 ? formatPrice(-couponDiscount) : formatPrice(couponDiscount)}
                     </span>
                   </div>
                   {user && (
                     <div className="flex justify-between items-center gap-4 w-full">
                       <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Loyalty point</p>
                       <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                        {loyaltyPointDiscount > 0
-                          ? -formatPrice(loyaltyPointDiscount)
-                          : formatPrice(loyaltyPointDiscount)}
+                        {checkoutLoyaltyPoint > 0
+                          ? `-${formatPrice(checkoutLoyaltyPoint)}`
+                          : formatPrice(checkoutLoyaltyPoint)}
                       </span>
                     </div>
                   )}

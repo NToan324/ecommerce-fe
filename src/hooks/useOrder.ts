@@ -22,6 +22,7 @@ class UseOrder {
       onSuccess: async (response) => {
         if (response.data) {
           toastSuccess('Order created successfully!')
+          route.replace(`/order-complete/${response.data._id}`)
           setTimeout(() => {
             queryClient.invalidateQueries({ queryKey: ['coupons'] })
             queryClient.invalidateQueries({ queryKey: ['profile'] })
@@ -29,7 +30,6 @@ class UseOrder {
           setOrderCompleteStore(response.data)
           clearCartStore()
           setCoupon(null)
-          route.replace(`/order-complete/${response.data._id}`)
         } else {
           toastError('Error occurred while creating order. Please try again.')
         }

@@ -98,7 +98,10 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
                   <Image src={'/images/gift.png'} alt="Gift" fill className="object-contain" />
                 </div>
                 <p className="text-[clamp(0.75rem,2vw,1.125rem)]">
-                  You’ve got <span className="font-bold text-orange-foreground">{order.loyalty_points_earned}</span>{' '}
+                  You’ve got{' '}
+                  <span className="font-bold text-orange-foreground">
+                    {order.loyalty_points_earned.toLocaleString('vi')}
+                  </span>{' '}
                   points for your next order!
                 </p>
               </div>
@@ -114,20 +117,13 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
             </h2>
             <div className="flex flex-col justify-start items-start gap-6 w-full">
               {order.items.map((item, index) => {
-                // const attributes = Object.entries(item.attributes).map(([key, value]) => ({ key, value }))
-                // const configuration = attributes
-                //   .filter((attr) => attr.key.toLowerCase() !== 'color')
-                //   .slice(0, 3)
-                //   .map((attr) => `${attr.key} ${attr.value}`)
-                //   .join(', ')
-                // const color = attributes.find((attr) => attr.key.toLowerCase() === 'color')?.value || ''
                 return (
                   <div
                     className="flex justify-start items-center w-full gap-4 border-b border-blue-primary/90 pb-4"
                     key={index}
                   >
                     <div className="relative min-w-[100px] w-[100px] h-[100px] bg-gradient-to-br from-blue-secondary to-white rounded-2xl">
-                      <Image src={item.images.url} alt="Laptop" fill className="object-cover" />
+                      <Image src={item.images.url} alt="Laptop" fill objectFit="contain" />
                     </div>
                     <div className="flex flex-col justify-start items-start gap-2">
                       <h3 className="font-bold text-[clamp(0.625rem,2vw,0.875rem)] line-clamp-2">
@@ -166,13 +162,13 @@ export default function OrderCompletePage({ order }: OrderCompletePageProps) {
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
                 <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                  {formatPrice(order.discount_amount)}
+                  {order.discount_amount ? formatPrice(-order.discount_amount) : formatPrice(0)}
                 </span>
               </div>
               <div className="flex justify-between items-center gap-4 w-full">
                 <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Loyalty point</p>
                 <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                  {formatPrice(order.loyalty_points_used * 1000)}
+                  {order.loyalty_points_used ? formatPrice(-order.loyalty_points_used * 1000) : formatPrice(0)}
                 </span>
               </div>
             </div>

@@ -75,9 +75,17 @@ export default function CartPage({ cart }: CartPageProps) {
     return usePoint && user ? user?.loyalty_points * 1000 : 0
   }, [usePoint, subtotal, user])
 
+  const checkoutLoyaltyPoint = useMemo(() => {
+    const maxLoyaltyPointDiscount = (subtotal - discount + taxAmount + shippingFee - couponDiscount) * 0.5
+    if (loyaltyPointDiscount > maxLoyaltyPointDiscount) {
+      return Math.floor(maxLoyaltyPointDiscount)
+    }
+    return user ? user.loyalty_points : 0
+  }, [subtotal, discount, shippingFee, couponDiscount, user])
+
   const total = useMemo(() => {
-    return subtotal - discount + taxAmount + shippingFee - couponDiscount - loyaltyPointDiscount
-  }, [subtotal, discount, shippingFee, couponDiscount])
+    return subtotal - discount + taxAmount + shippingFee - couponDiscount - checkoutLoyaltyPoint
+  }, [subtotal, discount, shippingFee, couponDiscount, checkoutLoyaltyPoint])
 
   const handleIncrease = async (quantity: number, product: CartStore) => {
     const quantityFromProductVariantId = await checkProductVariantIdFromCart(product._id)
@@ -255,16 +263,16 @@ export default function CartPage({ cart }: CartPageProps) {
                     <div className="flex justify-between items-center gap-4 w-full">
                       <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Voucher</p>
                       <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                        {couponDiscount > 0 ? `-${formatPrice(couponDiscount)}` : formatPrice(couponDiscount)}
+                        {couponDiscount > 0 ? formatPrice(-couponDiscount) : formatPrice(couponDiscount)}
                       </span>
                     </div>
                     {user && (
                       <div className="flex justify-between items-center gap-4 w-full">
                         <p className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">Loyalty point</p>
                         <span className="font-medium text-[clamp(0.875rem,2vw,1.125rem)]">
-                          {loyaltyPointDiscount > 0
-                            ? `-${formatPrice(loyaltyPointDiscount)}`
-                            : formatPrice(loyaltyPointDiscount)}
+                          {checkoutLoyaltyPoint > 0
+                            ? `-${formatPrice(checkoutLoyaltyPoint)}`
+                            : formatPrice(checkoutLoyaltyPoint)}
                         </span>
                       </div>
                     )}
@@ -344,13 +352,10 @@ export default function CartPage({ cart }: CartPageProps) {
                     <p className="text-sm">
                       Use your{' '}
                       <span className="font-bold text-orange-foreground">
-                        {user.loyalty_points.toLocaleString('vi-VN')}
+                        {(checkoutLoyaltyPoint / 1000).toFixed()}
                       </span>{' '}
                       loyalty points to get{' '}
-                      <span className="font-bold text-orange-foreground">
-                        {' '}
-                        {formatPrice(user.loyalty_points * 1000)}
-                      </span>{' '}
+                      <span className="font-bold text-orange-foreground"> {formatPrice(checkoutLoyaltyPoint)}</span>{' '}
                       discount
                     </p>
                   </div>
