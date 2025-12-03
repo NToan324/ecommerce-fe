@@ -48,11 +48,13 @@ function ProductPageContent() {
   useEffect(() => {
     if (debounce.length > 3) {
       setName(debounce)
+      setPage(1)
       setIsSearching(true)
       router.replace(`/products?page=1&limit=${limit}&name=${debounce}`)
     }
     if (isSearching && debounce.length <= 3) {
       setName('')
+      setPage(1)
       router.replace(`/products?page=1&limit=${limit}`)
     }
   }, [debounce, nameParam])
