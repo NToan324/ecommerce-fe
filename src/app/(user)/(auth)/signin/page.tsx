@@ -145,11 +145,15 @@ export default function page() {
             <div className="flex justify-center items-center gap-5">
               <Button type="button" variant="outline" className="rounded-2xl h-14" onClick={() => loginWithGoogle()}>
                 <Image src="/images/google.svg" alt="Google" width={30} height={30} />
-                Login with Google
+                <div className="flex gap-1">
+                  <span className="md:block hidden">Login with</span> Google
+                </div>
               </Button>
               <Button type="button" variant="outline" className="rounded-2xl h-14">
                 <Image src="/images/facebook.svg" alt="Facebook" width={30} height={30} />
-                Login with Facebook
+                <div className="flex gap-1">
+                  <span className="md:block hidden">Login with</span> Facebook
+                </div>
               </Button>
             </div>
           </form>
