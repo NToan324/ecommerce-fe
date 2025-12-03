@@ -129,7 +129,7 @@ export default function ResetPassword({ userId }: ResetPasswordProps) {
               type="submit"
               className="w-full text-base font-medium text-white bg-violet-primary hover:bg-violet-primary/90 rounded-2xl h-12"
             >
-              Send Code
+              Đổi mật khẩu
               {isPending && <Loading />}
             </Button>
           </form>
