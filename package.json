@@ -44,7 +44,7 @@
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.542.0",
     "motion": "^12.23.22",
-    "next": "15.5.2",
+    "next": "15.5.7",
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "react": "19.1.0",
